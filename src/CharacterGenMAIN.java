@@ -34,7 +34,6 @@ public class CharacterGenMAIN {
                         String charName = scan.nextLine();
                         CharacterSheet current = new CharacterSheet(charName);
 
-                        // TODO: implement a way to get a Random Class and Subclass, and Background I guess
                         // TODO: implement Races
                         // Step 2: Class
                         do {
@@ -153,11 +152,13 @@ public class CharacterGenMAIN {
                         }
 
                         // now we fill the end of the skillArray with the choices we made based on class, skipping the Empty spots
-                        for (i = 0; i < choiceArray.length; ++i) {
-                            if (!choiceArray[i].equals("Empty")) {
-                                skillArray[i + tempArray.length] = choiceArray[i];
-                            } else {
-                                break;
+                        if (!charClass.equals("Bard")) {
+                            for (i = 0; i < choiceArray.length; ++i) {
+                                if (!choiceArray[i].equals("Empty")) {
+                                    skillArray[i + tempArray.length] = choiceArray[i];
+                                } else {
+                                    break;
+                                }
                             }
                         }
 

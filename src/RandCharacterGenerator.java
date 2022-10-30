@@ -327,8 +327,9 @@ public class RandCharacterGenerator {
 
         do {
             for (int i = 0; i < numSkills; ++i) {
-                skillList[i] = RandCharacterGenerator.allProf[rand.nextInt((17))];
+                skillList[i] = RandCharacterGenerator.allProf[rand.nextInt((18))];
             }
+            // This checks to see if there are any duplicates, but it is unnaturally slow, and sometimes seems to not execute at > 4 proficiencies
             for (String s : skillList) {
                 count = 0;
                 for (String k : skillList) {
@@ -356,9 +357,6 @@ public class RandCharacterGenerator {
             }
             case "Barbarian" -> {
                 return barbarianProf;
-            }
-            case "Bard" -> {
-                return RandCharacterGenerator.randSkillArray(3);
             }
             case "Cleric" -> {
                 return clericProf;
@@ -391,7 +389,7 @@ public class RandCharacterGenerator {
                 return wizardProf;
             }
             default -> {
-                return RandCharacterGenerator.randSkillArray(2);
+                return new String[]{"Empty"};
             }
 
         }

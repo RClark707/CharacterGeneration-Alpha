@@ -3,7 +3,7 @@ public class CharacterSheet {
     private String charClass;
     private String charSubclass;
     private String charBackground;
-    private int[] statArray = new int[6];
+    private final int[] statArray = new int[6];
     // This array might be final, but we change it with each object, so I doubt it
 
     private static final String[] classArray = {
@@ -22,6 +22,7 @@ public class CharacterSheet {
             "Wizard",
     };
 
+    /*
     private static final String[][] optimizedStatArray = {
             {"Artificer", "Intelligence"},
             {"Barbarian", "Strength",},
@@ -36,6 +37,24 @@ public class CharacterSheet {
             {"Sorcerer", "Charisma",},
             {"Warlock", "Charisma",},
             {"Wizard", "Intelligence",},
+    };
+
+     */
+
+    private static final int[] indexOfOptimizedStatsByClassArray = {
+            3,
+            0,
+            5,
+            4,
+            4,
+            0,
+            1,
+            0,
+            1,
+            1,
+            5,
+            5,
+            4,
     };
 
     private final String[] statNames = {
@@ -93,9 +112,10 @@ public class CharacterSheet {
     // This sets and gets the array of six stats after rolling them
     // If you want a threshold you enter a number between 70 and 100
     public void rollStats(int threshold) {
-        int total = 0;
+        int total;
         if (threshold <= 100 && threshold >= 70) {
             do {
+                total = 0;
                 for (int i = 0; i < statArray.length; ++i) {
                     statArray[i] = DiceRoller.rollStat();
                     total += statArray[i];
@@ -165,9 +185,9 @@ public class CharacterSheet {
             }
         }
 
-        for (int i = 0; i < optimizedStatArray.length; ++i) {
-            if (charClass.equals(optimizedStatArray[i][0])) {
-                indexTo = i;
+        for (int i = 0; i < classArray.length; ++i) {
+            if (charClass.equals(classArray[i])) {
+                indexTo = indexOfOptimizedStatsByClassArray[i];
                 break;
             }
         }

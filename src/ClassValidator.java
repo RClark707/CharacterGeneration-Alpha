@@ -204,118 +204,120 @@ public class ClassValidator {
             charClass = charClass.substring(0, 1).toUpperCase() + charClass.substring(1);
         }
 
-        // CAN I USE A GIANT FOR LOOP?
-        switch (charClass) {
-            case "Artificer" -> {
-                for (String s : subclasses0) {
-                    if (subclass.equals(s)) {
-                        valid = true;
-                        break;
+        if (subclass.equals("Random")) {
+            valid = true;
+        } else {
+            switch (charClass) {
+                case "Artificer" -> {
+                    for (String s : subclasses0) {
+                        if (subclass.equals(s)) {
+                            valid = true;
+                            break;
+                        }
                     }
                 }
-            }
-            case "Barbarian" -> {
-                for (String s : subclasses1) {
-                    if (subclass.equals(s)) {
-                        valid = true;
-                        break;
+                case "Barbarian" -> {
+                    for (String s : subclasses1) {
+                        if (subclass.equals(s)) {
+                            valid = true;
+                            break;
+                        }
                     }
                 }
-            }
-            case "Bard" -> {
-                for (String s : subclasses2) {
-                    if (subclass.equals(s)) {
-                        valid = true;
-                        break;
+                case "Bard" -> {
+                    for (String s : subclasses2) {
+                        if (subclass.equals(s)) {
+                            valid = true;
+                            break;
+                        }
                     }
                 }
-            }
-            case "Cleric" -> {
-                for (String s : subclasses3) {
-                    if (subclass.equals(s)) {
-                        valid = true;
-                        break;
+                case "Cleric" -> {
+                    for (String s : subclasses3) {
+                        if (subclass.equals(s)) {
+                            valid = true;
+                            break;
+                        }
                     }
                 }
-            }
-            case "Druid" -> {
-                for (String s : subclasses4) {
-                    if (subclass.equals(s)) {
-                        valid = true;
-                        break;
+                case "Druid" -> {
+                    for (String s : subclasses4) {
+                        if (subclass.equals(s)) {
+                            valid = true;
+                            break;
+                        }
                     }
                 }
-            }
-            case "Fighter" -> {
-                for (String s : subclasses5) {
-                    if (subclass.equals(s)) {
-                        valid = true;
-                        break;
+                case "Fighter" -> {
+                    for (String s : subclasses5) {
+                        if (subclass.equals(s)) {
+                            valid = true;
+                            break;
+                        }
                     }
                 }
-            }
-            case "Monk" -> {
-                for (String s : subclasses6) {
-                    if (subclass.equals(s)) {
-                        valid = true;
-                        break;
+                case "Monk" -> {
+                    for (String s : subclasses6) {
+                        if (subclass.equals(s)) {
+                            valid = true;
+                            break;
+                        }
                     }
                 }
-            }
-            case "Paladin" -> {
-                for (String s : subclasses7) {
-                    if (subclass.equals(s)) {
-                        valid = true;
-                        break;
+                case "Paladin" -> {
+                    for (String s : subclasses7) {
+                        if (subclass.equals(s)) {
+                            valid = true;
+                            break;
+                        }
                     }
                 }
-            }
-            case "Ranger" -> {
-                for (String s : subclasses8) {
-                    if (subclass.equals(s)) {
-                        valid = true;
-                        break;
+                case "Ranger" -> {
+                    for (String s : subclasses8) {
+                        if (subclass.equals(s)) {
+                            valid = true;
+                            break;
+                        }
                     }
                 }
-            }
-            case "Rogue" -> {
-                for (String s : subclasses9) {
-                    if (subclass.equals(s)) {
-                        valid = true;
-                        break;
+                case "Rogue" -> {
+                    for (String s : subclasses9) {
+                        if (subclass.equals(s)) {
+                            valid = true;
+                            break;
+                        }
                     }
                 }
-            }
-            case "Sorcerer" -> {
-                for (String s : subclasses10) {
-                    if (subclass.equals(s)) {
-                        valid = true;
-                        break;
+                case "Sorcerer" -> {
+                    for (String s : subclasses10) {
+                        if (subclass.equals(s)) {
+                            valid = true;
+                            break;
+                        }
                     }
                 }
-            }
-            case "Warlock" -> {
-                for (String s : subclasses11) {
-                    if (subclass.equals(s)) {
-                        valid = true;
-                        break;
+                case "Warlock" -> {
+                    for (String s : subclasses11) {
+                        if (subclass.equals(s)) {
+                            valid = true;
+                            break;
+                        }
                     }
                 }
-            }
-            case "Wizard" -> {
-                for (String s : subclasses12) {
-                    if (subclass.equals(s)) {
-                        valid = true;
-                        break;
+                case "Wizard" -> {
+                    for (String s : subclasses12) {
+                        if (subclass.equals(s)) {
+                            valid = true;
+                            break;
+                        }
                     }
                 }
-            }
-            case "Random" -> valid = true;
-            default -> {
-                // do nothing
-            }
+                default -> {
+                    // do nothing
+                }
 
-        } // end of switch
+            } // end of switch
+        }
 
         return valid;
     } // end of method
