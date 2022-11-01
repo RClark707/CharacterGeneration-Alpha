@@ -279,7 +279,7 @@ public class CharacterGenMAIN {
                             scan.nextLine();
 
                             System.out.print("Your " + spellLevel + "th level Animate Objects dealt ");
-                            System.out.println(Spells.animateObjects(spellLevel, armorClass) + " damage!");
+                            System.out.println(SpellDamageRoller.animateObjects(spellLevel, armorClass) + " damage!");
 
                         } else {
                             System.out.println("That spell level is, frankly, just not possible. It needs to be greater than 4.");

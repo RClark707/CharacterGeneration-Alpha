@@ -1,4 +1,4 @@
-public class Spells {
+public class SpellDamageRoller {
 
     public static int animateObjects(int level, int armorClass) {
         int damage = 0;
@@ -8,7 +8,7 @@ public class Spells {
 
         // make sure we have a valid spell level
         if (level >= 5) {
-            for (int i = 0; i < (10 + ((level - 5)* 2)); ++i) {
+            for (int i = 0; i < (10 + ((level - 5) * 2)); ++i) {
                 diceRoll = DiceRoller.rollDice(20, 1) + 8;
 
                 if (diceRoll >= armorClass) {
@@ -23,5 +23,15 @@ public class Spells {
         } // end of if statement
         return damage;
     } // end of method
+
+    public static int fireBall(int level, int savingThrowModifier) {
+        int damage = 0;
+
+        if (level >= 3) {
+            damage = DiceRoller.rollDice(6, (8 + (level - 3)));
+        }
+
+        return damage;
+    }
 
 }
