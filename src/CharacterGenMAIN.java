@@ -26,15 +26,26 @@ public class CharacterGenMAIN {
             boolean invalid;
 
             switch(option) {
+                // Character Creation
                 case 1:
                     do {
                         // We will make a character
                         // Step 1: Name
                         System.out.println("\nWhat is your Character's Name?");
                         String charName = scan.nextLine();
+                        if (charName.equals("Random") || charName.equals("rand") || charName.equals("random")) {
+                            charName = RandCharacterGenerator.randName();
+                        }
                         CharacterSheet current = new CharacterSheet(charName);
 
-                        // TODO: implement Races
+                        // Step 1.5: Race
+                        System.out.println("What is your Race?");
+                        String race = scan.nextLine();
+                        if (race.equals("Random") || race.equals("rand") || race.equals("random")) {
+                            race = RandCharacterGenerator.randRace();
+                        }
+                        current.setCharRace(race);
+
                         // Step 2: Class
                         do {
                             invalid = false;
@@ -80,7 +91,6 @@ public class CharacterGenMAIN {
                         if (charClass.equals("Bard")) {
                             numBonus += 3;
                         }
-                        // TODO: Bard still doesn't work, run debugger to see why
 
                         // This makes an array of random skills based on how many you get from background and bonus
                         String[] tempArray = RandCharacterGenerator.randSkillArray((numBackgroundSkills + numBonus));
@@ -172,25 +182,15 @@ public class CharacterGenMAIN {
 
                         // Time to print out the character sheet, you'll see why we use a do-while loop at the bottom
                         do {
-                            System.out.println("\nHere is your character sheet!");
-                            System.out.println(current.getCharName() + "           " + current.getCharClass());
-                            System.out.println(current.getCharBackground() + "          " + current.getCharSubclass());
+                            System.out.println("\nHere are your ability scores:");
                             System.out.println("Strength: " + current.retrieveStat(0));
                             System.out.println("Dexterity: " + current.retrieveStat(1));
                             System.out.println("Constitution: " + current.retrieveStat(2));
                             System.out.println("Intelligence: " + current.retrieveStat(3));
                             System.out.println("Wisdom: " + current.retrieveStat(4));
                             System.out.println("Charisma: " + current.retrieveStat(5));
-                            System.out.print("Skill Proficiencies: ");
-                            for (i = 0; i < skillArray.length; ++i) {
-                                if (i != skillArray.length - 1) {
-                                    System.out.print(skillArray[i] + ", ");
-                                } else {
-                                    System.out.print(skillArray[i]);
-                                }
-                            }
 
-                            System.out.println("\n\nIf you don't want to swap stats, type \"no\". Otherwise, input the stat you want to swap the score from. ");
+                            System.out.println("\nIf you don't want to swap stats, type \"no\". Otherwise, input the stat you want to swap the score from. ");
                             // Initialized to guarantee that a problem arises if the user inputs something weird
                             String swapFromString = "";
                             int swapFromInt = -1;
@@ -200,7 +200,32 @@ public class CharacterGenMAIN {
                             if (scan.hasNext()) {
                                 // if they entered the name of the stat
                                 swapFromString = scan.next();
+                                scan.nextLine();
                                 if (swapFromString.equals("no")) {
+                                    System.out.println("\nWhich stat would you like to apply a +2 Racial Modifier to?");
+                                    String preference = scan.nextLine();
+                                    current.applyRacialModifier(2,preference);
+                                    System.out.println("\nWhich stat would you like to apply a +1 Racial modifier to?");
+                                    preference = scan.nextLine();
+                                    current.applyRacialModifier(1,preference);
+                                    // Print the stats again!
+                                    System.out.println("\nHere is your character sheet!");
+                                    System.out.println(current.getCharName() + "           " + current.getCharClass());
+                                    System.out.println(current.getCharBackground() + "          " + current.getCharSubclass());
+                                    System.out.println("Strength: " + current.retrieveStat(0));
+                                    System.out.println("Dexterity: " + current.retrieveStat(1));
+                                    System.out.println("Constitution: " + current.retrieveStat(2));
+                                    System.out.println("Intelligence: " + current.retrieveStat(3));
+                                    System.out.println("Wisdom: " + current.retrieveStat(4));
+                                    System.out.println("Charisma: " + current.retrieveStat(5));
+                                    System.out.print("Skill Proficiencies: ");
+                                    for (i = 0; i < skillArray.length; ++i) {
+                                        if (i != skillArray.length - 1) {
+                                            System.out.print(skillArray[i] + ", ");
+                                        } else {
+                                            System.out.print(skillArray[i]);
+                                        }
+                                    }
                                     break;
                                 }
                             } else if (scan.hasNextInt()) {
@@ -222,12 +247,12 @@ public class CharacterGenMAIN {
 
                         } while (true);
 
-                        scan.nextLine();
-                        System.out.println("\nEnter Y for another Character, or N to go back.");
+                        System.out.println("\n\nEnter Y for another Character, or N to go back.");
                         doMore = scan.nextLine();
 
-                    } while (doMore.equals("Y") || doMore.equals("y"));
+                    } while (InputChecker.yes(doMore));
                     break;
+                    // Random Subclass and/or class
                 case 2:
                     do {
                         System.out.println("\nWhat is your Character's class? (Enter Random for a random class)");
@@ -263,8 +288,9 @@ public class CharacterGenMAIN {
                         System.out.println("\nEnter Y for another Character, or N to go back.");
                         doMore = scan.nextLine();
 
-                    } while (doMore.equals("Y") || doMore.equals("y"));
+                    } while (InputChecker.yes(doMore));
                     break;
+                    // Animate Objects casting
                 case 3:
                     do {
                         System.out.println("\nWhat level spell is your Animate Objects?");
@@ -288,10 +314,10 @@ public class CharacterGenMAIN {
                         System.out.println("\nEnter Y to attack again, or N to go back.");
                         doMore = scan.nextLine();
 
-
-                    } while (doMore.equals("Y") || doMore.equals("y"));
+                    } while (InputChecker.yes(doMore));
 
                     break;
+                    // Stat Rolling
                 case 4:
                     do {
                         System.out.println("\nDo you want to roll stats normally, or with a minimum threshold?");
@@ -314,9 +340,10 @@ public class CharacterGenMAIN {
                         System.out.println("\nEnter Y to roll more Stats, or N to go back.");
                         doMore = scan.nextLine();
 
-                    } while (doMore.equals("Y") || doMore.equals("y"));
+                    } while (InputChecker.yes(doMore));
 
                     break;
+                    // Dice Rolling
                 case 5:
                     do {
                         System.out.println("\nWhat kind of dice are you rolling?");
@@ -335,19 +362,34 @@ public class CharacterGenMAIN {
                         System.out.println("\nEnter Y to roll more dice, or N to go back.");
                         doMore = scan.nextLine();
 
-                    } while (doMore.equals("Y") || doMore.equals("y"));
+                    } while (InputChecker.yes(doMore));
                     break;
+                    // Testing
                 case 6:
                     do {
+                        SpellBook Grimoire = new SpellBook();
+                        Grimoire.addSpell("Fireball");
+                        Grimoire.addSpell("Animate Objects");
+                        Grimoire.addSpell("Inflict Wounds");
+                        Grimoire.addSpell("Invisibility");
+                        boolean configureMore;
+                        do {
+                            System.out.println("\n" + Grimoire.printSpellBook());
 
-
-                        System.out.println("Nothing to test right now, sorry.");
-
+                            System.out.println("\nWhich spell do you want to configure? (Enter a number to skip)");
+                            if (scan.hasNextInt()) {
+                                configureMore = false;
+                            } else {
+                                String spellName = scan.nextLine();
+                                Grimoire.configureSpellEffects(Grimoire.returnSpell(spellName));
+                                configureMore = true;
+                            }
+                        } while (configureMore);
 
                         System.out.println("\nEnter Y to try again, or N to go back.");
                         doMore = scan.nextLine();
 
-                    } while (doMore.equals("Y") || doMore.equals("y"));
+                    } while (InputChecker.yes(doMore));
                 case 7:
                     break;
                 default:

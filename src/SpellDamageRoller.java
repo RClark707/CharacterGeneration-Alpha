@@ -24,13 +24,15 @@ public class SpellDamageRoller {
         return damage;
     } // end of method
 
-    public static int fireBall(int level, int savingThrowModifier) {
+    // Casts the fireball spell, WIP to make an overall saving throw spell method
+    public static int fireBall(int level, int savingThrowModifier, int saveDC) {
         int damage = 0;
-
         if (level >= 3) {
             damage = DiceRoller.rollDice(6, (8 + (level - 3)));
+            if ((DiceRoller.rollDice(20,1) + savingThrowModifier) >= saveDC) {
+                damage /= 2;
+            }
         }
-
         return damage;
     }
 

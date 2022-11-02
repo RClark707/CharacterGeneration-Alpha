@@ -3,6 +3,7 @@ public class CharacterSheet {
     private String charClass;
     private String charSubclass;
     private String charBackground;
+    private String charRace;
     private final int[] statArray = new int[6];
     // This array might be final, but we change it with each object, so I doubt it
 
@@ -206,6 +207,18 @@ public class CharacterSheet {
         }
     }
 
+    public void applyRacialModifier(int racialModifier, String statName) {
+        int index = 0;
+        for (int i = 0; i < statNames.length; ++i) {
+            if (statName.equals(statNames[i])) {
+                index = i;
+                break;
+            }
+        }
+        // Does this need to be outside the for loop when I am not returning anything?
+        statArray[index] = statArray[index] + racialModifier;
+    }
+
     // Sets the character's background, does not require any checks for validity
     public void setCharBackground(String charBackground) {
         this.charBackground = charBackground;
@@ -216,4 +229,11 @@ public class CharacterSheet {
         return charBackground;
     }
 
+    public String getCharRace() {
+        return charRace;
+    }
+
+    public void setCharRace(String charRace) {
+        this.charRace = charRace;
+    }
 }

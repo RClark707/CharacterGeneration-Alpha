@@ -323,6 +323,10 @@ public class ClassValidator {
     } // end of method
 
     public static boolean isValidStat(String statName) {
+        if (!(Character.isUpperCase(statName.charAt(0)))) {
+            statName = statName.substring(0, 1).toUpperCase() + statName.substring(1);
+        }
+
         for (String s : statNames) {
             if (statName.equals(s)) {
                 return true;

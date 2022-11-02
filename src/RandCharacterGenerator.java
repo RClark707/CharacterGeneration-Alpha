@@ -99,13 +99,57 @@ public class RandCharacterGenerator {
             "Survival",
     };
 
+    public static final String[] raceArray = {
+            "Aasimar",
+            "Dhampir",
+            "Dragonborn",
+            "Dwarf",
+            "Elf",
+            "Fairy",
+            "Genasi",
+            "Gnome",
+            "Goliath",
+            "Half-Elf",
+            "Half-Orc",
+            "Halfling",
+            "Harengon",
+            "Hexblood",
+            "Human",
+            "Nymph",
+            "Reborn",
+            "Tabaxi",
+            "Tiefling",
+    };
+
+    public static final String[] nameArray = {
+            "Arkus",
+            "Auric",
+            "Avren",
+            "Bassuras",
+            "Bennedict",
+            "Borick",
+            "Ira",
+            "Kos",
+            "Logaine",
+            "Magnus",
+            "Omen",
+            "Philip",
+            "Proteus",
+            "Shalatar",
+            "Val",
+    };
+
+    public static String randRace() {
+        return raceArray[rand.nextInt(raceArray.length)];
+    }
+
+    public static String randName() {
+        return nameArray[rand.nextInt(nameArray.length)];
+    }
+
     // Generates a random character class,
     public static String randCharClass() {
-        String randClass;
-
-        randClass = classArray[rand.nextInt(classArray.length)];
-
-        return randClass;
+        return classArray[rand.nextInt(classArray.length)];
     }
 
     // This will give us a random subclass based on the class you are
