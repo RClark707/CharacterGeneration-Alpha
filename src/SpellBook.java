@@ -21,6 +21,7 @@ public class SpellBook {
         return null;
     }
 
+    // This method changes the inner bits and bobs of the spell you want to make. Often, we will use the returnSpell method as a parameter to actually input a Spell object as the parameter.
     public void configureSpellEffects(Spell spellName) {
         String effects = "Unknown Effects";
         for (Spell spell : spellBook) {
@@ -29,10 +30,6 @@ public class SpellBook {
                     System.out.println("What level is this spell?");
                     spell.setSpellLevel(scan.nextInt());
                     scan.nextLine();
-                }
-                while (effects.equals(spell.getSpellEffects())) {
-                    System.out.println("What are the effects of this spell?");
-                    spell.setSpellEffects(scan.nextLine());
                 }
                 while (spell.getDiceSideNumber() == -1) {
                     System.out.println("How many sides do the dice rolled for this spell have?");
@@ -52,6 +49,11 @@ public class SpellBook {
                         System.out.println("What is the damage type of this spell?");
                         spell.setDamageType(scan.nextLine());
                     }
+                } else {
+                    while (effects.equals(spell.getSpellEffects())) {
+                        System.out.println("What are the effects of this spell?");
+                        spell.setSpellEffects(scan.nextLine());
+                    }
                 }
                 while (spell.getNumTargets() == -5) {
                     System.out.println("How many targets does this spell have? (Enter -1 for Area of Effect)");
@@ -69,11 +71,26 @@ public class SpellBook {
                         }
                     }
                 }
-                if (!spell.isAttackRoll() && !spell.isSavingThrow()) {
+                if (spell.isNotAttackRoll() && !spell.isSavingThrow()) {
                     System.out.println("Does this spell require an attack roll?");
                     spell.setAttackRoll(InputChecker.yes(scan.nextLine()));
+                    while (spell.getNumAttacks() == 0) {
+                        System.out.println("How many attacks does this spell make at once?");
+                        spell.setNumAttacks(scan.nextInt());
+                        scan.nextLine();
+                    }
+                    while (spell.getAttackModifier() == -1) {
+                        System.out.println("What is the attack modifier of your spell, if applicable?");
+                        spell.setAttackModifier(scan.nextInt());
+                        scan.nextLine();
+                    }
+                    while (spell.getDamageModifier() == -1) {
+                        System.out.println("What is the damage modifier of your spell, if applicable? (This is used per instance of damage)");
+                        spell.setDamageModifier(scan.nextInt());
+                        scan.nextLine();
+                    }
                 }
-                if (!spell.isAttackRoll() && !spell.isSavingThrow()) {
+                if (spell.isNotAttackRoll() && !spell.isSavingThrow()) {
                     spell.setAutomatic(true);
                 }
             }

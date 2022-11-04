@@ -24,7 +24,7 @@ public class CharacterSheet {
     };
 
     /*
-    private static final String[][] optimizedStatArray = {
+     fake news: private static final String[][] optimizedStatArray = {
             {"Artificer", "Intelligence"},
             {"Barbarian", "Strength",},
             {"Bard", "Charisma",},

@@ -24,7 +24,7 @@ public class SpellDamageRoller {
         return damage;
     } // end of method
 
-    // Casts the fireball spell, WIP to make an overall saving throw spell method
+    // Casts the fireball spell, is unnecessary, same with the above method as long as my spell.castSpell method works. To be tested though
     public static int fireBall(int level, int savingThrowModifier, int saveDC) {
         int damage = 0;
         if (level >= 3) {

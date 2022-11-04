@@ -1,32 +1,20 @@
 public class Spell {
+    private final String spellName;
     private int spellLevel;
     private int diceSideNumber;
     private int numDice;
     private int numTargets;
+    private boolean dealsDamage;
     private String damageType;
     private boolean isSavingThrow;
     private String saveType;
-    private boolean didSave;
-    // Might be useless
     private boolean isAttackRoll;
+    private int numAttacks;
+    private int attackModifier;
+    private int damageModifier;
     private boolean isAutomatic;
-    private String spellName;
     private String spellEffects;
-    private boolean dealsDamage;
 
-    //private final Spell Fireball = new Spell(3, 6, 8, 0, false, true, false);
-    //private final Spell AnimateObjects = new Spell(5,4,10,1,false,false,true);
-    //private final Spell InflictWounds = new Spell(1,10,3,1,false,false,true);
-    //private final Spell Invisibility = new Spell(2,0,0,0,true,false,false);
-
-   /* public final Spell[] spellList = {
-            AnimateObjects,
-            Fireball,
-            InflictWounds,
-            Invisibility,
-    };
-
-    */
 
     public Spell() {
         spellName = "Unnamed Spell";
@@ -40,6 +28,9 @@ public class Spell {
         isSavingThrow = false;
         saveType = null;
         isAttackRoll = false;
+        numAttacks = 0;
+        attackModifier = -1;
+        damageModifier = -1;
         isAutomatic = false;
     }
 
@@ -55,60 +46,54 @@ public class Spell {
         isSavingThrow = false;
         saveType = null;
         isAttackRoll = false;
+        numAttacks = 0;
+        attackModifier = -1;
+        damageModifier = -1;
         isAutomatic = false;
-    }
-
-    public Spell(int spellLevel, int damageDice, int numDice, int numTargets, boolean isAutomatic, boolean isSavingThrow, boolean isAttackRoll) {
-        this.spellLevel = spellLevel;
-        this.diceSideNumber = damageDice;
-        this.numDice = numDice;
-        this.numTargets = numTargets;
-        this.isAutomatic = isAutomatic;
-        this.isSavingThrow = isSavingThrow;
-        this.isAttackRoll = isAttackRoll;
     }
 
     public static Spell spellBuilder(String spellName) {return new Spell(spellName);}
 
-    public String castSpell(Spell spellName) {
+
+    public String spellBeingCast(Spell spellName) {
+        return spellName.castSpell();
+    }
+    public String castSpell() {
         String effects = "";
-        String spellType;
-        if (spellName.isAttackRoll) {
-            spellType = "Attack";
-        } else if (spellName.isSavingThrow) {
-            spellType = "Save";
-        } else {
-            spellType = "Automatic";
-        }
-        switch (spellType) {
-            case "Attack" -> {
-                isAttackRoll = true;
-                int attackRoll = DiceRoller.rollDice(20,1);
-                int damage = DiceRoller.rollDice(diceSideNumber,numDice);
-                effects = attackRoll + " to hit, " + damage + " " + damageType +  " damage dealt.";
+
+        if (!dealsDamage) {
+            effects = spellEffects;
+            //+ effects.concat(" With " + numTargets + " targets.");
+        // If the spell requires an attack roll, or more than one attack roll.
+        } else if (isAttackRoll) {
+            for (int i = 0; i < numAttacks; ++i) {
+                effects = effects.concat((DiceRoller.rollDice(20,1) + attackModifier) + " to hit, damage: ");
+                effects = effects.concat(String.valueOf(DiceRoller.rollDice(diceSideNumber,numDice) + damageModifier));
+                effects = effects.concat(" " + damageType + " damage.\n");
             }
-            case "Save" -> isSavingThrow = true;
-            default -> isAutomatic = true;
+        // if the Spell is a saving throw, we'll output half damage for a successful save, in case that applies.
+        // Some spells deal no damage on a successful save, we don't really account for that, just hope that the user knows the difference.
+        } else if (isSavingThrow) {
+            effects = effects.concat("Saving throw type: " + saveType + "\n");
+            int damage = DiceRoller.rollDice(diceSideNumber,numDice) + damageModifier;
+            effects = effects.concat(damage + damageType + " damage on a failed save.\n");
+            effects = effects.concat((damage / 2) + damageType + " damage on a successful save.\n");
+        } else if (isAutomatic) {
+            // For spells that are automatic and deal damage, AKA Magic missile, this formula ought to work, but I can only think of Magic Missile and Cloud of Daggers, so it might not work for everything.
+            effects = effects.concat(String.valueOf(DiceRoller.rollDice(diceSideNumber, numDice) + damageModifier));
+            effects = effects.concat(" " + damageType + " damage.\n");
         }
-        return spellEffects + "\n" + effects;
+        return effects;
     }
 
-    public int castSaveSpell(boolean didSave) {
-        int damage = DiceRoller.rollDice(diceSideNumber, numDice);
-        if (isSavingThrow) {
-            if (didSave) {
-                damage /= 2;
-            }
-        }
-        return damage;
+    // Method for printing all the attributes of a certain spell. still working on it.
+    public String print() {
+        System.out.println();
+        return "";
     }
 
     public String getSpellName() {
         return spellName;
-    }
-
-    public void setSpellName(String spellName) {
-        this.spellName = spellName;
     }
 
     public int getSpellLevel() {
@@ -151,8 +136,8 @@ public class Spell {
         isSavingThrow = savingThrow;
     }
 
-    public boolean isAttackRoll() {
-        return isAttackRoll;
+    public boolean isNotAttackRoll() {
+        return !isAttackRoll;
     }
 
     public void setAttackRoll(boolean attackRoll) {
@@ -173,14 +158,6 @@ public class Spell {
 
     public void setSaveType(String saveType) {
         this.saveType = saveType;
-    }
-
-    public boolean isDidSave() {
-        return didSave;
-    }
-
-    public void setDidSave(boolean didSave) {
-        this.didSave = didSave;
     }
 
     public String getDamageType() {
@@ -205,5 +182,29 @@ public class Spell {
 
     public void setDealsDamage(boolean dealsDamage) {
         this.dealsDamage = dealsDamage;
+    }
+
+    public int getNumAttacks() {
+        return numAttacks;
+    }
+
+    public void setNumAttacks(int numAttacks) {
+        this.numAttacks = numAttacks;
+    }
+
+    public int getDamageModifier() {
+        return damageModifier;
+    }
+
+    public void setDamageModifier(int damageModifier) {
+        this.damageModifier = damageModifier;
+    }
+
+    public int getAttackModifier() {
+        return attackModifier;
+    }
+
+    public void setAttackModifier(int attackModifier) {
+        this.attackModifier = attackModifier;
     }
 }

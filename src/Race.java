@@ -1,4 +1,5 @@
 public class Race {
+    // TODO: Make this useful?????
     private static final int[] abilityScoreIncrease = new int[2];
     private String raceName;
 

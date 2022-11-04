@@ -367,11 +367,19 @@ public class CharacterGenMAIN {
                     // Testing
                 case 6:
                     do {
+                        // Currently working on spells, and a general formula for casting any spell in DnD, with damage automatically calculated.
                         SpellBook Grimoire = new SpellBook();
                         Grimoire.addSpell("Fireball");
                         Grimoire.addSpell("Animate Objects");
                         Grimoire.addSpell("Inflict Wounds");
                         Grimoire.addSpell("Invisibility");
+                        System.out.println("Type the name of a Spell to add to your Spell Book.");
+                        String spellName = scan.nextLine();
+                        Grimoire.addSpell(spellName);
+                        System.out.println(Grimoire.randSpellName());
+
+                        // This will print out the contents of our Spell Book, and allow us to modify the internal attributes of some spells
+                        // We cannot view the spell contents themselves right now, but we can change them and store some values.
                         boolean configureMore;
                         do {
                             System.out.println("\n" + Grimoire.printSpellBook());
@@ -379,8 +387,10 @@ public class CharacterGenMAIN {
                             System.out.println("\nWhich spell do you want to configure? (Enter a number to skip)");
                             if (scan.hasNextInt()) {
                                 configureMore = false;
+                                scan.nextLine();
+                                // Alternatively could take the int value of a string and use that instead of this weird int checker
                             } else {
-                                String spellName = scan.nextLine();
+                                spellName = scan.nextLine();
                                 Grimoire.configureSpellEffects(Grimoire.returnSpell(spellName));
                                 configureMore = true;
                             }
