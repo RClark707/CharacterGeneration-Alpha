@@ -7,10 +7,14 @@ public class SpellBook {
     Random rand = new Random();
     Scanner scan = new Scanner(System.in);
 
+    // The addSpell method takes in a String, because that is the easiest method of user input,
+    // and then uses the String in conjunction with the spellBuilder method, located within the Spell class,
+    // to construct a new spell with a name being the String input we originally had
     public void addSpell(String spellName) {
         spellBook.add(Spell.spellBuilder(spellName));
     }
 
+    // Based on a String for a spell name, we can return the correct spell from the spellBook array, most often the Grimoire array.
     public Spell returnSpell(String spellName) {
         //spellName = spellName.replaceAll("\\s", "");
         for (Spell curSpell : spellBook) {
@@ -49,6 +53,20 @@ public class SpellBook {
                         System.out.println("What is the damage type of this spell?");
                         spell.setDamageType(scan.nextLine());
                     }
+                    while (spell.getHigherLevelDamageDice() == -1 && spell.getHigherLevelAttacksIncrease() == 0) {
+                        System.out.println("Does your spell make additional attacks or roll more damage dice at higher levels? (Enter \"damage\" or \"attacks\")");
+                        String hasHigherLevelEffects = scan.nextLine();
+                        if (!InputChecker.no(hasHigherLevelEffects)) {
+                            if (hasHigherLevelEffects.equals("attacks") || hasHigherLevelEffects.equals("Attacks")) {
+                                spell.setHigherLevelAttacksIncrease(scan.nextInt());
+                                scan.nextLine();
+                            } else {
+                                System.out.println("How many additional dice does this spell roll for each spell slot level beyond the spell's level?");
+                                spell.setHigherLevelDamageDice(scan.nextInt());
+                                scan.nextLine();
+                            }
+                        }
+                    }
                 } else {
                     while (effects.equals(spell.getSpellEffects())) {
                         System.out.println("What are the effects of this spell?");
@@ -67,6 +85,7 @@ public class SpellBook {
                         System.out.println("What type of saving throw does it require?");
                         String saveType = scan.nextLine();
                         if (ClassValidator.isValidStat(saveType)) {
+                            saveType = ClassValidator.capitalizeFirst(saveType);
                             spell.setSaveType(saveType);
                         }
                     }
@@ -97,14 +116,23 @@ public class SpellBook {
         }
     }
 
-    public Spell randSpellName() {
-        return spellBook.get(rand.nextInt(spellBook.size()));
+    // This gives us a random Spell name from the selection in our spell book
+    public String randSpellName() {
+    // This method will grab a random spell from our spell book, and then return the name of that spell
+        return spellBook.get(rand.nextInt(spellBook.size())).getSpellName();
     }
 
+    // This prints out the contents of our spell book by spell name
     public String printSpellBook() {
+        // prints the names of each spell in the book
         String spells = "";
-        for (Spell spell : spellBook) {
-            spells = spells.concat(spell.getSpellName() + ", ");
+        for (int i = 0; i < spellBook.size(); ++i) {
+            Spell spell = spellBook.get(i);
+            if (i != spellBook.size() - 1) {
+                spells = spells.concat(spell.getSpellName() + ", ");
+            } else {
+                spells = spells.concat(spell.getSpellName());
+            }
         }
         return spells;
     }

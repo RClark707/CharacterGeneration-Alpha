@@ -1,5 +1,6 @@
 public class SpellDamageRoller {
 
+    // Conveniently, with some more testing, this method should be redundant. the castSpell method theoretically can handle it
     public static int animateObjects(int level, int armorClass) {
         int damage = 0;
         int numHits = 0;
@@ -23,17 +24,4 @@ public class SpellDamageRoller {
         } // end of if statement
         return damage;
     } // end of method
-
-    // Casts the fireball spell, is unnecessary, same with the above method as long as my spell.castSpell method works. To be tested though
-    public static int fireBall(int level, int savingThrowModifier, int saveDC) {
-        int damage = 0;
-        if (level >= 3) {
-            damage = DiceRoller.rollDice(6, (8 + (level - 3)));
-            if ((DiceRoller.rollDice(20,1) + savingThrowModifier) >= saveDC) {
-                damage /= 2;
-            }
-        }
-        return damage;
-    }
-
 }

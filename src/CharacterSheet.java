@@ -156,6 +156,9 @@ public class CharacterSheet {
         int indexFrom = -1;
         int indexTo = -1;
 
+        swapFrom = ClassValidator.capitalizeFirst(swapFrom);
+        swapTo = ClassValidator.capitalizeFirst(swapTo);
+
         for (int i = 0; i < statNames.length; ++i) {
             if (swapFrom.equals(statNames[i])) {
                 indexFrom = i;
@@ -209,6 +212,7 @@ public class CharacterSheet {
 
     public void applyRacialModifier(int racialModifier, String statName) {
         int index = 0;
+        statName = ClassValidator.capitalizeFirst(statName);
         for (int i = 0; i < statNames.length; ++i) {
             if (statName.equals(statNames[i])) {
                 index = i;

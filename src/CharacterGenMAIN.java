@@ -9,17 +9,19 @@ public class CharacterGenMAIN {
         Scanner scan = new Scanner(System.in); // Takes user input
         String charClass; // Temporary placeholder to pass in to methods as a parameter
         int i;
+        SpellBook Grimoire = new SpellBook();
 
         // Here is our main menu, we use a switch to decide what to do with the user choice
         do {
-            System.out.println("\nWhat would you like to do? (Enter a number 1-5)");
+            System.out.println("\nWhat would you like to do? (Enter a number 1-8)");
             System.out.println("1. Create a Character!");
             System.out.println("2. Random Subclass!");
             System.out.println("3. Animate Objects!");
             System.out.println("4. Roll my Stats!");
             System.out.println("5. Roll Dice!");
-            System.out.println("6. Test!");
-            System.out.println("7. Exit");
+            System.out.println("6. Read your Spell Book");
+            System.out.println("7. Test!");
+            System.out.println("8. Exit");
             // Collect the user input and use a switch to identify what we should do
             option = scan.nextInt();
             scan.nextLine(); // This brings us to the next Line in which the User can/will enter input.
@@ -33,7 +35,7 @@ public class CharacterGenMAIN {
                         // Step 1: Name
                         System.out.println("\nWhat is your Character's Name?");
                         String charName = scan.nextLine();
-                        if (charName.equals("Random") || charName.equals("rand") || charName.equals("random")) {
+                        if (InputChecker.random(charName)) {
                             charName = RandCharacterGenerator.randName();
                         }
                         CharacterSheet current = new CharacterSheet(charName);
@@ -41,9 +43,10 @@ public class CharacterGenMAIN {
                         // Step 1.5: Race
                         System.out.println("What is your Race?");
                         String race = scan.nextLine();
-                        if (race.equals("Random") || race.equals("rand") || race.equals("random")) {
+                        if (InputChecker.random(race)) {
                             race = RandCharacterGenerator.randRace();
                         }
+                        race = ClassValidator.capitalizeFirst(race);
                         current.setCharRace(race);
 
                         // Step 2: Class
@@ -52,9 +55,10 @@ public class CharacterGenMAIN {
                             System.out.println("What is your Class?");
                             charClass = scan.nextLine();
                             if (ClassValidator.isValidClass(charClass)) {
-                                if (charClass.equals("Random")) {
+                                if (InputChecker.random(charClass)) {
                                     charClass = RandCharacterGenerator.randCharClass();
                                 }
+                                charClass = ClassValidator.capitalizeFirst(charClass);
                                 current.setCharClass(charClass);
                             } else {
                                 System.out.println("Sorry, you either entered an unknown Class, or misspelled it.");
@@ -67,9 +71,10 @@ public class CharacterGenMAIN {
                             System.out.println("What is your Subclass?");
                             String charSubclass = scan.nextLine();
                             if (ClassValidator.isValidSubclass(charSubclass, charClass)) {
-                                if (charSubclass.equals("Random")) {
+                                if (InputChecker.random(charSubclass)) {
                                     charSubclass = RandCharacterGenerator.randCharSubclass(charClass);
                                 }
+                                charSubclass = ClassValidator.capitalizeFirst(charSubclass);
                                 current.setCharSubclass(charSubclass);
                             } else {
                                 System.out.println("Sorry, you either entered an unknown Subclass, or misspelled it.");
@@ -79,6 +84,7 @@ public class CharacterGenMAIN {
                         // Step 4: Background
                         System.out.println("What is your Background?");
                         String background = scan.nextLine();
+                        background = ClassValidator.capitalizeFirst(background);
                         current.setCharBackground(background);
 
                         // Step 4.5 Skills!
@@ -364,52 +370,102 @@ public class CharacterGenMAIN {
 
                     } while (InputChecker.yes(doMore));
                     break;
-                    // Testing
+                // Spell Casting
                 case 6:
                     do {
-                        // Currently working on spells, and a general formula for casting any spell in DnD, with damage automatically calculated.
-                        SpellBook Grimoire = new SpellBook();
-                        Grimoire.addSpell("Fireball");
-                        Grimoire.addSpell("Animate Objects");
-                        Grimoire.addSpell("Inflict Wounds");
-                        Grimoire.addSpell("Invisibility");
-                        System.out.println("Type the name of a Spell to add to your Spell Book.");
-                        String spellName = scan.nextLine();
-                        Grimoire.addSpell(spellName);
-                        System.out.println(Grimoire.randSpellName());
-
-                        // This will print out the contents of our Spell Book, and allow us to modify the internal attributes of some spells
-                        // We cannot view the spell contents themselves right now, but we can change them and store some values.
+                        // This variable is used to track the user's input for what spell to interact with
+                        String spellName;
+                        // this variable is used similarly to doMore, but it's just a boolean instead of a string that tracks user input
                         boolean configureMore;
                         do {
-                            System.out.println("\n" + Grimoire.printSpellBook());
+                            // Asking if we should add some spells, if no we skip the next part and go straight to printing the spell book
+                            System.out.println("\nType the name of a Spell to add to your Spell Book (Enter no to stop).");
+                            spellName = scan.nextLine();
+                            if (!InputChecker.no(spellName)) {
+                                spellName = ClassValidator.capitalizeFirst(spellName);
+                                Grimoire.addSpell(spellName);
+                            }
+                        } while (!InputChecker.no(spellName));
+                        // Now, we print out the contents of the spell book (Everything that the user just entered)
+                        do {
+                            System.out.println("\nYour Spell Book contains the following spells:");
+                            System.out.println(Grimoire.printSpellBook());
 
+                            // Configuring a spell means to modify the internal attributes such that you can
+                            // actually cast the spell using the spell.castSpell method, called by the returnSpell.castSpell most often
                             System.out.println("\nWhich spell do you want to configure? (Enter a number to skip)");
+                            // I'd like to rewrite this, but I haven't decided if there is a faster way to check for an integer vs a string
                             if (scan.hasNextInt()) {
+                                // So if there is a number, we skip configuration
                                 configureMore = false;
                                 scan.nextLine();
                                 // Alternatively could take the int value of a string and use that instead of this weird int checker
                             } else {
+                                // now that we know it isn't a number (at least, it's not an integer)
+                                // we can run the configureSpellEffects method to set all the relevant attributes of the given spell
                                 spellName = scan.nextLine();
+                                spellName = ClassValidator.capitalizeFirst(spellName);
                                 Grimoire.configureSpellEffects(Grimoire.returnSpell(spellName));
+                                // Using the returnSpell method is key, because user input is either a String or an integer,
+                                // and we can't input a String as a Spell object to a method that wants a spell object input
+                                // maybe it's worth putting a String -> Spell function within these methods, but right now that is
+                                // not a priority
                                 configureMore = true;
+                                // Since they configured a spell, let's reprint the book and ask if they want to make more changes.
                             }
                         } while (configureMore);
+                        do {
+                            System.out.println("\nWould you like to cast a spell?");
+                            doMore = scan.nextLine();
+                            if (InputChecker.yes(doMore)) {
+                                System.out.println("Which spell do you want to cast?");
+                                spellName = scan.nextLine();
+                                spellName = ClassValidator.capitalizeFirst(spellName);
+                                if (InputChecker.random(spellName)) {
+                                    spellName = Grimoire.randSpellName();
+                                    System.out.println("\nYou are casting " + spellName);
+                                }
+                                System.out.println("\nWhat level are you casting this spell at?");
+                                int castingLevel = scan.nextInt();
+                                String level;
+                                scan.nextLine();
+                                switch (castingLevel) {
+                                    case 1 -> level = castingLevel + "st";
+                                    case 2 -> level = castingLevel + "nd";
+                                    case 3 -> level = castingLevel + "rd";
+                                    default -> level = castingLevel + "th";
+                                    // Keep in mind that we will never see a casting level greater than 9
+                                }
+                                System.out.println("You are casting " + spellName + " at " + level + " level.");
+                                System.out.println("Prepare to be amazed.");
+                                System.out.println("\n" + Grimoire.returnSpell(spellName).castSpell(castingLevel));
+                            }
+                        } while (InputChecker.yes(doMore));
+
+                        System.out.println("\nEnter Y to read your book some more, or N to go back.");
+                        doMore = scan.nextLine();
+
+                    } while (InputChecker.yes(doMore));
+                    break;
+                // Testing
+                case 7:
+                    do {
 
                         System.out.println("\nEnter Y to try again, or N to go back.");
                         doMore = scan.nextLine();
 
                     } while (InputChecker.yes(doMore));
-                case 7:
+                    break;
+                case 8:
                     break;
                 default:
+                    // I don't remember why I include this scan.nextLine() piece, but it probably is good
+                    // to wipe to the next line in case someone entered a number <0 or greater than the switch index
                     scan.nextLine();
                     break;
-
             } //switch ends
-        }while (option != 7);
+        }while (option != 8);
         System.out.println("Sorry to see you go, hope you're back soon.");
         scan.close();
-
     }
 }

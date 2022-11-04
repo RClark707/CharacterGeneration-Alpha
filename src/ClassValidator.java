@@ -180,11 +180,16 @@ public class ClassValidator {
             "Charisma",
     };
 
+    public static String capitalizeFirst(String input) {
+        if (!(Character.isUpperCase(input.charAt(0)))) {
+            input = input.substring(0,1).toUpperCase() + input.substring(1);
+        }
+        return input;
+    }
+
     public static boolean isValidClass(String charClass) {
         // Here we make sure the first letter is Capitalized
-        if (!(Character.isUpperCase(charClass.charAt(0)))) {
-            charClass = charClass.substring(0, 1).toUpperCase() + charClass.substring(1);
-        }
+        charClass = ClassValidator.capitalizeFirst(charClass);
 
         for (String s : classArray) {
             if (charClass.equals(s) || charClass.equals("Random")) {
@@ -195,9 +200,8 @@ public class ClassValidator {
     }
 
     public static boolean isValidSubclass(String subclass, String charClass) {
-        if (!(Character.isUpperCase(charClass.charAt(0)))) {
-            charClass = charClass.substring(0, 1).toUpperCase() + charClass.substring(1);
-        }
+        subclass = ClassValidator.capitalizeFirst(subclass);
+        charClass = ClassValidator.capitalizeFirst(charClass);
 
         if (subclass.equals("Random")) {
             return true;

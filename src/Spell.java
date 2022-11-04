@@ -1,6 +1,8 @@
 public class Spell {
     private final String spellName;
     private int spellLevel;
+    private int higherLevelDamageDice;
+    private int higherLevelAttacksIncrease;
     private int diceSideNumber;
     private int numDice;
     private int numTargets;
@@ -19,6 +21,8 @@ public class Spell {
     public Spell() {
         spellName = "Unnamed Spell";
         spellLevel = -1;
+        higherLevelDamageDice = -1;
+        higherLevelAttacksIncrease = 0;
         spellEffects = "Unknown Effects";
         numTargets = -5;
         diceSideNumber = -1;
@@ -37,6 +41,8 @@ public class Spell {
     public Spell(String spellName) {
         this.spellName = spellName;
         spellLevel = -1;
+        higherLevelDamageDice = -1;
+        higherLevelAttacksIncrease = 0;
         spellEffects = "Unknown Effects";
         numTargets = -5;
         diceSideNumber = -1;
@@ -54,36 +60,45 @@ public class Spell {
 
     public static Spell spellBuilder(String spellName) {return new Spell(spellName);}
 
-
-    public String spellBeingCast(Spell spellName) {
-        return spellName.castSpell();
+    public String spellBeingCast(Spell spellName, int spellLevel) {
+        return spellName.castSpell(spellLevel);
+        // This method is useless while the returnSpell method exists inside the Spell book class.
     }
-    public String castSpell() {
-        String effects = "";
 
-        if (!dealsDamage) {
-            effects = spellEffects;
-            //+ effects.concat(" With " + numTargets + " targets.");
-        // If the spell requires an attack roll, or more than one attack roll.
-        } else if (isAttackRoll) {
-            for (int i = 0; i < numAttacks; ++i) {
-                effects = effects.concat((DiceRoller.rollDice(20,1) + attackModifier) + " to hit, damage: ");
-                effects = effects.concat(String.valueOf(DiceRoller.rollDice(diceSideNumber,numDice) + damageModifier));
+    public String castSpell(int spellLevel) {
+    // This method is used to cast a given spell, normally, it will be used by calling the returnSpell method with an input from the user as to the spell's name,
+    // and then that spell object will determine the "effects" that get run
+        int difference = spellLevel - this.spellLevel;
+        // Make sure the spell was actually cast at a valid level, or higher
+        if (difference >= 0) {
+            String effects = "";
+            higherLevelAttacksIncrease *= difference;
+            higherLevelDamageDice *= difference;
+            if (!dealsDamage) {
+                effects = spellEffects;
+                //+ effects.concat(" With " + numTargets + " targets.");
+                // If the spell requires an attack roll, or more than one attack roll.
+            } else if (isAttackRoll) {
+                for (int i = 0; i < (numAttacks + higherLevelAttacksIncrease); ++i) {
+                    effects = effects.concat((DiceRoller.rollDice(20,1) + attackModifier) + " to hit, damage: ");
+                    effects = effects.concat(String.valueOf(DiceRoller.rollDice(diceSideNumber,(numDice + higherLevelDamageDice)) + damageModifier));
+                    effects = effects.concat(" " + damageType + " damage.\n");
+                }
+                // if the Spell is a saving throw, we'll output half damage for a successful save, in case that applies.
+                // Some spells deal no damage on a successful save, we don't really account for that, just hope that the user knows the difference.
+            } else if (isSavingThrow) {
+                effects = effects.concat("Saving throw type: " + saveType + "\n");
+                int damage = DiceRoller.rollDice(diceSideNumber,(numDice + higherLevelDamageDice)) + damageModifier;
+                effects = effects.concat(damage + " " + damageType + " damage on a failed save.\n");
+                effects = effects.concat((damage / 2) + " " + damageType + " damage on a successful save.\n");
+            } else if (isAutomatic) {
+                // For spells that are automatic and deal damage, AKA Magic missile, this formula ought to work, but I can only think of Magic Missile and Cloud of Daggers, so it might not work for everything.
+                effects = effects.concat(String.valueOf(DiceRoller.rollDice(diceSideNumber, numDice) + damageModifier));
                 effects = effects.concat(" " + damageType + " damage.\n");
             }
-        // if the Spell is a saving throw, we'll output half damage for a successful save, in case that applies.
-        // Some spells deal no damage on a successful save, we don't really account for that, just hope that the user knows the difference.
-        } else if (isSavingThrow) {
-            effects = effects.concat("Saving throw type: " + saveType + "\n");
-            int damage = DiceRoller.rollDice(diceSideNumber,numDice) + damageModifier;
-            effects = effects.concat(damage + damageType + " damage on a failed save.\n");
-            effects = effects.concat((damage / 2) + damageType + " damage on a successful save.\n");
-        } else if (isAutomatic) {
-            // For spells that are automatic and deal damage, AKA Magic missile, this formula ought to work, but I can only think of Magic Missile and Cloud of Daggers, so it might not work for everything.
-            effects = effects.concat(String.valueOf(DiceRoller.rollDice(diceSideNumber, numDice) + damageModifier));
-            effects = effects.concat(" " + damageType + " damage.\n");
+            return effects;
         }
-        return effects;
+        return "Unknown Effects, or you cast the spell at too low of a level";
     }
 
     // Method for printing all the attributes of a certain spell. still working on it.
@@ -206,5 +221,21 @@ public class Spell {
 
     public void setAttackModifier(int attackModifier) {
         this.attackModifier = attackModifier;
+    }
+
+    public int getHigherLevelDamageDice() {
+        return higherLevelDamageDice;
+    }
+
+    public void setHigherLevelDamageDice(int higherLevelDamageDice) {
+        this.higherLevelDamageDice = higherLevelDamageDice;
+    }
+
+    public int getHigherLevelAttacksIncrease() {
+        return higherLevelAttacksIncrease;
+    }
+
+    public void setHigherLevelAttacksIncrease(int higherLevelAttacksIncrease) {
+        this.higherLevelAttacksIncrease = higherLevelAttacksIncrease;
     }
 }
