@@ -18,32 +18,12 @@ public class Spell {
     private String spellEffects;
 
 
-    public Spell() {
-        spellName = "Unnamed Spell";
-        spellLevel = -1;
-        higherLevelDamageDice = -1;
-        higherLevelAttacksIncrease = 0;
-        spellEffects = "Unknown Effects";
-        numTargets = -5;
-        diceSideNumber = -1;
-        numDice = -1;
-        dealsDamage = false;
-        damageType = null;
-        isSavingThrow = false;
-        saveType = null;
-        isAttackRoll = false;
-        numAttacks = 0;
-        attackModifier = -1;
-        damageModifier = -1;
-        isAutomatic = false;
-    }
-
     public Spell(String spellName) {
         this.spellName = spellName;
         spellLevel = -1;
         higherLevelDamageDice = -1;
         higherLevelAttacksIncrease = 0;
-        spellEffects = "Unknown Effects";
+        spellEffects = null;
         numTargets = -5;
         diceSideNumber = -1;
         numDice = -1;
@@ -59,11 +39,6 @@ public class Spell {
     }
 
     public static Spell spellBuilder(String spellName) {return new Spell(spellName);}
-
-    public String spellBeingCast(Spell spellName, int spellLevel) {
-        return spellName.castSpell(spellLevel);
-        // This method is useless while the returnSpell method exists inside the Spell book class.
-    }
 
     public String castSpell(int spellLevel) {
     // This method is used to cast a given spell, normally, it will be used by calling the returnSpell method with an input from the user as to the spell's name,
@@ -83,6 +58,7 @@ public class Spell {
                     effects = effects.concat((DiceRoller.rollDice(20,1) + attackModifier) + " to hit, damage: ");
                     effects = effects.concat(String.valueOf(DiceRoller.rollDice(diceSideNumber,(numDice + higherLevelDamageDice)) + damageModifier));
                     effects = effects.concat(" " + damageType + " damage.\n");
+                    // TODO: total damage for multiple attacks
                 }
                 // if the Spell is a saving throw, we'll output half damage for a successful save, in case that applies.
                 // Some spells deal no damage on a successful save, we don't really account for that, just hope that the user knows the difference.
@@ -101,7 +77,7 @@ public class Spell {
         return "Unknown Effects, or you cast the spell at too low of a level";
     }
 
-    // Method for printing all the attributes of a certain spell. still working on it.
+    // TODO: Method for printing all the attributes of a certain spell. still working on it.
     public String print() {
         System.out.println();
         return "";
@@ -159,16 +135,8 @@ public class Spell {
         isAttackRoll = attackRoll;
     }
 
-    public boolean isAutomatic() {
-        return isAutomatic;
-    }
-
     public void setAutomatic(boolean automatic) {
         isAutomatic = automatic;
-    }
-
-    public String getSaveType() {
-        return saveType;
     }
 
     public void setSaveType(String saveType) {
@@ -189,10 +157,6 @@ public class Spell {
 
     public void setSpellEffects(String spellEffects) {
         this.spellEffects = spellEffects;
-    }
-
-    public boolean isDealsDamage() {
-        return dealsDamage;
     }
 
     public void setDealsDamage(boolean dealsDamage) {

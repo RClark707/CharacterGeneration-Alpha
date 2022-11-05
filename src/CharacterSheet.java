@@ -1,9 +1,9 @@
 public class CharacterSheet {
     private String charName;
+    private String charRace;
     private String charClass;
     private String charSubclass;
     private String charBackground;
-    private String charRace;
     private final int[] statArray = new int[6];
     // This array might be final, but we change it with each object, so I doubt it
 
@@ -72,8 +72,12 @@ public class CharacterSheet {
     // Constructs a character sheet based on the name attribute
     public CharacterSheet(String charName) {
         this.charName = charName;
+        // Do we need to initialize the statArray, doubtful, we also don't really need to initialize the Strings either...
     }
 
+    public static CharacterSheet characterBuilder(String charName) {
+        return new CharacterSheet(charName);
+    }
     public void changeCharName(String charName) {
         this.charName = charName;
     }
@@ -131,23 +135,6 @@ public class CharacterSheet {
 
     // Returns the score (numerical value) for the given stat
     public int retrieveStat(int index) {
-        return statArray[index];
-    }
-
-    // Returns the given stat score (numerical value)
-    public int retrieveStat(String statName) {
-        int index = -1;
-
-        for (int i = 0; i < statNames.length; ++i) {
-            if (statName.equals(statNames[i])) {
-                index = i;
-                break;
-            }
-        }
-        // If there was no matching stat Name, we'll just say the score is -1 so that we know there was a problem
-        if (index == -1) {
-            return index;
-        }
         return statArray[index];
     }
 

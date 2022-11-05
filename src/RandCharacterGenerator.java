@@ -30,6 +30,15 @@ public class RandCharacterGenerator {
             "Wizard",
     };
 
+    private static final String[] statNames = {
+            "Strength",
+            "Dexterity",
+            "Constitution",
+            "Intelligence",
+            "Wisdom",
+            "Charisma",
+    };
+
     private static final String[] artificerProf = {
             "two", "Arcana", "History", "Investigation", "Medicine", "Nature", "Perception", "Sleight of Hand",
     };
@@ -437,6 +446,10 @@ public class RandCharacterGenerator {
             }
 
         }
+    }
+
+    public static String randStat() {
+        return statNames[rand.nextInt(statNames.length)];
     }
 }
 
