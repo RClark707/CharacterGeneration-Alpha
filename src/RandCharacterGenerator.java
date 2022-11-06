@@ -148,6 +148,8 @@ public class RandCharacterGenerator {
             "Val",
     };
 
+    // TODO: Add Random Backgrounds!
+
     public static String randRace() {
         return raceArray[rand.nextInt(raceArray.length)];
     }
@@ -375,14 +377,15 @@ public class RandCharacterGenerator {
 
     public static String[] randSkillArray(int numSkills) {
         String[] skillList = new String[numSkills];
-        boolean notUnique = false;
+        boolean notUnique;
         int count;
 
         do {
+            notUnique = false;
+            // This one line saved it all
             for (int i = 0; i < numSkills; ++i) {
-                skillList[i] = RandCharacterGenerator.allProf[rand.nextInt((18))];
+                skillList[i] = RandCharacterGenerator.allProf[rand.nextInt((allProf.length))];
             }
-            // This checks to see if there are any duplicates, but it is unnaturally slow, and sometimes seems to not execute at > 4 proficiencies
             for (String s : skillList) {
                 count = 0;
                 for (String k : skillList) {

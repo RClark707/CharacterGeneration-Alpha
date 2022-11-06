@@ -43,7 +43,7 @@ public class CharacterGenMAIN {
                         // For right now, the printing of the character sheet is within the createCharacter method
                         // It is on the to do list though
                         Party.createCharacter(Party.returnCharacter(charName));
-                        System.out.println("\n\n" + Party.printParty());
+                        System.out.println("\n\nCurrent party members: " + Party.printParty());
 
                         System.out.println("\n\nEnter Y for another Character, or N to go back.");
                         doMore = scan.nextLine();

@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class CharacterSheet {
     private String charName;
     private String charRace;
@@ -67,8 +70,7 @@ public class CharacterSheet {
             "Charisma",
     };
 
-
-
+    private final ArrayList<String> skillArray = new ArrayList<>();
     // Constructs a character sheet based on the name attribute
     public CharacterSheet(String charName) {
         this.charName = charName;
@@ -90,9 +92,6 @@ public class CharacterSheet {
     public void setCharClass(String charClass) {
         // These checks are here in case the class is changed later on (I know we check in creation)
             if (ClassValidator.isValidClass(charClass)) {
-                if (!(Character.isUpperCase(charClass.charAt(0)))) {
-                    charClass = charClass.substring(0, 1).toUpperCase() + charClass.substring(1);
-                }
                 this.charClass = charClass;
             }
     }
@@ -164,6 +163,12 @@ public class CharacterSheet {
         statArray[indexFrom] = tempHolder;
     }
 
+    public void newConfigureStats() {
+
+
+
+    }
+
     public void optimizeStats(String charClass) {
         int maximumStatVal = statArray[0];
         int indexFrom = 0;
@@ -209,6 +214,58 @@ public class CharacterSheet {
         // Does this need to be outside the for loop when I am not returning anything?
         statArray[index] = statArray[index] + racialModifier;
     }
+
+    public void printStatArray() {
+        System.out.println("Strength: " + statArray[0]);
+        System.out.println("Dexterity: " + statArray[1]);
+        System.out.println("Constitution: " + statArray[2]);
+        System.out.println("Intelligence: " + statArray[3]);
+        System.out.println("Wisdom: " + statArray[4]);
+        System.out.println("Charisma: " + statArray[5]);
+    }
+
+    public void addSkill(String skillName) {
+        skillArray.add(skillName);
+    }
+
+    public void createSkillArray(int numBonusSkills) {
+        // We add two, because the character gets 2 from their background automatically
+        numBonusSkills += 2;
+        String[] skillList = RandCharacterGenerator.randSkillArray(numBonusSkills);
+        skillArray.addAll(Arrays.asList(skillList));
+        // I'm pretty sure I understand what this is doing, but I know that I can use a for loop to add each element that was generated to the actual skill list.
+    }
+
+    public void printSkillArray() {
+        System.out.print("\nSkill Proficiencies: ");
+        for (int i = 0; i < skillArray.size(); ++i) {
+            if (i != skillArray.size() - 1) {
+                System.out.print(skillArray.get(i) + ", ");
+            } else {
+                System.out.print(skillArray.get(i));
+            }
+        }
+    }
+
+    public void printClassSkillOptions() {
+        if (!charClass.equals("Bard")) {
+            String[] skillList = RandCharacterGenerator.getClassSkillArray(charClass);
+            String numChoices = skillList[0];
+            System.out.println("Choose " + numChoices + " additional skills from this list: ");
+            for (int i = 0; i < skillList.length - 1; ++i) {
+                skillList[i] = skillList[i + 1];
+                String s = skillList[i];
+                System.out.println((i + 1) + ". " + s);
+            }
+        }
+    }
+
+    public void printCharacterSheet() {
+        System.out.println("\nHere is your character sheet!\n\n\n");
+        System.out.println(charName + "           " + charClass);
+        System.out.println(charBackground + "          " + charSubclass);
+    }
+
 
     // Sets the character's background, does not require any checks for validity
     public void setCharBackground(String charBackground) {
