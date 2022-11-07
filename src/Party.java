@@ -4,16 +4,16 @@ import java.util.Random;
 
 public class Party {
 // Going to match the Spell Book class, and make everything be based off of methods, rather than cluttering the MAIN
-    ArrayList<CharacterSheet> party = new ArrayList<>();
+    ArrayList<PartyMember> party = new ArrayList<>();
     Scanner scan = new Scanner(System.in);
     Random rand = new Random();
 
     public void addCharacter(String charName) {
-        party.add(CharacterSheet.characterBuilder(charName));
+        party.add(PartyMember.characterBuilder(charName));
     }
 
-    public CharacterSheet returnCharacter(String spellName) {
-        for (CharacterSheet curCharacter : party) {
+    public PartyMember returnCharacter(String spellName) {
+        for (PartyMember curCharacter : party) {
             if (spellName.equals(curCharacter.getCharName())) {
                 return curCharacter;
             }
@@ -21,10 +21,10 @@ public class Party {
         return null;
     }
 
-    public void createCharacter(CharacterSheet characterToCreate) {
-        // This method will use returnCharacter method in order to input a CharacterSheet object based on user input
+    public void createCharacter(PartyMember characterToCreate) {
+        // This method will use returnCharacter method in order to input a PartyMember object based on user input
         // We are not combining them for reasons yet to be decided
-        for (CharacterSheet character : party) {
+        for (PartyMember character : party) {
             if (characterToCreate.equals(character)) {
                 // Step 1: Race
                 while (character.getCharRace() == null) {
@@ -184,7 +184,7 @@ public class Party {
         // prints the names of each spell in the book
         String partyMembers = "";
         for (int i = 0; i < party.size(); ++i) {
-            CharacterSheet curPartyMember = party.get(i);
+            PartyMember curPartyMember = party.get(i);
             if (i != party.size() - 1) {
                 partyMembers = partyMembers.concat(curPartyMember.getCharName() + ", ");
             } else {
@@ -196,8 +196,8 @@ public class Party {
 
     public void fullRandom() {
         String randName = RandCharacterGenerator.randName();
-        party.add(CharacterSheet.characterBuilder(randName));
-        for (CharacterSheet character : party) {
+        party.add(PartyMember.characterBuilder(randName));
+        for (PartyMember character : party) {
             if (randName.equals(character.getCharName())) {
                 character.setCharRace(RandCharacterGenerator.randRace());
                 character.setCharClass(RandCharacterGenerator.randCharClass());

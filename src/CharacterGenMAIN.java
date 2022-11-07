@@ -31,7 +31,7 @@ public class CharacterGenMAIN {
                 // Character Creation
                 case 1:
                     do {
-                        // Take the name and use it much like a spell to create a new CharacterSheet (Party Member) object
+                        // Take the name and use it much like a spell to create a new Party Member object
                         System.out.println("\nWhat is your Character's Name?");
                         String charName = scan.nextLine();
                         if (!InputChecker.fullRandom(charName)) {
@@ -237,6 +237,8 @@ public class CharacterGenMAIN {
                                 spellName = scan.nextLine();
                                 spellName = ClassValidator.capitalizeFirst(spellName);
                                 Grimoire.configureSpellEffects(Grimoire.returnSpell(spellName));
+                                System.out.println("\n\n");
+                                Grimoire.returnSpell(spellName).printSpellCard();
                                 // Using the returnSpell method is key, because user input is either a String or an integer,
                                 // and we can't input a String as a Spell object to a method that wants a spell object input
                                 // maybe it's worth putting a String -> Spell function within these methods, but right now that is
@@ -246,7 +248,7 @@ public class CharacterGenMAIN {
                             }
                         } while (configureMore);
                         do {
-                            System.out.println("\nWould you like to cast a spell?");
+                            System.out.println("\nWould you like to cast a spell? Alternatively, enter the name of a spell to view its spell card.");
                             doMore = scan.nextLine();
                             if (InputChecker.yes(doMore)) {
                                 System.out.println("Which spell do you want to cast?");
@@ -270,6 +272,11 @@ public class CharacterGenMAIN {
                                 System.out.println("You are casting " + spellName + " at " + level + " level.");
                                 System.out.println("Prepare to be amazed.");
                                 System.out.println("\n" + Grimoire.returnSpell(spellName).castSpell(castingLevel));
+                            } else if (Grimoire.returnSpell(doMore) != null){
+                                System.out.println("\n");
+                                Grimoire.returnSpell(doMore).printSpellCard();
+                                System.out.println("Would you like to go back to spell casting?");
+                                doMore = scan.nextLine();
                             }
                         } while (InputChecker.yes(doMore));
 

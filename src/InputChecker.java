@@ -18,4 +18,8 @@ public class InputChecker {
     public static boolean fullRandom(String userInput) {
         return userInput.equals("Full random") || userInput.equals("full random") || userInput.equals("Full Random") || userInput.equals("full Random");
     }
+
+    public static boolean options(String userInput) {
+        return userInput.equals("Options") || userInput.equals("options");
+    }
 }

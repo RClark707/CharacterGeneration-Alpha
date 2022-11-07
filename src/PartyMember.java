@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class CharacterSheet {
+public class PartyMember {
     private String charName;
     private String charRace;
     private String charClass;
@@ -93,13 +93,13 @@ public class CharacterSheet {
 
     private final ArrayList<String> skillArray = new ArrayList<>();
     // Constructs a character sheet based on the name attribute
-    public CharacterSheet(String charName) {
+    public PartyMember(String charName) {
         this.charName = charName;
         charLevel = 1;
     }
 
-    public static CharacterSheet characterBuilder(String charName) {
-        return new CharacterSheet(charName);
+    public static PartyMember characterBuilder(String charName) {
+        return new PartyMember(charName);
     }
     public void changeCharName(String charName) {
         this.charName = charName;

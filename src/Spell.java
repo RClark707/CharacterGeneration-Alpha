@@ -16,6 +16,7 @@ public class Spell {
     private int damageModifier;
     private boolean isAutomatic;
     private String spellEffects;
+    private String spellSchool;
 
 
     public Spell(String spellName) {
@@ -78,6 +79,23 @@ public class Spell {
     }
 
     // TODO: Method for printing all the attributes of a certain spell. still working on it.
+    public void printSpellCard() {
+        System.out.println(spellName);
+        System.out.println("Level " + spellLevel + "   " + spellSchool);
+        if (dealsDamage) {
+            System.out.println("This spell deals " + numDice + "d" + diceSideNumber + " " + damageType + " to " + numTargets + " target(s).");
+        } else {
+            System.out.println(spellEffects);
+            System.out.println("You may target " + numTargets + " target(s) with this spell.");
+        }
+        if (higherLevelDamageDice != -1) {
+            System.out.println("This spell rolls an extra " + higherLevelDamageDice + " die/dice for each spell slot level beyond " + spellLevel);
+        } else if (higherLevelAttacksIncrease != 0) {
+            System.out.println("This spell makes " + higherLevelAttacksIncrease + " extra attacks for each spell slot level beyond " + spellLevel);
+        } else {
+            System.out.println("This spell appears to not get much stronger at higher levels, or it has non-damaging effects.");
+        }
+    }
 
     public String getSpellName() {
         return spellName;
@@ -197,5 +215,13 @@ public class Spell {
 
     public void setHigherLevelAttacksIncrease(int higherLevelAttacksIncrease) {
         this.higherLevelAttacksIncrease = higherLevelAttacksIncrease;
+    }
+
+    public String getSpellSchool() {
+        return spellSchool;
+    }
+
+    public void setSpellSchool(String spellSchool) {
+        this.spellSchool = spellSchool;
     }
 }
