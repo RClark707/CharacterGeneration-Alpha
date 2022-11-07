@@ -150,23 +150,60 @@ public class RandCharacterGenerator {
 
     // TODO: Add Random Backgrounds!
 
-    public static String randRace() {
-        return raceArray[rand.nextInt(raceArray.length)];
-    }
+    public static final String[] backgroundArray = {
+            "Acolyte",
+            "Anthropologist",
+            "Archaeologist",
+            "Athlete",
+            "Charlatan",
+            "City Watch",
+            "Clan Crafter",
+            "Cloistered Scholar",
+            "Courtier",
+            "Criminal",
+            "Entertainer",
+            "Faceless",
+            "Faction Agent",
+            "Far Traveler",
+            "Feylost",
+            "Fisher",
+            "Folk Hero",
+            "Gladiator",
+            "Guild Artisan",
+            "Guild Merchant",
+            "Haunted One",
+            "Hermit",
+            "House Agent",
+            "Inheritor",
+            "Investigator",
+            "Knight",
+            "Knight of the Order",
+            "Marine",
+            "Mercenary Veteran",
+            "Noble",
+            "Outlander",
+            "Pirate",
+            "Sage",
+            "Sailor",
+            "Shipwright",
+            "Smuggler",
+            "Soldier",
+            "Spy",
+    };
 
     public static String randName() {
         return nameArray[rand.nextInt(nameArray.length)];
     }
-
+    public static String randRace() {
+        return raceArray[rand.nextInt(raceArray.length)];
+    }
     // Generates a random character class,
     public static String randCharClass() {
         return classArray[rand.nextInt(classArray.length)];
     }
-
     // This will give us a random subclass based on the class you are
     public static String randCharSubclass(String charClass) {
         String charSubclass = "";
-
         // This is the switch I mentioned before, We use an ID to declare what class you are
         // And then we pick a random subclass from an array of valid ones
         // It would be nice to use a List(?) or 2D Array, but I don't know how
@@ -375,6 +412,8 @@ public class RandCharacterGenerator {
         return charSubclass;
     }
 
+    public static String randBackground() {return backgroundArray[rand.nextInt(backgroundArray.length)];}
+
     public static String[] randSkillArray(int numSkills) {
         String[] skillList = new String[numSkills];
         boolean notUnique;
@@ -445,9 +484,8 @@ public class RandCharacterGenerator {
                 return wizardProf;
             }
             default -> {
-                return new String[]{"Empty"};
+                return new String[]{"Combat", "Artistry"};
             }
-
         }
     }
 

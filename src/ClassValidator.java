@@ -190,7 +190,6 @@ public class ClassValidator {
     public static boolean isValidClass(String charClass) {
         // Here we make sure the first letter is Capitalized, but now I've been doing this right after retrieving the charClass in the Party class
         // charClass = ClassValidator.capitalizeFirst(charClass);
-
         for (String s : classArray) {
             if (charClass.equals(s) || charClass.equals("Random")) {
                 return true;

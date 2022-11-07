@@ -78,10 +78,6 @@ public class Spell {
     }
 
     // TODO: Method for printing all the attributes of a certain spell. still working on it.
-    public String print() {
-        System.out.println();
-        return "";
-    }
 
     public String getSpellName() {
         return spellName;

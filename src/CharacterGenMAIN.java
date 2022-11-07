@@ -4,6 +4,7 @@ public class CharacterGenMAIN {
 
     public static void main(String[] args) {
         int option; // This is what option the user selects in the main menu
+        int subOption; // used in case 2
         String doMore; // Used inside the switch for each option to determine if the user wants to iterate again
         Scanner scan = new Scanner(System.in); // Takes user input
         String charClass; // Temporary placeholder to pass in to methods as a parameter
@@ -12,15 +13,16 @@ public class CharacterGenMAIN {
 
         // Here is our main menu, we use a switch to decide what to do with the user choice
         do {
-            System.out.println("\nWhat would you like to do? (Enter a number 1-8)");
+            System.out.println("\nWhat would you like to do? (Enter a number 1-9)");
             System.out.println("1. Create a Character!");
-            System.out.println("2. Random Subclass!");
-            System.out.println("3. Animate Objects!");
-            System.out.println("4. Roll my Stats!");
-            System.out.println("5. Roll Dice!");
-            System.out.println("6. Read your Spell Book!");
-            System.out.println("7. Test!");
-            System.out.println("8. Exit");
+            System.out.println("2. View your Party!");
+            System.out.println("3. Random Subclass!");
+            System.out.println("4. Animate Objects!");
+            System.out.println("5. Roll my Stats!");
+            System.out.println("6. Roll Dice!");
+            System.out.println("7. Read your Spell Book!");
+            System.out.println("8. Test!");
+            System.out.println("9. Exit");
             // Collect the user input and use a switch to identify what we should do
             option = scan.nextInt();
             scan.nextLine(); // This brings us to the next Line in which the User can/will enter input.
@@ -32,26 +34,71 @@ public class CharacterGenMAIN {
                         // Take the name and use it much like a spell to create a new CharacterSheet (Party Member) object
                         System.out.println("\nWhat is your Character's Name?");
                         String charName = scan.nextLine();
-                        if (InputChecker.random(charName)) {
-                            charName = RandCharacterGenerator.randName();
+                        if (!InputChecker.fullRandom(charName)) {
+                            if (InputChecker.random(charName)) {
+                                charName = RandCharacterGenerator.randName();
+                            }
+                            // This makes the object with a named attribute of the character's name
+                            Party.addCharacter(charName);
+                            System.out.println("Let's create " + charName + "!\n");
+                            // This is like the configureSpell method, it lets us set all the internal attributes of the party member
+                            // Soon, we will also need a method to print the literal character sheet of the party member,
+                            // For right now, the printing of the character sheet is within the createCharacter method
+                            // It is on the to do list though
+                            Party.createCharacter(Party.returnCharacter(charName));
+                        } else {
+                            Party.fullRandom();
                         }
-                        // This makes the object with a named attribute of the character's name
-                        Party.addCharacter(charName);
-                        System.out.println("Let's create " + charName + "!\n");
-                        // This is like the configureSpell method, it lets us set all the internal attributes of the party member
-                        // Soon, we will also need a method to print the literal character sheet of the party member,
-                        // For right now, the printing of the character sheet is within the createCharacter method
-                        // It is on the to do list though
-                        Party.createCharacter(Party.returnCharacter(charName));
+
                         System.out.println("\n\nCurrent party members: " + Party.printParty());
 
-                        System.out.println("\n\nEnter Y for another Character, or N to go back.");
+                        System.out.println("\n\nEnter Y to make another Character, or N to go back.");
                         doMore = scan.nextLine();
 
                     } while (InputChecker.yes(doMore));
                     break;
-                // Random Subclass and/or class
+                // View Party Members
                 case 2:
+                    boolean viewAnother;
+                    boolean repeatMenu;
+                    do {
+                        System.out.println("\nCurrent party members: " + Party.printParty());
+                        System.out.println("\nWhich character would you like to view?");
+                        String curCharacter = scan.nextLine();
+                        do {
+                        repeatMenu = false;
+                        viewAnother = false;
+                        Party.returnCharacter(curCharacter).printAll();
+                        System.out.println("What would you like to do?");
+                        System.out.println("1. Level Up");
+                        System.out.println("2. Change Name");
+                        System.out.println("3. View Another Character");
+                        System.out.println("4. Exit to Main Menu");
+                        subOption = scan.nextInt();
+                        scan.nextLine();
+
+                            switch (subOption) {
+                                case 1 -> {
+                                    Party.returnCharacter(curCharacter).nextLevel();
+                                    repeatMenu = true;
+                                }
+                                case 2 -> {
+                                    System.out.println("What is " + Party.returnCharacter(curCharacter).getCharName() + "'s new name?");
+                                    String newName= scan.nextLine();
+                                    Party.returnCharacter(curCharacter).changeCharName(newName);
+                                    curCharacter = newName;
+                                    repeatMenu = true;
+                                }
+                                case 3 -> viewAnother = true;
+                                default -> {}
+                            }
+                        } while (repeatMenu);
+
+                    } while (viewAnother);
+                    break;
+
+                // Random Subclass and/or class
+                case 3:
                     do {
                         System.out.println("\nWhat is your Character's class? (Enter Random for a random class)");
                         charClass = scan.nextLine();
@@ -88,8 +135,8 @@ public class CharacterGenMAIN {
 
                     } while (InputChecker.yes(doMore));
                     break;
-                    // Animate Objects casting
-                case 3:
+                // Animate Objects casting
+                case 4:
                     do {
                         System.out.println("\nWhat level spell is your Animate Objects?");
 
@@ -115,25 +162,17 @@ public class CharacterGenMAIN {
                     } while (InputChecker.yes(doMore));
 
                     break;
-                    // Stat Rolling
-                case 4:
+                // Stat Rolling
+                case 5:
                     do {
-                        System.out.println("\nDo you want to roll stats normally, or with a minimum threshold?");
-                        String quality = scan.nextLine();
-
-                        if (quality.equals("normally")|| quality.equals("normal") || quality.equals("Normal") || quality.equals("Normally")) {
-                            // do stuff for normal
-                            System.out.println("Your stats are: " + DiceRoller.rollAllStats(true));
-
-                        } else if (quality.equals("threshold") || quality.equals("Threshold") || quality.equals("minimum") ||
-                                quality.equals("Minimum") || quality.equals("minimum threshold") ||
-                                quality.equals("Minimum Threshold") || quality.equals("min") || quality.equals("Min")) {
-                            int threshold;
-                            System.out.println("What is your threshold for the total score?");
-                            threshold = scan.nextInt();
-                            scan.nextLine(); // to get rid of any unused text?
-                            System.out.println("Your good stats are: " + DiceRoller.rollGoodStats(threshold));
+                        System.out.println("\nEnter the minimum threshold you want when rolling stats.");
+                        System.out.println("Valid threshold options are integers 70-100 inclusive, and any other number for no threshold.");
+                        int threshold = scan.nextInt();
+                        scan.nextLine();
+                        if (threshold >= 60 && threshold <= 105) {
+                            System.out.println(DiceRoller.rollGoodStats(threshold));
                         }
+                        System.out.println(DiceRoller.rollAllStats(true));
 
                         System.out.println("\nEnter Y to roll more Stats, or N to go back.");
                         doMore = scan.nextLine();
@@ -141,8 +180,8 @@ public class CharacterGenMAIN {
                     } while (InputChecker.yes(doMore));
 
                     break;
-                    // Dice Rolling
-                case 5:
+                // Dice Rolling
+                case 6:
                     do {
                         System.out.println("\nWhat kind of dice are you rolling?");
                         String diceType = scan.nextLine();
@@ -163,7 +202,7 @@ public class CharacterGenMAIN {
                     } while (InputChecker.yes(doMore));
                     break;
                 // Spell Casting
-                case 6:
+                case 7:
                     do {
                         // This variable is used to track the user's input for what spell to interact with
                         String spellName;
@@ -240,7 +279,7 @@ public class CharacterGenMAIN {
                     } while (InputChecker.yes(doMore));
                     break;
                 // Testing
-                case 7:
+                case 8:
                     do {
 
                         System.out.println("\nEnter Y to try again, or N to go back.");
@@ -248,7 +287,7 @@ public class CharacterGenMAIN {
 
                     } while (InputChecker.yes(doMore));
                     break;
-                case 8:
+                case 9:
                     break;
                 default:
                     // I don't remember why I include this scan.nextLine() piece, but it probably is good
@@ -256,7 +295,7 @@ public class CharacterGenMAIN {
                     scan.nextLine();
                     break;
             } //switch ends
-        }while (option != 8);
+        }while (option != 9);
         System.out.println("Sorry to see you go, hope you're back soon.");
         scan.close();
     }

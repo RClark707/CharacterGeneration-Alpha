@@ -1,10 +1,12 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Random;
 
 public class Party {
 // Going to match the Spell Book class, and make everything be based off of methods, rather than cluttering the MAIN
     ArrayList<CharacterSheet> party = new ArrayList<>();
     Scanner scan = new Scanner(System.in);
+    Random rand = new Random();
 
     public void addCharacter(String charName) {
         party.add(CharacterSheet.characterBuilder(charName));
@@ -45,23 +47,26 @@ public class Party {
                     if (InputChecker.random(charClass)) {
                         charClass = RandCharacterGenerator.randCharClass();
                         character.setCharClass(charClass);
+                        character.setCharHitDieType();
                         System.out.println("You are now a " + character.getCharRace() + " " + character.getCharClass());
                     } else if (ClassValidator.isValidClass(charClass)) {
                         character.setCharClass(charClass);
+                        character.setCharHitDieType();
                     } else {
                         System.out.println("Sorry, you either entered an unknown Class, or misspelled it.");
                     }
+
                 } // end of Class
                 // Step 3: Subclass
                 while (character.getCharSubclass() == null) {
                     System.out.println("What is your Subclass?");
                     String charSubclass = scan.nextLine();
+                    charSubclass = ClassValidator.capitalizeFirst(charSubclass);
                     if (InputChecker.random(charSubclass)) {
                         charSubclass = RandCharacterGenerator.randCharSubclass(character.getCharClass());
                         character.setCharSubclass(charSubclass);
                         System.out.println("You are now a " + character.getCharRace() + " " + character.getCharSubclass() + " " + character.getCharClass());
                     } else if (ClassValidator.isValidSubclass(charSubclass, character.getCharClass())) {
-                        charSubclass = ClassValidator.capitalizeFirst(charSubclass);
                         character.setCharSubclass(charSubclass);
                     } else {
                         System.out.println("Sorry, you either entered an unknown Subclass, or misspelled it.");
@@ -72,6 +77,10 @@ public class Party {
                     System.out.println("What is your Background?");
                     String background = scan.nextLine();
                     background = ClassValidator.capitalizeFirst(background);
+                    if (InputChecker.random(background)) {
+                        background = RandCharacterGenerator.randBackground();
+                        System.out.println("You were a " + character.getCharBackground());
+                    }
                     character.setCharBackground(background);
                 } // end of Background
                 // Step 5: Skills! :)
@@ -98,6 +107,7 @@ public class Party {
                     System.out.print("\nFirst choice: ");
                     int choice1 = scan.nextInt();
                     // Adds to our master list within the character object
+                    assert classSkills != null;
                     character.addSkill(classSkills[choice1]);
                     System.out.print("\nSecond choice: ");
                     int choice2 = scan.nextInt();
@@ -129,23 +139,15 @@ public class Party {
                         System.out.println("\nHere are your ability scores:");
                         character.printStatArray();
 
-                        System.out.println("\nIf you want to swap stats, type the name of the stat you want to swap from. Otherwise type no or skip.");
-                        String swapFromString;
-                        String swapToString;
-
-                        swapFromString = scan.next();
-                        scan.nextLine();
-                        if (InputChecker.no(swapFromString) || swapFromString.equals("skip")) {
-                            break;
+                        // Would you like to swap stats, if yes, execute method
+                        System.out.println("\nWould you like to swap any ability scores around?");
+                        String swapScores = scan.nextLine();
+                        if (InputChecker.yes(swapScores)) {
+                            character.configureStats();
                         } else {
-                            System.out.println("Now, input the stat you want to swap the score to.");
-                            swapToString = scan.next();
-                            if (ClassValidator.isValidStat(swapFromString) && ClassValidator.isValidStat(swapToString)) {
-                                character.configureStats(swapFromString, swapToString);
-                            } else {
-                                System.out.println("One or more of the stats you entered was misspelled.");
-                            }
+                            break;
                         }
+
                     } while (true);
 
                     // Applies Racial Modifiers according to the new 5e changes. +2 to one, and +1 to another
@@ -168,13 +170,11 @@ public class Party {
                         }
                     } while (!ClassValidator.isValidStat(preference) || notUnique);
                     character.applyRacialModifier(1, preference);
-
                 }
+                // Rolls hit points now that we have sufficiently manipulated the stats
+                character.setCharHitPoints(character.abilityScoreModifier(2));
                 // Print out the Character Sheet
-                character.printCharacterSheet();
-                character.printStatArray();
-                character.printSkillArray();
-                System.out.println("\n\n");
+                character.printAll();
                 break;
             } // End of if statement once we found the correct character
         } // End of for loop to check which character we want to configure
@@ -192,5 +192,69 @@ public class Party {
             }
         }
         return partyMembers;
+    }
+
+    public void fullRandom() {
+        String randName = RandCharacterGenerator.randName();
+        party.add(CharacterSheet.characterBuilder(randName));
+        for (CharacterSheet character : party) {
+            if (randName.equals(character.getCharName())) {
+                character.setCharRace(RandCharacterGenerator.randRace());
+                character.setCharClass(RandCharacterGenerator.randCharClass());
+                character.setCharSubclass(RandCharacterGenerator.randCharSubclass(character.getCharClass()));
+                character.setCharHitDieType();
+                character.setCharBackground(RandCharacterGenerator.randBackground());
+                character.rollStats(rand.nextInt(70,100));
+                int numBonus = 0;
+                if (character.getCharClass().equals("Ranger")) {
+                    numBonus = 1;
+                } else if (character.getCharClass().equals("Rogue")) {
+                    numBonus = 2;
+                }
+                if (character.getCharClass().equals("Bard")) {
+                    character.createSkillArray(3);
+                } else {
+                    character.createSkillArray(0);
+                    String[] skills = RandCharacterGenerator.getClassSkillArray(character.getCharClass());
+                    for (int i = 0; i < skills.length - 1; ++i) {
+                        skills[i] = skills[i +1];
+                    }
+                    int randomIndex = rand.nextInt(RandCharacterGenerator.getClassSkillArray(character.getCharClass()).length);
+                    character.addSkill(RandCharacterGenerator.getClassSkillArray(character.getCharClass())[randomIndex]);
+                    int tempHolder = randomIndex;
+                    int previousIndex;
+                    int otherPreviousIndex;
+                    do {
+                        randomIndex = rand.nextInt(RandCharacterGenerator.getClassSkillArray(character.getCharClass()).length);
+                    } while (randomIndex == tempHolder);
+                    character.addSkill(RandCharacterGenerator.getClassSkillArray(character.getCharClass())[randomIndex]);
+                    // For Rangers and Rogues:
+                    if (numBonus > 0) {
+                        previousIndex = randomIndex;
+                        do {
+                            randomIndex = rand.nextInt(RandCharacterGenerator.getClassSkillArray(character.getCharClass()).length);
+                        } while (randomIndex == previousIndex || randomIndex == tempHolder);
+                        character.addSkill(RandCharacterGenerator.getClassSkillArray(character.getCharClass())[randomIndex]);
+                        // In the case of Rogues:
+                        if (numBonus > 1) {
+                            otherPreviousIndex = randomIndex;
+                            do {
+                                randomIndex = rand.nextInt(RandCharacterGenerator.getClassSkillArray(character.getCharClass()).length);
+                            } while (randomIndex == previousIndex || randomIndex == tempHolder || randomIndex == otherPreviousIndex);
+                            character.addSkill(RandCharacterGenerator.getClassSkillArray(character.getCharClass())[randomIndex]);
+                        }
+                    } // End of Bonus skills for Rogues and Rangers
+                } // End of Skills
+                String randStat = RandCharacterGenerator.randStat();
+                character.applyRacialModifier(2,randStat);
+                String secondStat;
+                do {
+                    secondStat = RandCharacterGenerator.randStat();
+                } while (randStat.equals(secondStat));
+                character.applyRacialModifier(1,secondStat);
+                character.setCharHitPoints(character.abilityScoreModifier(2));
+                character.printAll();
+            }
+        }
     }
 }

@@ -15,5 +15,7 @@ public class InputChecker {
         return userInput.equals("random") || userInput.equals("rand") || userInput.equals("Random") || userInput.equals("Rand");
     }
 
-
+    public static boolean fullRandom(String userInput) {
+        return userInput.equals("Full random") || userInput.equals("full random") || userInput.equals("Full Random") || userInput.equals("full Random");
+    }
 }

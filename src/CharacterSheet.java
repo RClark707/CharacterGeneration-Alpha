@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class CharacterSheet {
     private String charName;
@@ -7,9 +8,13 @@ public class CharacterSheet {
     private String charClass;
     private String charSubclass;
     private String charBackground;
+    private int charLevel;
+    private int charHitPoints;
+    private int charHitDieType;
     private final int[] statArray = new int[6];
     // This array might be final, but we change it with each object, so I doubt it
 
+    Scanner scan = new Scanner(System.in);
     private static final String[] classArray = {
             "Artificer",
             "Barbarian",
@@ -61,6 +66,22 @@ public class CharacterSheet {
             4,
     };
 
+    private static final int[] hitDiceByClass = {
+            8,
+            12,
+            8,
+            8,
+            8,
+            10,
+            8,
+            10,
+            10,
+            8,
+            6,
+            8,
+            6,
+    };
+
     private final String[] statNames = {
             "Strength",
             "Dexterity",
@@ -74,7 +95,7 @@ public class CharacterSheet {
     // Constructs a character sheet based on the name attribute
     public CharacterSheet(String charName) {
         this.charName = charName;
-        // Do we need to initialize the statArray, doubtful, we also don't really need to initialize the Strings either...
+        charLevel = 1;
     }
 
     public static CharacterSheet characterBuilder(String charName) {
@@ -113,6 +134,24 @@ public class CharacterSheet {
         return charSubclass;
     }
 
+    // Sets the character's background, does not require any checks for validity
+    public void setCharBackground(String charBackground) {
+        this.charBackground = charBackground;
+    }
+
+    // Returns the value of the background attribute
+    public String getCharBackground() {
+        return charBackground;
+    }
+
+    public String getCharRace() {
+        return charRace;
+    }
+
+    public void setCharRace(String charRace) {
+        this.charRace = charRace;
+    }
+
     // This sets and gets the array of six stats after rolling them
     // If you want a threshold you enter a number between 70 and 100
     public void rollStats(int threshold) {
@@ -138,68 +177,49 @@ public class CharacterSheet {
     }
 
     // Lets us swap two different stat locations, assuming the input is a name of a stat, not an index
-    public void configureStats(String swapFrom, String swapTo) {
+    public void configureStats() {
         int indexFrom = -1;
         int indexTo = -1;
 
+        System.out.println("Which stat would you like to swap from?");
+        String swapFrom = scan.nextLine();
+        System.out.println("Which stat would you like to swap the score to?");
+        String swapTo = scan.nextLine();
         swapFrom = ClassValidator.capitalizeFirst(swapFrom);
         swapTo = ClassValidator.capitalizeFirst(swapTo);
 
-        for (int i = 0; i < statNames.length; ++i) {
+        for (int i = 0; i < statArray.length; ++i) {
             if (swapFrom.equals(statNames[i])) {
                 indexFrom = i;
             }
             if (swapTo.equals(statNames[i])) {
                 indexTo = i;
             }
-            // Could also use a while loop around the above if-statements, and it will check this condition too
-            if ((indexFrom != -1) && (indexTo != -1)) {
-                 break;
+            if ((indexFrom != -1 && indexTo != -1)) {
+                break;
             }
         }
-        // Swaps the two locations, and holds one value so that they can switch at the "same" time
-        int tempHolder = statArray[indexTo];
-        statArray[indexTo] = statArray[indexFrom];
-        statArray[indexFrom] = tempHolder;
-    }
-
-    public void newConfigureStats() {
-
-
-
     }
 
     public void optimizeStats(String charClass) {
         int maximumStatVal = statArray[0];
         int indexFrom = 0;
         int indexTo = 0;
-
         for (int i = 0; i < statArray.length; ++i) {
             if (statArray[i] > maximumStatVal) {
                 maximumStatVal = statArray[i];
                 indexFrom = i;
             }
         }
-
         for (int i = 0; i < classArray.length; ++i) {
             if (charClass.equals(classArray[i])) {
                 indexTo = indexOfOptimizedStatsByClassArray[i];
                 break;
             }
         }
-
         int tempHolder = statArray[indexTo];
         statArray[indexTo] = statArray[indexFrom];
         statArray[indexFrom] = tempHolder;
-    }
-
-    // Lets us just take in the index rather than stat name for the above function, kind of optional
-    public void configureStats(int indexFrom, int indexTo) {
-        if ( ((indexFrom >= 0 ) && (indexTo >= 0)) && (indexTo != indexFrom) ) {
-            int tempHolder = statArray[indexTo];
-            statArray[indexTo] = statArray[indexFrom];
-            statArray[indexFrom] = tempHolder;
-        }
     }
 
     public void applyRacialModifier(int racialModifier, String statName) {
@@ -211,7 +231,6 @@ public class CharacterSheet {
                 break;
             }
         }
-        // Does this need to be outside the for loop when I am not returning anything?
         statArray[index] = statArray[index] + racialModifier;
     }
 
@@ -250,6 +269,7 @@ public class CharacterSheet {
     public void printClassSkillOptions() {
         if (!charClass.equals("Bard")) {
             String[] skillList = RandCharacterGenerator.getClassSkillArray(charClass);
+            assert skillList != null;
             String numChoices = skillList[0];
             System.out.println("Choose " + numChoices + " additional skills from this list: ");
             for (int i = 0; i < skillList.length - 1; ++i) {
@@ -260,28 +280,55 @@ public class CharacterSheet {
         }
     }
 
-    public void printCharacterSheet() {
+    public void printAll() {
         System.out.println("\nHere is your character sheet!\n\n\n");
-        System.out.println(charName + "           " + charClass);
-        System.out.println(charBackground + "          " + charSubclass);
+        System.out.println(charName + "         " + charBackground);
+        System.out.println("Maximum Hitpoints: " + charHitPoints);
+        System.out.println("Level " + charLevel + " " + charClass);
+        System.out.println(charSubclass + "\n");
+        System.out.println("Strength: " + statArray[0]);
+        System.out.println("Dexterity: " + statArray[1]);
+        System.out.println("Constitution: " + statArray[2]);
+        System.out.println("Intelligence: " + statArray[3]);
+        System.out.println("Wisdom: " + statArray[4]);
+        System.out.println("Charisma: " + statArray[5]);
+        System.out.print("\nSkill Proficiencies: ");
+        for (int i = 0; i < skillArray.size(); ++i) {
+            if (i != skillArray.size() - 1) {
+                System.out.print(skillArray.get(i) + ", ");
+            } else {
+                System.out.print(skillArray.get(i));
+            }
+        }
+        System.out.println("\n\n");
     }
 
-
-    // Sets the character's background, does not require any checks for validity
-    public void setCharBackground(String charBackground) {
-        this.charBackground = charBackground;
+    public void nextLevel() {
+        charLevel++;
+        charHitPoints += DiceRoller.rollDice(charHitDieType,1) + abilityScoreModifier(2);
     }
 
-    // Returns the value of the background attribute
-    public String getCharBackground() {
-        return charBackground;
+    public void setCharHitPoints(int constitutionModifier) {
+        charHitPoints = DiceRoller.rollDice(charHitDieType,charLevel-1);
+        charHitPoints += charHitDieType + constitutionModifier;
     }
 
-    public String getCharRace() {
-        return charRace;
+    public int abilityScoreModifier(int indexStat) {
+        int abilityScoreModifier;
+        if (statArray[indexStat] < 10) {
+            abilityScoreModifier =  Math.floorDiv((statArray[indexStat]-10), 2);
+        } else {
+            abilityScoreModifier =  (statArray[indexStat]-10) / 2;
+        }
+        return abilityScoreModifier;
     }
 
-    public void setCharRace(String charRace) {
-        this.charRace = charRace;
+    public void setCharHitDieType() {
+        for (int i = 0; i < classArray.length; ++i) {
+            if (charClass.equals(classArray[i])) {
+                charHitDieType = hitDiceByClass[i];
+                break;
+            }
+        }
     }
 }
