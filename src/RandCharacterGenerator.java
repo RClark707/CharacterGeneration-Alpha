@@ -359,7 +359,6 @@ public class RandCharacterGenerator {
         switch (desiredArrayName) {
             case "Class" -> {
                 System.out.print("\n");
-                // TODO: have a cool description about each class?
                 System.out.println("Here are the valid Classes:");
                 for (String s : classArray) {
                     System.out.println(s);
@@ -379,7 +378,6 @@ public class RandCharacterGenerator {
             }
             case "Race" -> {
                 System.out.print("\n");
-                // TODO: have a cool description about each race?
                 System.out.println("Here are examples of valid Races (but you can enter whatever you want):");
                 for (String s : raceArray) {
                     System.out.println(s);
@@ -388,7 +386,6 @@ public class RandCharacterGenerator {
             }
             case "Background" -> {
                 System.out.print("\n");
-                // TODO: have a cool description about each background?
                 System.out.println("Here are examples of valid Backgrounds (but you can enter whatever you want):");
                 for (String s : backgroundArray) {
                     System.out.println(s);
@@ -397,7 +394,6 @@ public class RandCharacterGenerator {
             }
             case "Schools of Magic" -> {
                 System.out.print("\n");
-                // TODO: have a cool description about each school?
                 System.out.println("Here are examples of valid Schools of Magic (but you can enter whatever you want):");
                 for (String s : schoolsOfMagic) {
                     System.out.println(s);
