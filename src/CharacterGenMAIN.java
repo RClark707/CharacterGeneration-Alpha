@@ -39,12 +39,14 @@ public class CharacterGenMAIN {
                                 charName = RandCharacterGenerator.randName();
                             }
                             // This makes the object with a named attribute of the character's name
+                            charName = ClassValidator.capitalizeFirst(charName);
                             Party.addCharacter(charName);
                             System.out.println("Let's create " + charName + "!\n");
                             // This is like the configureSpell method, it lets us set all the internal attributes of the party member
                             // Soon, we will also need a method to print the literal character sheet of the party member,
                             // For right now, the printing of the character sheet is within the createCharacter method
                             // It is on the to do list though
+                            System.out.println("At any point, type \"options\" to see examples of valid entries.");
                             Party.createCharacter(Party.returnCharacter(charName));
                         } else {
                             Party.fullRandom();

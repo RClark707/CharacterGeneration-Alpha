@@ -22,4 +22,30 @@ public class InputChecker {
     public static boolean options(String userInput) {
         return userInput.equals("Options") || userInput.equals("options");
     }
+
+    public static String shortToLong(String userInput) {
+        switch(userInput) {
+            case "str", "STR", "Str" -> {
+                return "Strength";
+            }
+            case "dex", "DEX", "Dex" -> {
+                return "Dexterity";
+            }
+            case "con", "CON", "Con" -> {
+                return "Constitution";
+            }
+            case "int", "INT", "Int" -> {
+                return "Intelligence";
+            }
+            case "wis", "WIS", "Wis" -> {
+                return "Wisdom";
+            }
+            case "cha", "CHA", "Cha" -> {
+                return "Charisma";
+            }
+            default -> {
+                return userInput;
+            }
+        }
+    }
 }

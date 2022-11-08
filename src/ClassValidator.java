@@ -16,14 +16,14 @@ public class ClassValidator {
             "Wizard",
     };
 
-    private static final String[] subclasses0 = {
+    private static final String[] artificerSubclasses = {
             "Armorer",
             "Alchemist",
             "Battle Smith",
             "Artillerist",
     };
 
-    private static final String[] subclasses1 = {
+    private static final String[] barbarianSubclasses = {
             "Path of the Ancestral Guardian",
             "Path of the Battlerager",
             "Path of the Beast",
@@ -34,7 +34,7 @@ public class ClassValidator {
             "Path of the Zealot",
     };
 
-    private static final String[] subclasses2 = {
+    private static final String[] bardSubclasses = {
             "College of Creation",
             "College of Eloquence",
             "College of Glamour",
@@ -45,7 +45,7 @@ public class ClassValidator {
             "College of Whispers",
     };
 
-    private static final String[] subclasses3 = {
+    private static final String[] clericSubclasses = {
             "Arcana Domain",
             "Death Domain",
             "Forge Domain",
@@ -62,7 +62,7 @@ public class ClassValidator {
             "War Domain",
     };
 
-    private static final String[] subclasses4 = {
+    private static final String[] druidSubclasses = {
             "Circle of Dreams",
             "Circle of the Land",
             "Circle of the Moon",
@@ -72,7 +72,7 @@ public class ClassValidator {
             "Circle of Wildfire",
     };
 
-    private static final String[] subclasses5 = {
+    private static final String[] fighterSubclasses = {
             "Arcane Archer",
             "Banneret",
             "Battle Master",
@@ -85,7 +85,7 @@ public class ClassValidator {
             "Samurai",
     };
 
-    private static final String[] subclasses6 = {
+    private static final String[] monkSubclasses = {
             "Way of Mercy",
             "Way of the Astral Self",
             "Way of the Drunken Master",
@@ -98,7 +98,7 @@ public class ClassValidator {
             "Way of the Ascendant Dragon",
     };
 
-    private static final String[] subclasses7 = {
+    private static final String[] paladinSubclasses = {
             "Oath of the Ancients",
             "Oath of Conquest",
             "Oath of the Crown",
@@ -121,7 +121,7 @@ public class ClassValidator {
             "Drakewarden",
     };
 
-    private static final String[] subclasses9 = {
+    private static final String[] rogueSubclasses = {
             "Arcane Trickster",
             "Assassin",
             "Inquisitive",
@@ -133,7 +133,7 @@ public class ClassValidator {
             "Thief",
     };
 
-    private static final String[] subclasses10 = {
+    private static final String[] sorcererSubclasses = {
             "Aberrant Mind",
             "Clockwork Soul",
             "Draconic Bloodline",
@@ -143,7 +143,7 @@ public class ClassValidator {
             "Wild Magic",
     };
 
-    private static final String[] subclasses11 = {
+    private static final String[] warlockSubclasses = {
             "Archfey",
             "Celestial",
             "Fathomless",
@@ -155,7 +155,7 @@ public class ClassValidator {
             "Undying",
     };
 
-    private static final String[] subclasses12 = {
+    private static final String[] wizardSubclasses = {
             "School of Abjuration",
             "School of Bladesinging",
             "School of Chronurgy",
@@ -188,8 +188,6 @@ public class ClassValidator {
     }
 
     public static boolean isValidClass(String charClass) {
-        // Here we make sure the first letter is Capitalized, but now I've been doing this right after retrieving the charClass in the Party class
-        // charClass = ClassValidator.capitalizeFirst(charClass);
         for (String s : classArray) {
             if (charClass.equals(s) || charClass.equals("Random")) {
                 return true;
@@ -207,56 +205,56 @@ public class ClassValidator {
         } else {
             switch (charClass) {
                 case "Artificer" -> {
-                    for (String s : subclasses0) {
+                    for (String s : artificerSubclasses) {
                         if (subclass.equals(s)) {
                             return true;
                         }
                     }
                 }
                 case "Barbarian" -> {
-                    for (String s : subclasses1) {
+                    for (String s : barbarianSubclasses) {
                         if (subclass.equals(s)) {
                             return true;
                         }
                     }
                 }
                 case "Bard" -> {
-                    for (String s : subclasses2) {
+                    for (String s : bardSubclasses) {
                         if (subclass.equals(s)) {
                             return true;
                         }
                     }
                 }
                 case "Cleric" -> {
-                    for (String s : subclasses3) {
+                    for (String s : clericSubclasses) {
                         if (subclass.equals(s)) {
                             return true;
                         }
                     }
                 }
                 case "Druid" -> {
-                    for (String s : subclasses4) {
+                    for (String s : druidSubclasses) {
                         if (subclass.equals(s)) {
                             return true;
                         }
                     }
                 }
                 case "Fighter" -> {
-                    for (String s : subclasses5) {
+                    for (String s : fighterSubclasses) {
                         if (subclass.equals(s)) {
                             return true;
                         }
                     }
                 }
                 case "Monk" -> {
-                    for (String s : subclasses6) {
+                    for (String s : monkSubclasses) {
                         if (subclass.equals(s)) {
                             return true;
                         }
                     }
                 }
                 case "Paladin" -> {
-                    for (String s : subclasses7) {
+                    for (String s : paladinSubclasses) {
                         if (subclass.equals(s)) {
                             return true;
                         }
@@ -270,28 +268,28 @@ public class ClassValidator {
                     }
                 }
                 case "Rogue" -> {
-                    for (String s : subclasses9) {
+                    for (String s : rogueSubclasses) {
                         if (subclass.equals(s)) {
                             return true;
                         }
                     }
                 }
                 case "Sorcerer" -> {
-                    for (String s : subclasses10) {
+                    for (String s : sorcererSubclasses) {
                         if (subclass.equals(s)) {
                             return true;
                         }
                     }
                 }
                 case "Warlock" -> {
-                    for (String s : subclasses11) {
+                    for (String s : warlockSubclasses) {
                         if (subclass.equals(s)) {
                             return true;
                         }
                     }
                 }
                 case "Wizard" -> {
-                    for (String s : subclasses12) {
+                    for (String s : wizardSubclasses) {
                         if (subclass.equals(s)) {
                             return true;
                         }
@@ -308,10 +306,10 @@ public class ClassValidator {
     } // end of method
 
     public static boolean isValidStat(String statName) {
+        // checks to see if the inputted stat was the short form
         if (!(Character.isUpperCase(statName.charAt(0)))) {
             statName = statName.substring(0, 1).toUpperCase() + statName.substring(1);
         }
-
         for (String s : statNames) {
             if (statName.equals(s)) {
                 return true;

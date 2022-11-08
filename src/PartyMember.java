@@ -185,19 +185,28 @@ public class PartyMember {
         String swapFrom = scan.nextLine();
         System.out.println("Which stat would you like to swap the score to?");
         String swapTo = scan.nextLine();
+        swapFrom = InputChecker.shortToLong(swapFrom);
+        swapTo = InputChecker.shortToLong(swapTo);
+        // Find a way to make these both not run in unison, but to pick one
         swapFrom = ClassValidator.capitalizeFirst(swapFrom);
         swapTo = ClassValidator.capitalizeFirst(swapTo);
-
-        for (int i = 0; i < statArray.length; ++i) {
-            if (swapFrom.equals(statNames[i])) {
-                indexFrom = i;
+        if (ClassValidator.isValidStat(swapFrom) && ClassValidator.isValidStat(swapTo)) {
+            for (int i = 0; i < statArray.length; ++i) {
+                if (swapFrom.equals(statNames[i])) {
+                    indexFrom = i;
+                }
+                if (swapTo.equals(statNames[i])) {
+                    indexTo = i;
+                }
+                if ((indexFrom != -1 && indexTo != -1)) {
+                    break;
+                }
             }
-            if (swapTo.equals(statNames[i])) {
-                indexTo = i;
-            }
-            if ((indexFrom != -1 && indexTo != -1)) {
-                break;
-            }
+            int tempHolder = statArray[indexTo];
+            statArray[indexTo] = statArray[indexFrom];
+            statArray[indexFrom] = tempHolder;
+        } else {
+            System.out.println("One or more of the stats you entered is either invalid or misspelled.");
         }
     }
 

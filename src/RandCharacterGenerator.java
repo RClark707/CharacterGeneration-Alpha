@@ -30,6 +30,161 @@ public class RandCharacterGenerator {
             "Wizard",
     };
 
+    private static final String[] artificerSubclasses = {
+            "Armorer",
+            "Alchemist",
+            "Battle Smith",
+            "Artillerist",
+    };
+
+    private static final String[] barbarianSubclasses = {
+            "Path of the Ancestral Guardian",
+            "Path of the Battlerager",
+            "Path of the Beast",
+            "Path of the Berserker",
+            "Path of the Storm Herald",
+            "Path of the Totem Warrior",
+            "Path of Wild Magic",
+            "Path of the Zealot",
+    };
+
+    private static final String[] bardSubclasses = {
+            "College of Creation",
+            "College of Eloquence",
+            "College of Glamour",
+            "College of Lore",
+            "College of Spirits",
+            "College of Swords",
+            "College of Valor",
+            "College of Whispers",
+    };
+
+    private static final String[] clericSubclasses = {
+            "Arcana Domain",
+            "Death Domain",
+            "Forge Domain",
+            "Grave Domain",
+            "Knowledge Domain",
+            "Life Domain",
+            "Light Domain",
+            "Nature Domain",
+            "Order Domain",
+            "Peace Domain",
+            "Tempest Domain",
+            "Trickery Domain",
+            "Twilight Domain",
+            "War Domain",
+    };
+
+    private static final String[] druidSubclasses = {
+            "Circle of Dreams",
+            "Circle of the Land",
+            "Circle of the Moon",
+            "Circle of the Shepherd",
+            "Circle of Spores",
+            "Circle of Stars",
+            "Circle of Wildfire",
+    };
+
+    private static final String[] fighterSubclasses = {
+            "Arcane Archer",
+            "Banneret",
+            "Battle Master",
+            "Cavalier",
+            "Champion",
+            "Echo Knight",
+            "Eldritch Knight",
+            "Psi Warrior",
+            "Rune Knight",
+            "Samurai",
+    };
+
+    private static final String[] monkSubclasses = {
+            "Way of Mercy",
+            "Way of the Astral Self",
+            "Way of the Drunken Master",
+            "Way of the Four Elements",
+            "Way of the Kensei",
+            "Way of the Long Death",
+            "Way of the Open Hand",
+            "Way of Shadow",
+            "Way of the Sun Soul",
+            "Way of the Ascendant Dragon",
+    };
+
+    private static final String[] paladinSubclasses = {
+            "Oath of the Ancients",
+            "Oath of Conquest",
+            "Oath of the Crown",
+            "Oath of Devotion",
+            "Oath of Glory",
+            "Oath of Redemption",
+            "Oath of Vengeance",
+            "Oath of the Watchers",
+            "Oathbreaker",
+    };
+
+    private static final String[] rangerSubclasses = {
+            "Beast Master Conclave",
+            "Fey Wanderer",
+            "Gloom Stalker Conclave",
+            "Horizon Walker Conclave",
+            "Hunter Conclave",
+            "Monster Slayer Conclave",
+            "Swarmkeeper",
+            "Drakewarden",
+    };
+
+    private static final String[] rogueSubclasses = {
+            "Arcane Trickster",
+            "Assassin",
+            "Inquisitive",
+            "Mastermind",
+            "Phantom",
+            "Scout",
+            "Soulknife",
+            "Swashbuckler",
+            "Thief",
+    };
+
+    private static final String[] sorcererSubclasses = {
+            "Aberrant Mind",
+            "Clockwork Soul",
+            "Draconic Bloodline",
+            "Divine Soul",
+            "Shadow Magic",
+            "Storm Sorcery",
+            "Wild Magic",
+    };
+
+    private static final String[] warlockSubclasses = {
+            "Archfey",
+            "Celestial",
+            "Fathomless",
+            "Fiend",
+            "The Genie",
+            "Great Old One",
+            "Hexblade",
+            "Undead",
+            "Undying",
+    };
+
+    private static final String[] wizardSubclasses = {
+            "School of Abjuration",
+            "School of Bladesinging",
+            "School of Chronurgy",
+            "School of Conjuration",
+            "School of Divination",
+            "School of Enchantment",
+            "School of Evocation",
+            "School of Graviturgy",
+            "School of Illusion",
+            "School of Necromancy",
+            "Order of Scribes",
+            "School of Transmutation",
+            "School of War Magic",
+    };
+
     private static final String[] statNames = {
             "Strength",
             "Dexterity",
@@ -148,8 +303,6 @@ public class RandCharacterGenerator {
             "Val",
     };
 
-    // TODO: Add Random Backgrounds!
-
     public static final String[] backgroundArray = {
             "Acolyte",
             "Anthropologist",
@@ -191,6 +344,116 @@ public class RandCharacterGenerator {
             "Spy",
     };
 
+    private static final String[] schoolsOfMagic = {
+            "Abjuration",
+            "Conjuration",
+            "Divination",
+            "Enchantment",
+            "Evocation",
+            "Illusions",
+            "Necromancy",
+            "Transmutation",
+    };
+
+    public static void printOptions(String desiredArrayName, String charClass) {
+        switch (desiredArrayName) {
+            case "Class" -> {
+                System.out.print("\n");
+                // TODO: have a cool description about each class?
+                System.out.println("Here are the valid Classes:");
+                for (String s : classArray) {
+                    System.out.println(s);
+                }
+                System.out.print("\n");
+            }
+            case "Subclass" -> {
+                System.out.print("\n");
+                System.out.println("Here are the valid Subclasses:");
+                // For some reason, IntelliJ really doesn't like that this could have a null pointer, but I don't believe it can
+                if (RandCharacterGenerator.returnSubclassArray(charClass) != null) {
+                    for (String s : RandCharacterGenerator.returnSubclassArray(charClass)) {
+                        System.out.println(s);
+                    }
+                }
+                System.out.print("\n");
+            }
+            case "Race" -> {
+                System.out.print("\n");
+                // TODO: have a cool description about each race?
+                System.out.println("Here are examples of valid Races (but you can enter whatever you want):");
+                for (String s : raceArray) {
+                    System.out.println(s);
+                }
+                System.out.print("\n");
+            }
+            case "Background" -> {
+                System.out.print("\n");
+                // TODO: have a cool description about each background?
+                System.out.println("Here are examples of valid Backgrounds (but you can enter whatever you want):");
+                for (String s : backgroundArray) {
+                    System.out.println(s);
+                }
+                System.out.print("\n");
+            }
+            case "Schools of Magic" -> {
+                System.out.print("\n");
+                // TODO: have a cool description about each school?
+                System.out.println("Here are examples of valid Schools of Magic (but you can enter whatever you want):");
+                for (String s : schoolsOfMagic) {
+                    System.out.println(s);
+                }
+                System.out.print("\n");
+            }
+        }
+    }
+
+    public static String[] returnSubclassArray(String charClass) {
+        switch (charClass) {
+            case "Artificer" -> {
+                return artificerSubclasses;
+            }
+            case "Barbarian" -> {
+                return barbarianSubclasses;
+            }
+            case "Bard" -> {
+                return bardSubclasses;
+            }
+            case "Cleric" -> {
+                return clericSubclasses;
+            }
+            case "Druid" -> {
+                return druidSubclasses;
+            }
+            case "Fighter" -> {
+                return fighterSubclasses;
+            }
+            case "Monk" -> {
+                return monkSubclasses;
+            }
+            case "Paladin" -> {
+                return paladinSubclasses;
+            }
+            case "Ranger" -> {
+                return rangerSubclasses;
+            }
+            case "Rogue" -> {
+                return rogueSubclasses;
+            }
+            case "Sorcerer" -> {
+                return sorcererSubclasses;
+            }
+            case "Warlock" -> {
+                return warlockSubclasses;
+            }
+            case "Wizard" -> {
+                return wizardSubclasses;
+            }
+            default -> {
+                return statNames;
+            }
+        }
+    }
+
     public static String randName() {
         return nameArray[rand.nextInt(nameArray.length)];
     }
@@ -211,204 +474,35 @@ public class RandCharacterGenerator {
         // An enhanced switch cleans it up a little, removing breaks and surrounding each case in braces
         switch (charClass) {
             //Artificer
-            case "Artificer" -> {
-                // we will use a random number based on the quantity of valid subclasses
+            case "Artificer" -> // we will use a random number based on the quantity of valid subclasses
                 // in order to pick a subclass
-                String[] subclasses0 = {
-                        "Armorer",
-                        "Alchemist",
-                        "Battle Smith",
-                        "Artillerist",
-                };
-                charSubclass = subclasses0[rand.nextInt(subclasses0.length)];
-            }
+                    charSubclass = artificerSubclasses[rand.nextInt(artificerSubclasses.length)];
             //Barbarian
-            case "Barbarian" -> {
-                String[] subclasses1 = {
-                        "Path of the Ancestral Guardian",
-                        "Path of the Battlerager",
-                        "Path of the Beast",
-                        "Path of the Berserker",
-                        "Path of the Storm Herald",
-                        "Path of the Totem Warrior",
-                        "Path of Wild Magic",
-                        "Path of the Zealot",
-                };
-                charSubclass = subclasses1[rand.nextInt(subclasses1.length)];
-            }
+            case "Barbarian" -> charSubclass = barbarianSubclasses[rand.nextInt(barbarianSubclasses.length)];
             //Bard
-            case "Bard" -> {
-                String[] subclasses2 = {
-                        "College of Creation",
-                        "College of Eloquence",
-                        "College of Glamour",
-                        "College of Lore",
-                        "College of Spirits",
-                        "College of Swords",
-                        "College of Valor",
-                        "College of Whispers",
-                };
-                charSubclass = subclasses2[rand.nextInt(subclasses2.length)];
-            }
+            case "Bard" -> charSubclass = bardSubclasses[rand.nextInt(bardSubclasses.length)];
             //Cleric
-            case "Cleric" -> {
-                String[] subclasses3 = {
-                        "Arcana Domain",
-                        "Death Domain",
-                        "Forge Domain",
-                        "Grave Domain",
-                        "Knowledge Domain",
-                        "Life Domain",
-                        "Light Domain",
-                        "Nature Domain",
-                        "Order Domain",
-                        "Peace Domain",
-                        "Tempest Domain",
-                        "Trickery Domain",
-                        "Twilight Domain",
-                        "War Domain",
-                };
-                charSubclass = subclasses3[rand.nextInt(subclasses3.length)];
-            }
+            case "Cleric" -> charSubclass = clericSubclasses[rand.nextInt(clericSubclasses.length)];
             //Druid
-            case "Druid" -> {
-                String[] subclasses4 = {
-                        "Circle of Dreams",
-                        "Circle of the Land",
-                        "Circle of the Moon",
-                        "Circle of the Shepherd",
-                        "Circle of Spores",
-                        "Circle of Stars",
-                        "Circle of Wildfire",
-                };
-                charSubclass = subclasses4[rand.nextInt(subclasses4.length)];
-            }
+            case "Druid" -> charSubclass = druidSubclasses[rand.nextInt(druidSubclasses.length)];
             //Fighter
-            case "Fighter" -> {
-                String[] subclasses5 = {
-                        "Arcane Archer",
-                        "Banneret",
-                        "Battle Master",
-                        "Cavalier",
-                        "Champion",
-                        "Echo Knight",
-                        "Eldritch Knight",
-                        "Psi Warrior",
-                        "Rune Knight",
-                        "Samurai",
-                };
-                charSubclass = subclasses5[rand.nextInt(subclasses5.length)];
-            }
+            case "Fighter" -> charSubclass = fighterSubclasses[rand.nextInt(fighterSubclasses.length)];
             //Monk
-            case "Monk" -> {
-                String[] subclasses6 = {
-                        "Way of Mercy",
-                        "Way of the Astral Self",
-                        "Way of the Drunken Master",
-                        "Way of the Four Elements",
-                        "Way of the Kensei",
-                        "Way of the Long Death",
-                        "Way of the Open Hand",
-                        "Way of Shadow",
-                        "Way of the Sun Soul",
-                        "Way of the Ascendant Dragon",
-                };
-                charSubclass = subclasses6[rand.nextInt(subclasses6.length)];
-            }
+            case "Monk" -> charSubclass = monkSubclasses[rand.nextInt(monkSubclasses.length)];
             //Paladin
-            case "Paladin" -> {
-                String[] subclasses7 = {
-                        "Oath of the Ancients",
-                        "Oath of Conquest",
-                        "Oath of the Crown",
-                        "Oath of Devotion",
-                        "Oath of Glory",
-                        "Oath of Redemption",
-                        "Oath of Vengeance",
-                        "Oath of the Watchers",
-                        "Oathbreaker",
-                };
-                charSubclass = subclasses7[rand.nextInt(subclasses7.length)];
-            }
+            case "Paladin" -> charSubclass = paladinSubclasses[rand.nextInt(paladinSubclasses.length)];
             //Ranger
-            case "Ranger" -> {
-                String[] subclasses8 = {
-                        "Beast Master Conclave",
-                        "Fey Wanderer",
-                        "Gloom Stalker Conclave",
-                        "Horizon Walker Conclave",
-                        "Hunter Conclave",
-                        "Monster Slayer Conclave",
-                        "Swarmkeeper",
-                        "Drakewarden",
-                };
-                charSubclass = subclasses8[rand.nextInt(subclasses8.length)];
-            }
+            case "Ranger" -> charSubclass = rangerSubclasses[rand.nextInt(rangerSubclasses.length)];
             //Rogue
-            case "Rogue" -> {
-                String[] subclasses9 = {
-                        "Arcane Trickster",
-                        "Assassin",
-                        "Inquisitive",
-                        "Mastermind",
-                        "Phantom",
-                        "Scout",
-                        "Soulknife",
-                        "Swashbuckler",
-                        "Thief",
-                };
-                charSubclass = subclasses9[rand.nextInt(subclasses9.length)];
-            }
+            case "Rogue" -> charSubclass = rogueSubclasses[rand.nextInt(rogueSubclasses.length)];
             //Sorcerer
-            case "Sorcerer" -> {
-                String[] subclasses10 = {
-                        "Aberrant Mind",
-                        "Clockwork Soul",
-                        "Draconic Bloodline",
-                        "Divine Soul",
-                        "Shadow Magic",
-                        "Storm Sorcery",
-                        "Wild Magic",
-                };
-                charSubclass = subclasses10[rand.nextInt(subclasses10.length)];
-            }
+            case "Sorcerer" -> charSubclass = sorcererSubclasses[rand.nextInt(sorcererSubclasses.length)];
             //Warlock
-            case "Warlock" -> {
-                String[] subclasses11 = {
-                        "Archfey",
-                        "Celestial",
-                        "Fathomless",
-                        "Fiend",
-                        "The Genie",
-                        "Great Old One",
-                        "Hexblade",
-                        "Undead",
-                        "Undying",
-                };
-                charSubclass = subclasses11[rand.nextInt(subclasses11.length)];
-            }
+            case "Warlock" -> charSubclass = warlockSubclasses[rand.nextInt(warlockSubclasses.length)];
             //Wizard
-            case "Wizard" -> {
-                String[] subclasses12 = {
-                        "School of Abjuration",
-                        "School of Bladesinging",
-                        "School of Chronurgy",
-                        "School of Conjuration",
-                        "School of Divination",
-                        "School of Enchantment",
-                        "School of Evocation",
-                        "School of Graviturgy",
-                        "School of Illusion",
-                        "School of Necromancy",
-                        "Order of Scribes",
-                        "School of Transmutation",
-                        "School of War Magic",
-                };
-                charSubclass = subclasses12[rand.nextInt(subclasses12.length)];
-            }
+            case "Wizard" -> charSubclass = wizardSubclasses[rand.nextInt(wizardSubclasses.length)];
             default -> System.out.println("Looks like there is an error!");
         }
-
         return charSubclass;
     }
 

@@ -34,6 +34,15 @@ public class Party {
                         race = RandCharacterGenerator.randRace();
                         character.setCharRace(race);
                         System.out.println("You are now a " + character.getCharRace());
+                    } else if (InputChecker.options(race)) {
+                        RandCharacterGenerator.printOptions("Race",null);
+                        System.out.println("What is your Race?");
+                        race = scan.nextLine();
+                        if (InputChecker.random(race)) {
+                          race = RandCharacterGenerator.randRace();
+                        }
+                        race = ClassValidator.capitalizeFirst(race);
+                        character.setCharRace(race);
                     } else {
                         race = ClassValidator.capitalizeFirst(race);
                         character.setCharRace(race);
@@ -52,6 +61,22 @@ public class Party {
                     } else if (ClassValidator.isValidClass(charClass)) {
                         character.setCharClass(charClass);
                         character.setCharHitDieType();
+                    } else if (InputChecker.options(charClass)) {
+                        RandCharacterGenerator.printOptions("Class",null);
+                        System.out.println("What is your Class?");
+                        charClass = scan.nextLine();
+                        charClass = ClassValidator.capitalizeFirst(charClass);
+                        if (InputChecker.random(charClass)) {
+                            charClass = RandCharacterGenerator.randCharClass();
+                            character.setCharClass(charClass);
+                            System.out.println("You are now a " + character.getCharRace() + " " + character.getCharClass());
+                        } else if (ClassValidator.isValidClass(charClass)) {
+                            character.setCharClass(charClass);
+                            character.setCharHitDieType();
+                        } else {
+                            System.out.println("Sorry, you either entered an unknown Class, or misspelled it.");
+                        }
+
                     } else {
                         System.out.println("Sorry, you either entered an unknown Class, or misspelled it.");
                     }
@@ -68,6 +93,20 @@ public class Party {
                         System.out.println("You are now a " + character.getCharRace() + " " + character.getCharSubclass() + " " + character.getCharClass());
                     } else if (ClassValidator.isValidSubclass(charSubclass, character.getCharClass())) {
                         character.setCharSubclass(charSubclass);
+                    } else if (InputChecker.options(charSubclass)) {
+                        RandCharacterGenerator.printOptions("Subclass",character.getCharClass());
+                        System.out.println("What is your Subclass?");
+                        charSubclass = scan.nextLine();
+                        charSubclass = ClassValidator.capitalizeFirst(charSubclass);
+                        if (InputChecker.random(charSubclass)) {
+                            charSubclass = RandCharacterGenerator.randCharSubclass(character.getCharClass());
+                            character.setCharSubclass(charSubclass);
+                            System.out.println("You are now a " + character.getCharRace() + " " + character.getCharSubclass() + " " + character.getCharClass());
+                        } else if (ClassValidator.isValidSubclass(charSubclass,character.getCharClass())) {
+                            character.setCharClass(charSubclass);
+                        } else {
+                            System.out.println("Sorry, you either entered an unknown Subclass, or misspelled it.");
+                        }
                     } else {
                         System.out.println("Sorry, you either entered an unknown Subclass, or misspelled it.");
                     }
@@ -79,14 +118,29 @@ public class Party {
                     background = ClassValidator.capitalizeFirst(background);
                     if (InputChecker.random(background)) {
                         background = RandCharacterGenerator.randBackground();
+                        character.setCharBackground(background);
                         System.out.println("You were a " + character.getCharBackground());
+                    } else if (InputChecker.options(background)) {
+                        RandCharacterGenerator.printOptions("Background",null);
+                        System.out.println("What is your Background?");
+                        background = scan.nextLine();
+                        if (InputChecker.random(background)) {
+                            background = RandCharacterGenerator.randBackground();
+                            character.setCharBackground(background);
+                            System.out.println("You were a " + character.getCharBackground());
+                        } else {
+                            background = ClassValidator.capitalizeFirst(background);
+                            character.setCharBackground(background);
+                        }
+                    } else {
+                        character.setCharBackground(background);
                     }
-                    character.setCharBackground(background);
+
                 } // end of Background
                 // Step 5: Skills! :)
                 // Not using a while loop here, for no particular reason
                 // If a character gets more proficiencies from their race or something, ou can get more random ones here
-                System.out.println("How many additional skills do you have (outside of your class)");
+                System.out.println("How many additional skills do you have (outside of your class & background)");
                 int numBonus = scan.nextInt();
                 if (character.getCharClass().equals("Bard")) {
                     numBonus += 3;
@@ -157,6 +211,7 @@ public class Party {
                     do {
                         System.out.println("\nWhich stat would you like to apply a +2 Racial Modifier to?");
                         preference = scan.nextLine();
+                        preference = InputChecker.shortToLong(preference);
                     } while (!ClassValidator.isValidStat(preference));
                     character.applyRacialModifier(2, preference);
                     do {
@@ -164,6 +219,7 @@ public class Party {
                         String previousPref = preference;
                         System.out.println("\nWhich stat would you like to apply a +1 Racial modifier to?");
                         preference = scan.nextLine();
+                        preference = InputChecker.shortToLong(preference);
                         if (previousPref.equals(preference)) {
                             notUnique = true;
                             System.out.println("You already boosted that stat... Please pick another one.");

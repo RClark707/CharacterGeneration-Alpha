@@ -7,17 +7,6 @@ public class SpellBook {
     Random rand = new Random();
     Scanner scan = new Scanner(System.in);
 
-    private final String[] schoolsOfMagic = {
-            "Abjuration",
-            "Conjuration",
-            "Divination",
-            "Enchantment",
-            "Evocation",
-            "Illusions",
-            "Necromancy",
-            "Transmutation",
-    };
-
     // The addSpell method takes in a String, because that is the easiest method of user input,
     // and then uses the String in conjunction with the spellBuilder method, located within the Spell class,
     // to construct a new spell with a name being the String input we originally had
@@ -46,11 +35,7 @@ public class SpellBook {
             System.out.println("What school of magic is this spell from? (Enter \"Options\" to see some examples of schools of magic)");
             String spellSchool = scan.nextLine();
             if (InputChecker.options(spellSchool)) {
-                System.out.print("\n");
-                for (String s : schoolsOfMagic) {
-                    System.out.println(s);
-                }
-                System.out.print("\n");
+                RandCharacterGenerator.printOptions("Schools of Magic",null);
                 System.out.println("What school of magic is this spell from?");
                 spellSchool = scan.nextLine();
             }
