@@ -64,6 +64,7 @@ public class SpellBook {
                 String hasHigherLevelEffects = scan.nextLine();
                 if (!InputChecker.no(hasHigherLevelEffects)) {
                     if (hasHigherLevelEffects.equals("attacks") || hasHigherLevelEffects.equals("Attacks")) {
+                        System.out.println("How many attacks does this spell make for each spell slot level beyond the spell's level?");
                         spellName.setHigherLevelAttacksIncrease(scan.nextInt());
                         scan.nextLine();
                     } else {

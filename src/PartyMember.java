@@ -294,7 +294,7 @@ public class PartyMember {
         System.out.println(charName + "         " + charBackground);
         System.out.println("Maximum Hitpoints: " + charHitPoints);
         System.out.println("Level " + charLevel + " " + charClass);
-        System.out.println(charSubclass + "\n");
+        System.out.println(charRace + " " + charSubclass + "\n");
         System.out.println("Strength: " + statArray[0]);
         System.out.println("Dexterity: " + statArray[1]);
         System.out.println("Constitution: " + statArray[2]);
