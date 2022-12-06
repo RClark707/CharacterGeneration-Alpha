@@ -14,6 +14,8 @@ public class PartyMember {
     private final int[] statArray = new int[6];
     // This array might be final, but we change it with each object, so I doubt it
 
+    private final ArrayList<Weapon> weapons = new ArrayList<>();
+
     Scanner scan = new Scanner(System.in);
     private static final String[] classArray = {
             "Artificer",
@@ -291,10 +293,10 @@ public class PartyMember {
 
     public void printAll() {
         System.out.println("\nHere is your character sheet!\n\n\n");
-        System.out.println(charName + "         " + charBackground);
+        System.out.printf("%-8s %s\n", charName + ", the", charBackground);
         System.out.println("Maximum Hitpoints: " + charHitPoints);
         System.out.println("Level " + charLevel + " " + charClass);
-        System.out.println(charRace + " " + charSubclass + "\n");
+        System.out.printf("%-8s %s\n", charRace, charSubclass);
         System.out.println("Strength: " + statArray[0]);
         System.out.println("Dexterity: " + statArray[1]);
         System.out.println("Constitution: " + statArray[2]);
@@ -311,6 +313,60 @@ public class PartyMember {
         }
         System.out.println("\n\n");
     }
+
+    public String toString() {
+        return charName + "\n" +
+                charBackground + "\n" +
+                charLevel + "\n" +
+                charHitDieType + "\n" +
+                charHitPoints + "\n" +
+                charRace + "\n" +
+                charClass + "\n" +
+                charSubclass + "\n" +
+                statArray[0] + "," + statArray[1] + "," +  statArray[2] + "," +  statArray[3] + "," +  statArray[4] + "," +  statArray[5] + "\n" +
+                skillArray + "\n" +
+                "------" + "\n";
+    }
+    /*
+    public void save(String fileToSaveTo) throws FileNotFoundException
+        try (PrintWriter printer = new PrintWriter(fileToSaveTo)) {
+            printer.println(charName);
+            printer.println(charBackground);
+            printer.println(charHitPoints);
+            printer.println(charHitDieType);
+            printer.println(charLevel);
+            printer.println(charRace);
+            printer.println(charClass);
+            printer.println(charSubclass);
+            for (int i = 0; i <  6; ++i) {
+                if (i != 5) {
+                    printer.print(statArray[i] + ", ");
+                } else {
+                    printer.print(statArray[i] + "\n");
+                }
+
+            }
+            for (String s : skillArray) {
+                if (s.equals(skillArray.get(skillArray.size()-1))) {
+                    printer.print(s + "\n");
+                } else {
+                    printer.print(s + ", ");
+                }
+            }
+            /*
+            for (Weapon w : weapons) {
+                if (w.equals(weapons.get(weapons.size()-1))) {
+                    printer.print(w.weaponName + "\n");
+                } else {
+                    printer.print(w.weaponName + ", ");
+                }
+            }
+            Currently Weapons are in development
+            printer.print("\n----");
+        }
+    }
+     */
+
 
     public void nextLevel() {
         charLevel++;
@@ -340,4 +396,29 @@ public class PartyMember {
             }
         }
     }
+
+    private void addWeapon(Weapon weapon) {
+        weapons.add(weapon);
+    }
+
+    public Weapon makeWeapon(PartyMember curChar, Scanner scan) {
+        System.out.println("What weapons does " + curChar.getCharName() + " wield?");
+        String weaponName = scan.nextLine();
+        System.out.println("How many sides do the damage dice of your weapon have?");
+        int weaponDice = scan.nextInt();
+        scan.nextLine();
+
+
+        return new Weapon(weaponDice,weaponName);
+    }
+
+    private void printWeapons() {
+        for (int i = 0; i < weapons.size(); ++i) {
+            Weapon curWeapon = weapons.get(i);
+            System.out.println((i+1) + ". " + curWeapon.getWeaponName() + " (" +
+                    curWeapon.getNumDamageDice() + "d" + curWeapon.getDamageDieSides() + ")");
+        }
+        System.out.print("\n");
+    }
+
 }

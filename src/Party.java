@@ -1,3 +1,5 @@
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Random;
@@ -33,7 +35,6 @@ public class Party {
                     if (InputChecker.random(race)) {
                         race = RandCharacterGenerator.randRace();
                         character.setCharRace(race);
-                        System.out.println("You are now a " + character.getCharRace());
                     } else if (InputChecker.options(race)) {
                         RandCharacterGenerator.printOptions("Race",null);
                         System.out.println("What is your Race?");
@@ -47,6 +48,7 @@ public class Party {
                         race = ClassValidator.capitalizeFirst(race);
                         character.setCharRace(race);
                     }
+                    System.out.println("You are now a " + character.getCharRace());
                 } // end of Race
                 // Step 2: Class
                 while (character.getCharClass() == null) {
@@ -248,6 +250,14 @@ public class Party {
             }
         }
         return partyMembers;
+    }
+
+    public void saveParty(String fileToSaveTo) throws FileNotFoundException {
+        try (PrintWriter printer = new PrintWriter(fileToSaveTo)) {
+            for (PartyMember p : party) {
+                printer.print(p.toString());
+            }
+        }
     }
 
     public void fullRandom() {

@@ -180,6 +180,8 @@ public class ClassValidator {
             "Charisma",
     };
 
+    // Probably ought to move the capitalize method to the InputChecker class.
+
     public static String capitalizeFirst(String input) {
         if (!(Character.isUpperCase(input.charAt(0)))) {
             input = input.substring(0,1).toUpperCase() + input.substring(1);

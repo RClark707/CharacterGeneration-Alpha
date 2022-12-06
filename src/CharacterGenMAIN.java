@@ -1,15 +1,19 @@
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class CharacterGenMAIN {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         int option; // This is what option the user selects in the main menu
         int subOption; // used in case 2
+        boolean viewAnother;
+        boolean repeatMenu;
         String doMore; // Used inside the switch for each option to determine if the user wants to iterate again
         Scanner scan = new Scanner(System.in); // Takes user input
         String charClass; // Temporary placeholder to pass in to methods as a parameter
         SpellBook Grimoire = new SpellBook();
         Party Party = new Party();
+        String fileToSaveTo = "PartySaveFiles";
 
         // Here is our main menu, we use a switch to decide what to do with the user choice
         do {
@@ -21,8 +25,9 @@ public class CharacterGenMAIN {
             System.out.println("5. Roll my Stats!");
             System.out.println("6. Roll Dice!");
             System.out.println("7. Read your Spell Book!");
-            System.out.println("8. Test!");
-            System.out.println("9. Exit");
+            System.out.println("8. Play a Character!");
+            System.out.println("9. Test!");
+            System.out.println("10. Exit");
             // Collect the user input and use a switch to identify what we should do
             option = scan.nextInt();
             scan.nextLine(); // This brings us to the next Line in which the User can/will enter input.
@@ -61,12 +66,10 @@ public class CharacterGenMAIN {
                     break;
                 // View Party Members
                 case 2:
-                    boolean viewAnother;
-                    boolean repeatMenu;
                     do {
                         System.out.println("\nCurrent party members: " + Party.printParty());
                         System.out.println("\nWhich character would you like to view?");
-                        String curCharacter = scan.nextLine();
+                        String curCharacter = ClassValidator.capitalizeFirst(scan.nextLine());
                         do {
                         repeatMenu = false;
                         viewAnother = false;
@@ -75,7 +78,7 @@ public class CharacterGenMAIN {
                         System.out.println("1. Level Up");
                         System.out.println("2. Change Name");
                         System.out.println("3. View Another Character");
-                        System.out.println("4. Exit to Main Menu");
+                        System.out.println("4. Save and Exit to Main Menu");
                         subOption = scan.nextInt();
                         scan.nextLine();
 
@@ -92,7 +95,7 @@ public class CharacterGenMAIN {
                                     repeatMenu = true;
                                 }
                                 case 3 -> viewAnother = true;
-                                default -> {}
+                                default -> Party.saveParty(fileToSaveTo);
                             }
                         } while (repeatMenu);
 
@@ -287,8 +290,27 @@ public class CharacterGenMAIN {
 
                     } while (InputChecker.yes(doMore));
                     break;
-                // Testing
+                // Character Gameplay
                 case 8:
+                    do {
+                        System.out.println("\nCurrent party members: " + Party.printParty());
+                        System.out.println("\nWhich character would you like to play as?");
+                        String curCharacter = scan.nextLine();
+                        /* PartyMember curChar = Party.returnCharacter(curCharacter);
+                        do {
+                            viewAnother = false;
+                            curChar.printAll();
+
+                        } while (viewAnother);*/
+
+                        System.out.println("Would you like to keep playing " +
+                                Party.returnCharacter(curCharacter).getCharName() + "?");
+                        doMore = scan.nextLine();
+
+                    } while (InputChecker.yes(doMore));
+                    break;
+                // Testing
+                case 9:
                     do {
 
                         System.out.println("\nEnter Y to try again, or N to go back.");
@@ -296,15 +318,10 @@ public class CharacterGenMAIN {
 
                     } while (InputChecker.yes(doMore));
                     break;
-                case 9:
-                    break;
                 default:
-                    // I don't remember why I include this scan.nextLine() piece, but it probably is good
-                    // to wipe to the next line in case someone entered a number <0 or greater than the switch index
-                    scan.nextLine();
                     break;
             } //switch ends
-        }while (option != 9);
+        } while (option != 10);
         System.out.println("Sorry to see you go, hope you're back soon.");
         scan.close();
     }
