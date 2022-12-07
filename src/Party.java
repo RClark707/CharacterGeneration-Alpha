@@ -1,3 +1,4 @@
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -14,9 +15,9 @@ public class Party {
         party.add(PartyMember.characterBuilder(charName));
     }
 
-    public PartyMember returnCharacter(String spellName) {
+    public PartyMember returnCharacter(String charName) {
         for (PartyMember curCharacter : party) {
-            if (spellName.equals(curCharacter.getCharName())) {
+            if (charName.equals(curCharacter.getCharName())) {
                 return curCharacter;
             }
         }
@@ -252,12 +253,62 @@ public class Party {
         return partyMembers;
     }
 
+    public void printPartyOptions() {
+        for (int i = 0; i < party.size(); ++i) {
+            PartyMember p = party.get(i);
+            System.out.println((i+1) + ". " + p.getCharName());
+        }
+    }
+
+    public int getPartySize() {
+        return party.size();
+    }
+
+    public PartyMember getPartyMember(int partyIndex) {
+        return party.get(partyIndex);
+    }
+
     public void saveParty(String fileToSaveTo) throws FileNotFoundException {
+        // alternatively can use the FileOutputStream in conjunction with the print writer
         try (PrintWriter printer = new PrintWriter(fileToSaveTo)) {
             for (PartyMember p : party) {
                 printer.print(p.toString());
             }
         }
+    }
+
+    public void initializeParty(String fileToSaveTo) throws FileNotFoundException {
+        Scanner scan = new Scanner(new FileInputStream(fileToSaveTo));
+        do {
+            if (scan.hasNextLine()) {
+                String name = scan.nextLine();
+                String background = scan.nextLine();
+                int level = Integer.parseInt(scan.nextLine());
+                int hitDieType = Integer.parseInt(scan.nextLine());
+                int hitPoints = Integer.parseInt(scan.nextLine());
+                String race = scan.nextLine();
+                String charClass = scan.nextLine();
+                String subclass = scan.nextLine();
+                party.add(new PartyMember(name,background,level,hitDieType,hitPoints,race,charClass,subclass));
+                // it is possible I am a line ahead of where I am supposed to be at this stage, but I will test after skill proficiencies
+                String[] statValues = scan.nextLine().split(",");
+                for (int i = 0; i < 6; ++i) {
+                    returnCharacter(name).setStatValue(i, Integer.parseInt(statValues[i]));
+                }
+                String skillProficiencies = scan.nextLine();
+                skillProficiencies = skillProficiencies.substring(1,skillProficiencies.length()-1);
+                String[] skills = skillProficiencies.split(",");
+                for (String skill : skills) {
+                    returnCharacter(name).addSkill(skill);
+                }
+                scan.nextLine();
+            }
+        } while (scan.hasNextLine());
+        scan.close();
+    }
+
+    public void clear() {
+        party.clear();
     }
 
     public void fullRandom() {

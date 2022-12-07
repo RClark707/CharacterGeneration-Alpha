@@ -33,25 +33,6 @@ public class PartyMember {
             "Wizard",
     };
 
-    /*
-     fake news: private static final String[][] optimizedStatArray = {
-            {"Artificer", "Intelligence"},
-            {"Barbarian", "Strength",},
-            {"Bard", "Charisma",},
-            {"Cleric", "Wisdom",},
-            {"Druid", "Wisdom",},
-            {"Fighter", "Strength",},
-            {"Monk", "Dexterity",},
-            {"Paladin", "Strength",},
-            {"Ranger", "Dexterity",},
-            {"Rogue", "Dexterity",},
-            {"Sorcerer", "Charisma",},
-            {"Warlock", "Charisma",},
-            {"Wizard", "Intelligence",},
-    };
-
-     */
-
     private static final int[] indexOfOptimizedStatsByClassArray = {
             3,
             0,
@@ -98,6 +79,18 @@ public class PartyMember {
     public PartyMember(String charName) {
         this.charName = charName;
         charLevel = 1;
+    }
+
+    public PartyMember(String charName, String charBackground, int charLevel, int charHitDieType, int charHitPoints,
+                    String charRace, String charClass, String charSubclass) {
+        this.charName = charName;
+        this.charBackground = charBackground;
+        this.charLevel = charLevel;
+        this.charHitDieType = charHitDieType;
+        this.charHitPoints = charHitPoints;
+        this.charRace = charRace;
+        this.charClass = charClass;
+        this.charSubclass = charSubclass;
     }
 
     public static PartyMember characterBuilder(String charName) {
@@ -245,6 +238,10 @@ public class PartyMember {
         statArray[index] = statArray[index] + racialModifier;
     }
 
+    public void setStatValue(int index, int abilityScoreValue) {
+        statArray[index] = abilityScoreValue;
+    }
+
     public void printStatArray() {
         System.out.println("Strength: " + statArray[0]);
         System.out.println("Dexterity: " + statArray[1]);
@@ -327,46 +324,6 @@ public class PartyMember {
                 skillArray + "\n" +
                 "------" + "\n";
     }
-    /*
-    public void save(String fileToSaveTo) throws FileNotFoundException
-        try (PrintWriter printer = new PrintWriter(fileToSaveTo)) {
-            printer.println(charName);
-            printer.println(charBackground);
-            printer.println(charHitPoints);
-            printer.println(charHitDieType);
-            printer.println(charLevel);
-            printer.println(charRace);
-            printer.println(charClass);
-            printer.println(charSubclass);
-            for (int i = 0; i <  6; ++i) {
-                if (i != 5) {
-                    printer.print(statArray[i] + ", ");
-                } else {
-                    printer.print(statArray[i] + "\n");
-                }
-
-            }
-            for (String s : skillArray) {
-                if (s.equals(skillArray.get(skillArray.size()-1))) {
-                    printer.print(s + "\n");
-                } else {
-                    printer.print(s + ", ");
-                }
-            }
-            /*
-            for (Weapon w : weapons) {
-                if (w.equals(weapons.get(weapons.size()-1))) {
-                    printer.print(w.weaponName + "\n");
-                } else {
-                    printer.print(w.weaponName + ", ");
-                }
-            }
-            Currently Weapons are in development
-            printer.print("\n----");
-        }
-    }
-     */
-
 
     public void nextLevel() {
         charLevel++;

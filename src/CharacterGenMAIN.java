@@ -5,15 +5,18 @@ public class CharacterGenMAIN {
 
     public static void main(String[] args) throws FileNotFoundException {
         int option; // This is what option the user selects in the main menu
-        int subOption; // used in case 2
-        boolean viewAnother;
-        boolean repeatMenu;
+        int subOption; // used in case 2 for a secondary menu option tracker
+        boolean viewAnother; // used to determine when to view another character (perhaps spell in the future)
+        boolean repeatMenu; // used to determine when to repeat a menu's contents (used in do-while loops)
         String doMore; // Used inside the switch for each option to determine if the user wants to iterate again
         Scanner scan = new Scanner(System.in); // Takes user input
         String charClass; // Temporary placeholder to pass in to methods as a parameter
         SpellBook Grimoire = new SpellBook();
         Party Party = new Party();
         String fileToSaveTo = "PartySaveFiles";
+        String spellFile = "SpellFile";
+        Party.initializeParty(fileToSaveTo);
+        Grimoire.initializeSpellBook(spellFile);
 
         // Here is our main menu, we use a switch to decide what to do with the user choice
         do {
@@ -68,38 +71,49 @@ public class CharacterGenMAIN {
                 case 2:
                     do {
                         System.out.println("\nCurrent party members: " + Party.printParty());
-                        System.out.println("\nWhich character would you like to view?");
-                        String curCharacter = ClassValidator.capitalizeFirst(scan.nextLine());
-                        do {
-                        repeatMenu = false;
-                        viewAnother = false;
-                        Party.returnCharacter(curCharacter).printAll();
-                        System.out.println("What would you like to do?");
-                        System.out.println("1. Level Up");
-                        System.out.println("2. Change Name");
-                        System.out.println("3. View Another Character");
-                        System.out.println("4. Save and Exit to Main Menu");
-                        subOption = scan.nextInt();
-                        scan.nextLine();
+                            viewAnother = false;
+                            System.out.println("Who would you like to view?\n");
+                            Party.printPartyOptions();
+                            System.out.println((Party.getPartySize() + 1) + ". Save and Exit to Main Menu");
+                            System.out.println((Party.getPartySize() + 2) + ". Clear party");
+                            option = scan.nextInt();
+                            scan.nextLine();
 
-                            switch (subOption) {
-                                case 1 -> {
-                                    Party.returnCharacter(curCharacter).nextLevel();
-                                    repeatMenu = true;
+                        if (option <= Party.getPartySize()) {
+                            do {
+                                repeatMenu = false;
+                                PartyMember curCharacter = Party.getPartyMember(option-1);
+                                curCharacter.printAll();
+                                System.out.println("What would you like to do?");
+                                System.out.println("1. Level Up");
+                                System.out.println("2. Change Name");
+                                System.out.println("3. View Another Character");
+                                System.out.println("4. Save and Exit to Main Menu");
+                                subOption = scan.nextInt();
+                                scan.nextLine();
+                                switch (subOption) {
+                                    case 1 -> {
+                                        curCharacter.nextLevel();
+                                        repeatMenu = true;
+                                    }
+                                    case 2 -> {
+                                        System.out.println("What is " + curCharacter.getCharName() + "'s new name?");
+                                        String newName = scan.nextLine();
+                                        curCharacter.changeCharName(newName);
+                                        repeatMenu = true;
+                                    }
+                                    case 3 -> viewAnother = true;
+                                    default -> Party.saveParty(fileToSaveTo);
                                 }
-                                case 2 -> {
-                                    System.out.println("What is " + Party.returnCharacter(curCharacter).getCharName() + "'s new name?");
-                                    String newName= scan.nextLine();
-                                    Party.returnCharacter(curCharacter).changeCharName(newName);
-                                    curCharacter = newName;
-                                    repeatMenu = true;
-                                }
-                                case 3 -> viewAnother = true;
-                                default -> Party.saveParty(fileToSaveTo);
-                            }
-                        } while (repeatMenu);
+                            } while (repeatMenu);
+                        } else if (option == Party.getPartySize() + 1){
+                            Party.saveParty(fileToSaveTo);
+                        } else {
+                            Party.clear();
+                            Grimoire.saveSpells(spellFile);
+                        }
 
-                    } while (viewAnother);
+                        } while (viewAnother);
                     break;
 
                 // Random Subclass and/or class
@@ -212,7 +226,6 @@ public class CharacterGenMAIN {
                         // This variable is used to track the user's input for what spell to interact with
                         String spellName;
                         // this variable is used similarly to doMore, but it's just a boolean instead of a string that tracks user input
-                        boolean configureMore;
                         do {
                             // Asking if we should add some spells, if no we skip the next part and go straight to printing the spell book
                             System.out.println("\nType the name of a Spell to add to your Spell Book (Enter no to stop).");
@@ -224,36 +237,39 @@ public class CharacterGenMAIN {
                         } while (!InputChecker.no(spellName));
                         // Now, we print out the contents of the spell book (Everything that the user just entered)
                         do {
+                            // repeatMenu = false;
+                            viewAnother = false;
                             System.out.println("\nYour Spell Book contains the following spells:");
                             System.out.println(Grimoire.printSpellBook());
 
                             // Configuring a spell means to modify the internal attributes such that you can
                             // actually cast the spell using the spell.castSpell method, called by the returnSpell.castSpell most often
-                            System.out.println("\nWhich spell do you want to configure? (Enter a number to skip)");
-                            // I'd like to rewrite this, but I haven't decided if there is a faster way to check for an integer vs a string
-                            if (scan.hasNextInt()) {
-                                // So if there is a number, we skip configuration
-                                configureMore = false;
-                                scan.nextLine();
-                                // Alternatively could take the int value of a string and use that instead of this weird int checker
-                            } else {
-                                // now that we know it isn't a number (at least, it's not an integer)
-                                // we can run the configureSpellEffects method to set all the relevant attributes of the given spell
-                                spellName = scan.nextLine();
-                                spellName = ClassValidator.capitalizeFirst(spellName);
-                                Grimoire.configureSpellEffects(Grimoire.returnSpell(spellName));
-                                System.out.println("\n\n");
-                                Grimoire.returnSpell(spellName).printSpellCard();
-                                // Using the returnSpell method is key, because user input is either a String or an integer,
-                                // and we can't input a String as a Spell object to a method that wants a spell object input
-                                // maybe it's worth putting a String -> Spell function within these methods, but right now that is
-                                // not a priority
-                                configureMore = true;
-                                // Since they configured a spell, let's reprint the book and ask if they want to make more changes.
+                            System.out.println("\nWhich spell do you want to configure?");
+                            // could write a method for this in the SpellBook class like I did with the Party class
+                            for (int i = 0; i < Grimoire.getSpellBookSize(); ++i) {
+                                System.out.println((i+1)+ ". " + Grimoire.getSpell(i).getSpellName());
                             }
-                        } while (configureMore);
+                            System.out.println((Grimoire.getSpellBookSize()+1) + ". Save and move on to casting");
+                            System.out.println((Grimoire.getSpellBookSize()+2) + ". Clear spell book");
+                            // TODO: add a way to view then straight up exit
+                            option = scan.nextInt();
+                            scan.nextLine();
+
+                            if (option <= Grimoire.getSpellBookSize()) {
+                                Spell curSpell = Grimoire.getSpell(option-1);
+                                Grimoire.configureSpellEffects(curSpell);
+                                System.out.println("\n\n");
+                                curSpell.printSpellCard();
+                                viewAnother = true;
+                            } else if (option == Grimoire.getSpellBookSize() + 1) {
+                                Grimoire.saveSpells(spellFile);
+                            } else {
+                                Grimoire.clear();
+                                Grimoire.saveSpells(spellFile);
+                            }
+                        } while (viewAnother);
                         do {
-                            System.out.println("\nWould you like to cast a spell? Alternatively, enter the name of a spell to view its spell card.");
+                            System.out.println("\nWould you like to cast a spell? Alternatively, you can enter the name of a spell to view its spell card.");
                             doMore = scan.nextLine();
                             if (InputChecker.yes(doMore)) {
                                 System.out.println("Which spell do you want to cast?");

@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -22,6 +26,62 @@ public class SpellBook {
             }
         }
         return null;
+    }
+
+    public int getSpellBookSize() {
+        return spellBook.size();
+    }
+
+    public Spell getSpell(int index) {
+        return spellBook.get(index);
+    }
+
+    public int getSpellIndex(Spell s) {
+        return spellBook.indexOf(s);
+    }
+
+    public void saveSpells(String spellFile) throws FileNotFoundException {
+        // alternatively can use the FileOutputStream in conjunction with the print writer
+        try (PrintWriter printer = new PrintWriter(spellFile)) {
+            for (Spell s : spellBook) {
+                printer.print(s.toString());
+            }
+        }
+    }
+
+    public void initializeSpellBook(String spellFile) throws FileNotFoundException {
+        Scanner scan = new Scanner(new FileInputStream(spellFile));
+        do {
+            if (scan.hasNextLine()) {
+               String spellName = scan.nextLine();
+               int spellLevel = Integer.parseInt(scan.nextLine());
+               int higherLevelDamageDice = Integer.parseInt(scan.nextLine());
+               int higherLevelAttacksIncrease = Integer.parseInt(scan.nextLine());
+               int diceSideNumber = Integer.parseInt(scan.nextLine());
+               int numDice = Integer.parseInt(scan.nextLine());
+               int numTargets = Integer.parseInt(scan.nextLine());
+               boolean dealsDamage = Boolean.parseBoolean(scan.nextLine());
+               String damageType = scan.nextLine();
+               boolean isSavingThrow = Boolean.parseBoolean(scan.nextLine());
+               String saveType = scan.nextLine();
+               boolean isAttackRoll = Boolean.parseBoolean(scan.nextLine());
+               int numAttacks = Integer.parseInt(scan.nextLine());
+               int attackModifier = Integer.parseInt(scan.nextLine());
+               int damageModifier = Integer.parseInt(scan.nextLine());
+               boolean isAutomatic = Boolean.parseBoolean(scan.nextLine());
+               String spellEffects = scan.nextLine();
+               String spellSchool = scan.nextLine();
+               spellBook.add(new Spell(spellName, spellLevel, higherLevelDamageDice, higherLevelAttacksIncrease, diceSideNumber, numDice, numTargets,
+                       dealsDamage, damageType, isSavingThrow, saveType, isAttackRoll, numAttacks,
+                       attackModifier, damageModifier, isAutomatic, spellEffects, spellSchool));
+            }
+            scan.nextLine();
+        } while (scan.hasNextLine());
+        scan.close();
+    }
+
+    public void clear() {
+        spellBook.clear();
     }
 
     // This method changes the inner bits and bobs of the spell you want to make. Often, we will use the returnSpell method as a parameter to actually input a Spell object as the parameter.
@@ -91,9 +151,8 @@ public class SpellBook {
             if (spellName.isSavingThrow()) {
                 // Could add a while loop to make sure that the save type is not null, but that's whatever
                 System.out.println("What type of saving throw does it require?");
-                String saveType = scan.nextLine();
+                String saveType = InputChecker.shortToLong(scan.nextLine());
                 if (ClassValidator.isValidStat(saveType)) {
-                    saveType = ClassValidator.capitalizeFirst(saveType);
                     spellName.setSaveType(saveType);
                 }
             }

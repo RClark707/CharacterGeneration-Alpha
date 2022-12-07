@@ -41,6 +41,29 @@ public class Spell {
 
     public static Spell spellBuilder(String spellName) {return new Spell(spellName);}
 
+    public Spell(String spellName, int spellLevel, int higherLevelDamageDice, int higherLevelAttacksIncrease, int diceSideNumber, int numDice, int numTargets,
+                 boolean dealsDamage, String damageType, boolean isSavingThrow, String saveType, boolean isAttackRoll, int numAttacks, int attackModifier,
+                 int damageModifier, boolean isAutomatic, String spellEffects, String spellSchool) {
+        this.spellName = spellName;
+        this.spellLevel = spellLevel;
+        this.higherLevelDamageDice = higherLevelDamageDice;
+        this.higherLevelAttacksIncrease = higherLevelAttacksIncrease;
+        this.diceSideNumber = diceSideNumber;
+        this.numDice = numDice;
+        this.numTargets = numTargets;
+        this.dealsDamage = dealsDamage;
+        this.damageType = damageType;
+        this.isSavingThrow = isSavingThrow;
+        this.saveType = saveType;
+        this.isAttackRoll = isAttackRoll;
+        this.numAttacks = numAttacks;
+        this.attackModifier = attackModifier;
+        this.damageModifier = damageModifier;
+        this.isAutomatic = isAutomatic;
+        this.spellEffects = spellEffects;
+        this.spellSchool = spellSchool;
+    }
+
     public String castSpell(int spellLevel) {
     // This method is used to cast a given spell, normally, it will be used by calling the returnSpell method with an input from the user as to the spell's name,
     // and then that spell object will determine the "effects" that get run
@@ -95,6 +118,27 @@ public class Spell {
         } else {
             System.out.println("This spell appears to not get much stronger at higher levels, or it has non-damaging effects.");
         }
+    }
+
+    public String toString() {
+        return spellName + "\n" +
+        spellLevel + "\n" +
+        higherLevelDamageDice + "\n" +
+        higherLevelAttacksIncrease + "\n" +
+        diceSideNumber + "\n" +
+        numDice + "\n" +
+        numTargets + "\n" +
+        dealsDamage + "\n" +
+        damageType + "\n" +
+        isSavingThrow + "\n" +
+        saveType + "\n" +
+        isAttackRoll + "\n" +
+        numAttacks + "\n" +
+        attackModifier + "\n" +
+        damageModifier + "\n" +
+        isAutomatic + "\n" +
+        spellEffects + "\n" +
+        spellSchool + "\n" + "------";
     }
 
     public String getSpellName() {
