@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -277,6 +278,16 @@ public class Party {
         }
     }
 
+    public int countLines(String fileToSaveTo) throws FileNotFoundException {
+        Scanner scan = new Scanner(new FileInputStream(fileToSaveTo));
+        int numLines = 0;
+        while (scan.hasNextLine()) {
+            scan.nextLine();
+            numLines++;
+        }
+        return numLines;
+    }
+
     public void initializeParty(String fileToSaveTo) throws FileNotFoundException {
         Scanner scan = new Scanner(new FileInputStream(fileToSaveTo));
         do {
@@ -307,9 +318,9 @@ public class Party {
         scan.close();
     }
 
-    public void clear() {
-        party.clear();
-    }
+    public void clear() {party.clear();}
+
+    public void removePartyMember(int index) {party.remove(index);}
 
     public void fullRandom() {
         String randName = RandCharacterGenerator.randName();

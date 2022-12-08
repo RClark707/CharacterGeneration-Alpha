@@ -224,6 +224,7 @@ public class PartyMember {
         int tempHolder = statArray[indexTo];
         statArray[indexTo] = statArray[indexFrom];
         statArray[indexFrom] = tempHolder;
+        // TODO: automatically make Constitution a non-negative stat
     }
 
     public void applyRacialModifier(int racialModifier, String statName) {

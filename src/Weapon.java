@@ -2,11 +2,11 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Weapon {
-    int damageDieSides;
-    int numDamageDice;
-    int magicalModifier;
-    String weaponName;
-    //String[] weaponProperties;
+    protected int damageDieSides;
+    protected int numDamageDice;
+    protected int magicalModifier;
+    protected String weaponName;
+    //protected String[] weaponProperties;
 
 
     public Weapon() {}

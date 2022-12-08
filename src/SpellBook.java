@@ -1,4 +1,3 @@
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -36,17 +35,30 @@ public class SpellBook {
         return spellBook.get(index);
     }
 
+    /*
     public int getSpellIndex(Spell s) {
         return spellBook.indexOf(s);
     }
+
+     */
 
     public void saveSpells(String spellFile) throws FileNotFoundException {
         // alternatively can use the FileOutputStream in conjunction with the print writer
         try (PrintWriter printer = new PrintWriter(spellFile)) {
             for (Spell s : spellBook) {
-                printer.print(s.toString());
+                printer.print(s.toString() + "\n");
             }
         }
+    }
+
+    public int countLines(String spellFile) throws FileNotFoundException {
+        Scanner scan = new Scanner(new FileInputStream(spellFile));
+        int numLines = 0;
+        while (scan.hasNextLine()) {
+            scan.nextLine();
+            numLines++;
+        }
+        return numLines;
     }
 
     public void initializeSpellBook(String spellFile) throws FileNotFoundException {

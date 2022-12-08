@@ -15,8 +15,13 @@ public class CharacterGenMAIN {
         Party Party = new Party();
         String fileToSaveTo = "PartySaveFiles";
         String spellFile = "SpellFile";
-        Party.initializeParty(fileToSaveTo);
-        Grimoire.initializeSpellBook(spellFile);
+        if (Party.countLines(fileToSaveTo) > 0) {
+            Party.initializeParty(fileToSaveTo);
+        }
+        if (Grimoire.countLines(spellFile) > 0) {
+            Grimoire.initializeSpellBook(spellFile);
+        }
+
 
         // Here is our main menu, we use a switch to decide what to do with the user choice
         do {
@@ -70,7 +75,12 @@ public class CharacterGenMAIN {
                 // View Party Members
                 case 2:
                     do {
-                        System.out.println("\nCurrent party members: " + Party.printParty());
+                        System.out.print("\nCurrent party members: ");
+                        if (Party.getPartySize() == 0) {
+                            System.out.println("None");
+                        } else {
+                            System.out.println(Party.printParty());
+                        }
                             viewAnother = false;
                             System.out.println("Who would you like to view?\n");
                             Party.printPartyOptions();
@@ -88,7 +98,8 @@ public class CharacterGenMAIN {
                                 System.out.println("1. Level Up");
                                 System.out.println("2. Change Name");
                                 System.out.println("3. View Another Character");
-                                System.out.println("4. Save and Exit to Main Menu");
+                                System.out.println("4. DELETE X_X");
+                                System.out.println("5. Save and Exit to Main Menu");
                                 subOption = scan.nextInt();
                                 scan.nextLine();
                                 switch (subOption) {
@@ -103,6 +114,16 @@ public class CharacterGenMAIN {
                                         repeatMenu = true;
                                     }
                                     case 3 -> viewAnother = true;
+                                    case 4 -> {
+                                        System.out.println("Are you sure?");
+                                        if (InputChecker.yes(scan.nextLine())) {
+                                            Party.removePartyMember(option-1);
+                                            viewAnother = true;
+                                        } else {
+                                            repeatMenu = true;
+                                        }
+                                    }
+
                                     default -> Party.saveParty(fileToSaveTo);
                                 }
                             } while (repeatMenu);
@@ -309,21 +330,18 @@ public class CharacterGenMAIN {
                 // Character Gameplay
                 case 8:
                     do {
-                        System.out.println("\nCurrent party members: " + Party.printParty());
+                        viewAnother = false;
                         System.out.println("\nWhich character would you like to play as?");
-                        String curCharacter = scan.nextLine();
-                        /* PartyMember curChar = Party.returnCharacter(curCharacter);
-                        do {
-                            viewAnother = false;
-                            curChar.printAll();
-
-                        } while (viewAnother);*/
-
-                        System.out.println("Would you like to keep playing " +
-                                Party.returnCharacter(curCharacter).getCharName() + "?");
-                        doMore = scan.nextLine();
-
-                    } while (InputChecker.yes(doMore));
+                        Party.printPartyOptions();
+                        System.out.println((Party.getPartySize()+1) + ". Exit to Main Menu");
+                        option = scan.nextInt();
+                        scan.nextLine();
+                        if (option <= Party.getPartySize()) {
+                            System.out.println("You are currently playing as: " + Party.getPartyMember(option-1).getCharName());
+                            System.out.println("Sorry, this feature is currently in development.");
+                            viewAnother = true;
+                        }
+                    } while (viewAnother);
                     break;
                 // Testing
                 case 9:
@@ -337,7 +355,7 @@ public class CharacterGenMAIN {
                 default:
                     break;
             } //switch ends
-        } while (option != 10);
+        } while (option < 10);
         System.out.println("Sorry to see you go, hope you're back soon.");
         scan.close();
     }
