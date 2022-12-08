@@ -22,10 +22,9 @@ public class CharacterGenMAIN {
             Grimoire.initializeSpellBook(spellFile);
         }
 
-
         // Here is our main menu, we use a switch to decide what to do with the user choice
         do {
-            System.out.println("\nWhat would you like to do? (Enter a number 1-9)");
+            System.out.println("\nWhat would you like to do? (Enter a number 1-10)");
             System.out.println("1. Create a Character!");
             System.out.println("2. View your Party!");
             System.out.println("3. Random Subclass!");
