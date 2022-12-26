@@ -1,14 +1,12 @@
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Weapon {
     protected int damageDieSides;
     protected int numDamageDice;
     protected int magicalModifier;
     protected String weaponName;
-    //protected String[] weaponProperties;
+    protected ArrayList<String> weaponProperties;
     protected boolean finesse;
-    // Default constructor
     public Weapon() {}
     public Weapon(int damageDieSides, String weaponName, boolean finesse) {
         this.damageDieSides = damageDieSides;
@@ -41,6 +39,10 @@ public class Weapon {
                 finesse;
     }
 
+    public String formattedString() {
+        return ClassValidator.capitalizeFirst(weaponName) + " (" + numDamageDice + "d" + damageDieSides + ")";
+    }
+
     public int getDamageDieSides() {
         return damageDieSides;
     }
@@ -65,17 +67,10 @@ public class Weapon {
         weaponName = ClassValidator.capitalizeFirst(weaponName);
         this.weaponName = weaponName;
     }
-    /*
-    public String[] getWeaponProperties() {
-        return weaponProperties;
+
+    public void addProperty(String weaponProperty) {
+        weaponProperties.add(weaponProperty);
     }
-
-
-
-    public void setWeaponProperties(ArrayList<String> weaponProperties) {
-        this.weaponProperties = weaponProperties;
-    }
-    */
 
     public boolean isFinesse() {
         return finesse;

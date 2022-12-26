@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Random;
 
 /**
@@ -388,6 +389,28 @@ public class RandCharacterGenerator {
             new Weapon(6,"hand crossbow",true),
     };
 
+    protected static final Weapon[] allWeapons = {
+            new Weapon(4,"club",false),
+            new Weapon(4,"sling",true),
+            new Weapon(4,"dagger",true),
+            new Weapon(6,"quarterstaff",false),
+            new Weapon(4,"sickle",false),
+            new Weapon(6,"shortbow",true),
+            new Weapon(8,"light crossbow",true),
+            new Weapon(6,"shortsword",true),
+            new Weapon(8,"longsword",false),
+            new Weapon(6,"greatsword",false),
+            new Weapon(8,"rapier",true),
+            new Weapon(8,"trident",false),
+            new Weapon(8,"longbow",true),
+            new Weapon(8,"morning-star",false),
+            new Weapon(10,"glaive",false),
+            new Weapon(12,"greataxe",false),
+            new Weapon(10,"pike",false),
+            new Weapon(10,"heavy crossbow",true),
+            new Weapon(6,"hand crossbow",true),
+    };
+
     public static void printOptions(String desiredArrayName, String charClass) {
         switch (desiredArrayName) {
             case "Class" -> {
@@ -430,6 +453,14 @@ public class RandCharacterGenerator {
                 System.out.println("Here are examples of valid Schools of Magic (but you can enter whatever you want):");
                 for (String s : schoolsOfMagic) {
                     System.out.println(s);
+                }
+                System.out.print("\n");
+            }
+            case "Weapons" -> {
+                System.out.print("\n");
+                System.out.println("Here are examples of valid Weapons (but you can enter whatever you want):");
+                for (Weapon w : martialWeaponTable) {
+                    System.out.println(w.weaponName);
                 }
                 System.out.print("\n");
             }
@@ -538,12 +569,10 @@ public class RandCharacterGenerator {
     public static String randBackground() {return backgroundArray[rand.nextInt(backgroundArray.length)];}
 
     public static ArrayList<String> createRandomSkillArray(int numSkillsToGenerate, boolean fullRandom, String charClass) {
-        // TODO: Still generating duplicate skills, at least between class and background.
         boolean skillsAreNotUnique;
         ArrayList<String> skills = new ArrayList<>();
-        int[] usedSkills = new int[allProf.length];;
+        Hashtable<String, Boolean> usedSkills = new Hashtable<>();
         int randSkillIndex;
-
         if (fullRandom || charClass.equals("Bard")) {
             // if the character is all random, we need to generate our own class skills too.
             String[] classArrayOfSkills = getClassSkillArray(charClass);
@@ -563,15 +592,14 @@ public class RandCharacterGenerator {
                         // To fix this, we cut out the first index of the array
                         randSkillIndex = rand.nextInt(1,classArrayOfSkills.length);
                     }
-                    for (int u = 0; u < usedSkills.length; ++u) {
-                        if (usedSkills[u] == 1 && randSkillIndex == u) {
-                            skillsAreNotUnique = true;
-                            break;
-                        } else if (randSkillIndex == u) {
-                            usedSkills[u] = 1;
-                            skills.add(classArrayOfSkills[u]);
-                            break;
-                        }
+                    // we check to see if the hashtable already contains the named skill, if it does, we generate a new skill and check again.
+                    if (usedSkills.containsKey(classArrayOfSkills[randSkillIndex])) {
+                        skillsAreNotUnique = true;
+                    } else {
+                        // if the skill is not already in our hashtable, then we add it
+                        // currently the boolean is useless
+                        usedSkills.put(classArrayOfSkills[randSkillIndex],true);
+                        skills.add(classArrayOfSkills[randSkillIndex]);
                     }
                 } while (skillsAreNotUnique);
             }
@@ -581,15 +609,11 @@ public class RandCharacterGenerator {
             do {
                 skillsAreNotUnique = false;
                 randSkillIndex = rand.nextInt(allProf.length);
-                for (int u = 0; u < usedSkills.length; ++u) {
-                    if (usedSkills[u] == 1 && randSkillIndex == u) {
-                        skillsAreNotUnique = true;
-                        break;
-                    } else if (randSkillIndex == u) {
-                        usedSkills[u] = 1;
-                        skills.add(allProf[u]);
-                        break;
-                    }
+                if (usedSkills.containsKey(allProf[randSkillIndex])) {
+                    skillsAreNotUnique = true;
+                } else {
+                    usedSkills.put(allProf[randSkillIndex],true);
+                    skills.add(allProf[randSkillIndex]);
                 }
             } while (skillsAreNotUnique);
         }
@@ -639,6 +663,17 @@ public class RandCharacterGenerator {
             }
             default -> {
                 return new String[]{"Combat", "Artistry"};
+            }
+        }
+    }
+
+    public static Weapon[] getClassWeaponArray(String charClass) {
+        switch (charClass) {
+            case "Barbarian", "Fighter", "Paladin", "Ranger" -> {
+                return allWeapons;
+            }
+            default -> {
+                return simpleWeaponTable;
             }
         }
     }

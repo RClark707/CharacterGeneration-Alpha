@@ -68,7 +68,6 @@ public class DiceRoller {
                 statString = statString.concat(" ");
             }
         } while (totalScore < threshold);
-
         statString += "  Total: " + totalScore;
         return statString;
     }
@@ -76,5 +75,51 @@ public class DiceRoller {
     public static int computeAbilityModifier(int abilityScore) {
         return Math.floorDiv(abilityScore - 10,2);
     }
+
+    public static void rollWeaponAttack(PartyMember partyMember, Weapon weapon, boolean advantage, boolean disadvantage, int numAttacks) {
+        // weapon attack roll
+        for (int i = 0; i < numAttacks; ++i) {
+            int attackRoll = rollDice(20, 1);
+            if (advantage) {
+                int secondAttackRoll = rollDice(20, 1);
+                attackRoll = Math.max(attackRoll, secondAttackRoll);
+            } else if (disadvantage) {
+                int secondAttackRoll = rollDice(20, 1);
+                attackRoll = Math.min(attackRoll, secondAttackRoll);
+            }
+            boolean criticalMiss = attackRoll == 1;
+            boolean criticalHit = attackRoll == 20;
+            // check that boolean initializer out, wow.
+
+            int statIndex = 0;
+            if (weapon.isFinesse()) {
+                statIndex = 1;
+            }
+            int attackingAbilityModifier = computeAbilityModifier(partyMember.retrieveStat(statIndex));
+            int proficiencyBonus = Math.floorDiv(2 + (partyMember.getCharLevel() - 1), 4);
+            // The formula for the Proficiency Bonus is {2 + (Total Level-1)/4}Rounded Down or 1 + (total level/4)Rounded up, both formulas will give the same results.
+            int attackModifier = attackingAbilityModifier + proficiencyBonus;
+            // the first part gets you the ability score modifier, not yet incorporating finesse
+            // the second part gets you the proficiency bonus using a predetermined formula
+            attackRoll += attackModifier;
+
+            int damage = rollDice(weapon.getDamageDieSides(), weapon.getNumDamageDice());
+            if (criticalHit) {
+                // roll it again for a critical hit
+                damage += rollDice(weapon.getDamageDieSides(), weapon.getNumDamageDice());
+            }
+            damage += attackingAbilityModifier;
+
+            if (!criticalMiss) {
+                if (criticalHit) {
+                    System.out.print("CRITICAL HIT! ");
+                }
+                System.out.println(attackRoll + " to hit. Damage: " + damage + " damage-type damage!");
+            } else {
+                System.out.println("Critical Miss... :(");
+            }
+        }
+    }
+
 
 }

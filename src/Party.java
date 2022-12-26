@@ -236,7 +236,7 @@ public class Party {
                 // Rolls hit points now that we have sufficiently manipulated the stats
                 character.setCharHitPoints(character.abilityScoreModifier(2));
                 // make and add weapons
-                // makeWeapon(character,scan);
+                makeWeapon(character,scan);
                 // Print out the Character Sheet
                 character.printAll();
                 break;
@@ -279,7 +279,8 @@ public class Party {
         try (PrintWriter printer = new PrintWriter(fileToSaveTo)) {
             for (PartyMember p : party) {
                 printer.print(p.toString());
-                p.printWeaponArray(printer);
+                // weapons are saved as @weaponDamageDie, @weaponName, @magicalModifier, @finesse
+                p.printWeaponArrayToFile(printer);
                 printer.println( "\n------");
             }
         }
@@ -369,8 +370,8 @@ public class Party {
                 // TODO: skills are still getting duplicates
                 character.setSkillArray(RandCharacterGenerator.createRandomSkillArray(2,true,character.getCharClass()));
                 // TODO: randomly generate appropriate weapons for a character
-                character.addWeapon(RandCharacterGenerator.simpleWeaponTable[rand.nextInt(RandCharacterGenerator.simpleWeaponTable.length)]);
-                character.addWeapon(RandCharacterGenerator.simpleWeaponTable[rand.nextInt(RandCharacterGenerator.simpleWeaponTable.length)]);
+                character.addWeapon( RandCharacterGenerator.getClassWeaponArray(character.getCharClass())[rand.nextInt(RandCharacterGenerator.getClassWeaponArray(character.getCharClass()).length)] );
+                character.addWeapon( RandCharacterGenerator.getClassWeaponArray(character.getCharClass())[rand.nextInt(RandCharacterGenerator.getClassWeaponArray(character.getCharClass()).length)] );
                 character.printAll();
             }
         }
@@ -378,12 +379,11 @@ public class Party {
 
     public void makeWeapon(PartyMember curChar, Scanner scan) {
         boolean finesse = false;
+        int magicalModifier = 0;
         System.out.println("How many weapons does your character wield");
         int weaponCount = scan.nextInt();
         scan.nextLine();
         for (int i = 0; i < weaponCount; ++i) {
-            // TODO: ask for the number of damage dice
-            // TODO: give options for weapons and check for null
             System.out.println("What is " + curChar.getCharName() + "'s weapon?");
             String weaponName = scan.nextLine();
             if (InputChecker.options(weaponName)) {
@@ -398,13 +398,43 @@ public class Party {
             if (InputChecker.yes(scan.nextLine())) {
                 finesse = true;
             }
-            curChar.addWeapon(new Weapon(weaponDice, weaponName, finesse));
+            System.out.println("Is this weapon magical?");
+            if (InputChecker.yes(scan.nextLine())) {
+                System.out.println("Does this weapon give you a:");
+                System.out.println("1. +1 Bonus");
+                System.out.println("2. +2 Bonus");
+                System.out.println("3. +3 Bonus");
+                switch (scan.nextInt()) {
+                    case 2 -> magicalModifier = 2;
+                    case 3 -> magicalModifier = 3;
+                    default -> magicalModifier = 1;
+                }
+                scan.nextLine();
+            }
+            curChar.addWeapon(new Weapon(weaponDice, weaponName, magicalModifier, finesse));
         }
     }
 
     public void playCharacter(PartyMember curChar) {
         curChar.printAll();
-
+        System.out.println("What would you like to do?");
+        int numWeapons = curChar.weapons.size();
+        System.out.println("1. Attack with weapons");
+        System.out.println("2. Cast a Spell");
+        System.out.println("3. Leave!");
+        switch (scan.nextInt()) {
+            case 1 -> {
+                curChar.printWeaponOptions();
+            }
+            case 2 -> {
+                //curChar.printSpellBook();
+                System.out.println("Cope.");
+            }
+            default -> {
+                System.out.println("WIP");
+            }
+        }
+        scan.nextLine();
     }
 
 }

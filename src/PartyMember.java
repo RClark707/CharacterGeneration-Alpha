@@ -1,6 +1,5 @@
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class PartyMember {
@@ -15,7 +14,8 @@ public class PartyMember {
     private final int[] statArray = new int[6];
     // This array might be final, but we change it with each object, so I doubt it
 
-    private final ArrayList<Weapon> weapons = new ArrayList<>();
+    protected final ArrayList<Weapon> weapons = new ArrayList<>();
+    protected final ArrayList<Spell> spells = new ArrayList<>();
 
     Scanner scan = new Scanner(System.in);
     private static final String[] classArray = {
@@ -316,7 +316,8 @@ public class PartyMember {
         // this may need to be adjusted to make the subclass and class line up better, but would require more printf practice
         printStatArray();
         printSkillArray();
-        printWeapons();
+        System.out.print("\n");
+        printWeaponOptions();
         System.out.println("\n\n");
     }
 
@@ -336,15 +337,25 @@ public class PartyMember {
 
     // might make a separate method for printing the skillArray?
 
-    public void printWeaponArray(PrintWriter printer) {
+    public void printWeaponArrayToFile(PrintWriter printer) {
         for (Weapon w : weapons) {
             printer.print(w + ", ");
+        }
+    }
+
+    public void printSpellBookToFile(PrintWriter printer) {
+        for (Spell s : spells) {
+            printer.print(s + ", ");
         }
     }
 
     public void nextLevel() {
         charLevel++;
         charHitPoints += DiceRoller.rollDice(charHitDieType,1) + abilityScoreModifier(2);
+    }
+
+    public int getCharLevel() {
+        return charLevel;
     }
 
     public void setCharHitPoints(int constitutionModifier) {
@@ -375,15 +386,20 @@ public class PartyMember {
     protected void addWeapon(Weapon weapon) {
         weapons.add(weapon);
     }
+    protected void addSpell(Spell spell) {spells.add(spell);}
 
-    private void printWeapons() {
-        System.out.print("\n");
+    protected void printWeaponOptions() {
         for (int i = 0; i < weapons.size(); ++i) {
             Weapon curWeapon = weapons.get(i);
-            System.out.println((i+1) + ". " + ClassValidator.capitalizeFirst(curWeapon.getWeaponName()) + " (" +
-                    curWeapon.getNumDamageDice() + "d" + curWeapon.getDamageDieSides() + ")");
+            System.out.println((i+1) + ". " + curWeapon.formattedString());
         }
-        System.out.print("\n");
+    }
+
+    protected void printSpellOptions() {
+        for (int i = 0; i < spells.size(); ++i) {
+            Spell curSpell = spells.get(i);
+            System.out.println((i+1) + ". " + curSpell.formattedString());
+        }
     }
 
 }

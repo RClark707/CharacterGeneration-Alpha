@@ -83,6 +83,9 @@ public class CharacterGenMAIN {
                             Party.printPartyOptions();
                             System.out.println((Party.getPartySize() + 1) + ". Save and Exit to Main Menu");
                             System.out.println((Party.getPartySize() + 2) + ". Clear party");
+                            if (Party.getPartySize() == 0) {
+                                System.out.println((Party.getPartySize() + 3) + ". Create a Character");
+                            }
                             option = scan.nextInt();
                             scan.nextLine();
 
@@ -123,16 +126,40 @@ public class CharacterGenMAIN {
                                     default -> Party.saveParty(fileToSaveTo);
                                 }
                             } while (repeatMenu);
-                        } else if (option == Party.getPartySize() + 1){
+                        } else if (option == Party.getPartySize() + 1) {
                             Party.saveParty(fileToSaveTo);
-                        } else {
+                        } else if (option == Party.getPartySize() + 2) {
                             System.out.println("Are you sure?");
                             if (InputChecker.yes(scan.nextLine())) {
                                 Party.clear();
                                 Party.saveParty(fileToSaveTo);
+                                //viewAnother = true;
                             } else {
                                 viewAnother = true;
                             }
+                        } else {
+                            System.out.println("Looks like you have no characters loaded, lets make one!");
+                            System.out.println("\nUseful Tips: Enter \"full random\" as a name for a completely random character, or enter \"random\" into any of your character's elements to pick a random option.");
+                            System.out.println("\nWhat is your Character's Name?");
+                            String charName = scan.nextLine().toLowerCase();
+                            if (InputChecker.fullRandom(charName)) {
+                                Party.fullRandom();
+                            } else {
+                                if (InputChecker.random(charName)) {
+                                    charName = RandCharacterGenerator.randName();
+                                }
+                                // This makes the object with a named attribute of the character's name
+                                charName = ClassValidator.capitalizeFirst(charName);
+                                Party.addCharacter(charName);
+                                System.out.println("Let's create " + charName + "!");
+                                // This is like the configureSpell method, it lets us set all the internal attributes of the party member
+                                // Soon, we will also need a method to print the literal character sheet of the party member,
+                                // For right now, the printing of the character sheet is within the createCharacter method
+                                // It is on the to do list though
+                                System.out.println("At any point, type \"options\" to see examples of valid entries.");
+                                Party.createCharacter(Party.returnCharacter(charName));
+                            }
+                            viewAnother = true;
                         }
                     } while (viewAnother);
                     break;
@@ -340,7 +367,7 @@ public class CharacterGenMAIN {
                                 scan.nextLine();
                                 if (option <= Party.getPartySize()) {
                                     System.out.println("You are currently playing as: " + Party.getPartyMember(option - 1).getCharName() + "\n\n");
-                                    // Party.playCharacter(Party.getPartyMember(option - 1));
+                                    Party.playCharacter(Party.getPartyMember(option - 1));
                                     System.out.println("Sorry, this feature is currently in development.");
                                     viewAnother = true;
                                 }

@@ -142,6 +142,10 @@ public class Spell {
         spellSchool + "\n" + "------";
     }
 
+    public String formattedString() {
+        return spellName;
+    }
+
     public String getSpellName() {
         return spellName;
     }
