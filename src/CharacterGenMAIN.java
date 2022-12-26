@@ -10,7 +10,7 @@ public class CharacterGenMAIN {
         boolean repeatMenu; // used to determine when to repeat a menu's contents (used in do-while loops)
         String doMore; // Used inside the switch for each option to determine if the user wants to iterate again
         Scanner scan = new Scanner(System.in); // Takes user input
-        String charClass; // Temporary placeholder to pass in to methods as a parameter
+        String charClass; // Temporary placeholder to pass into methods as a parameter
         SpellBook Grimoire = new SpellBook();
         Party Party = new Party();
         String fileToSaveTo = "PartySaveFiles";
@@ -27,13 +27,13 @@ public class CharacterGenMAIN {
             System.out.println("\nWhat would you like to do? (Enter a number 1-10)");
             System.out.println("1. Create a Character!");
             System.out.println("2. View your Party!");
-            System.out.println("3. Random Subclass!");
-            System.out.println("4. Animate Objects!");
-            System.out.println("5. Roll my Stats!");
+            System.out.println("3. Pick a Random Subclass!");
+            System.out.println("4. Animate Some Objects!");
+            System.out.println("5. Roll Stats!");
             System.out.println("6. Roll Dice!");
             System.out.println("7. Read your Spell Book!");
             System.out.println("8. Play a Character!");
-            System.out.println("9. Test!");
+            System.out.println("9. Save All!");
             System.out.println("10. Exit");
             // Collect the user input and use a switch to identify what we should do
             option = scan.nextInt();
@@ -44,8 +44,9 @@ public class CharacterGenMAIN {
                 case 1:
                     do {
                         // Take the name and use it much like a spell to create a new Party Member object
+                        System.out.println("\nUseful Tips: Enter \"full random\" as a name for a completely random character, or enter \"random\" into any of your character's elements to pick a random option.");
                         System.out.println("\nWhat is your Character's Name?");
-                        String charName = scan.nextLine();
+                        String charName = scan.nextLine().toLowerCase();
                         if (!InputChecker.fullRandom(charName)) {
                             if (InputChecker.random(charName)) {
                                 charName = RandCharacterGenerator.randName();
@@ -53,7 +54,7 @@ public class CharacterGenMAIN {
                             // This makes the object with a named attribute of the character's name
                             charName = ClassValidator.capitalizeFirst(charName);
                             Party.addCharacter(charName);
-                            System.out.println("Let's create " + charName + "!\n");
+                            System.out.println("Let's create " + charName + "!");
                             // This is like the configureSpell method, it lets us set all the internal attributes of the party member
                             // Soon, we will also need a method to print the literal character sheet of the party member,
                             // For right now, the printing of the character sheet is within the createCharacter method
@@ -63,12 +64,9 @@ public class CharacterGenMAIN {
                         } else {
                             Party.fullRandom();
                         }
-
                         System.out.println("\n\nCurrent party members: " + Party.printParty());
-
                         System.out.println("\n\nEnter Y to make another Character, or N to go back.");
                         doMore = scan.nextLine();
-
                     } while (InputChecker.yes(doMore));
                     break;
                 // View Party Members
@@ -122,18 +120,21 @@ public class CharacterGenMAIN {
                                             repeatMenu = true;
                                         }
                                     }
-
                                     default -> Party.saveParty(fileToSaveTo);
                                 }
                             } while (repeatMenu);
                         } else if (option == Party.getPartySize() + 1){
                             Party.saveParty(fileToSaveTo);
                         } else {
-                            Party.clear();
-                            Grimoire.saveSpells(spellFile);
+                            System.out.println("Are you sure?");
+                            if (InputChecker.yes(scan.nextLine())) {
+                                Party.clear();
+                                Party.saveParty(fileToSaveTo);
+                            } else {
+                                viewAnother = true;
+                            }
                         }
-
-                        } while (viewAnother);
+                    } while (viewAnother);
                     break;
 
                 // Random Subclass and/or class
@@ -330,32 +331,58 @@ public class CharacterGenMAIN {
                 case 8:
                     do {
                         viewAnother = false;
-                        System.out.println("\nWhich character would you like to play as?");
-                        Party.printPartyOptions();
-                        System.out.println((Party.getPartySize()+1) + ". Exit to Main Menu");
-                        option = scan.nextInt();
-                        scan.nextLine();
-                        if (option <= Party.getPartySize()) {
-                            System.out.println("You are currently playing as: " + Party.getPartyMember(option-1).getCharName());
-                            System.out.println("Sorry, this feature is currently in development.");
+                        if (Party.getPartySize() != 0) {
+                            if (Party.getPartySize() != 0) {
+                                System.out.println("\nWhich character would you like to play as?");
+                                Party.printPartyOptions();
+                                System.out.println((Party.getPartySize() + 1) + ". Exit to Main Menu");
+                                option = scan.nextInt();
+                                scan.nextLine();
+                                if (option <= Party.getPartySize()) {
+                                    System.out.println("You are currently playing as: " + Party.getPartyMember(option - 1).getCharName() + "\n\n");
+                                    // Party.playCharacter(Party.getPartyMember(option - 1));
+                                    System.out.println("Sorry, this feature is currently in development.");
+                                    viewAnother = true;
+                                }
+                            }
+                        } else {
+                            // Should I add these lines to the create Character method
+                            System.out.println("Looks like you have no characters loaded, lets make one!");
+                            System.out.println("\nUseful Tips: Enter \"full random\" as a name for a completely random character, or enter \"random\" into any of your character's elements to pick a random option.");
+                            System.out.println("\nWhat is your Character's Name?");
+                            String charName = scan.nextLine().toLowerCase();
+                            if (InputChecker.fullRandom(charName)) {
+                                Party.fullRandom();
+                            } else {
+                                if (InputChecker.random(charName)) {
+                                    charName = RandCharacterGenerator.randName();
+                                }
+                                // This makes the object with a named attribute of the character's name
+                                charName = ClassValidator.capitalizeFirst(charName);
+                                Party.addCharacter(charName);
+                                System.out.println("Let's create " + charName + "!");
+                                // This is like the configureSpell method, it lets us set all the internal attributes of the party member
+                                // Soon, we will also need a method to print the literal character sheet of the party member,
+                                // For right now, the printing of the character sheet is within the createCharacter method
+                                // It is on the to do list though
+                                System.out.println("At any point, type \"options\" to see examples of valid entries.");
+                                Party.createCharacter(Party.returnCharacter(charName));
+                            }
                             viewAnother = true;
                         }
                     } while (viewAnother);
                     break;
-                // Testing
+                // Save ALl
                 case 9:
-                    do {
-
-                        System.out.println("\nEnter Y to try again, or N to go back.");
-                        doMore = scan.nextLine();
-
-                    } while (InputChecker.yes(doMore));
+                    Grimoire.saveSpells(spellFile);
+                    Party.saveParty(fileToSaveTo);
+                    System.out.println("\nYour Party and Spellbook have both been saved!");
                     break;
                 default:
                     break;
             } //switch ends
         } while (option < 10);
-        System.out.println("Sorry to see you go, hope you're back soon.");
+        System.out.println("\nSorry to see you go, hope you're back soon.");
         scan.close();
     }
 }

@@ -7,15 +7,38 @@ public class Weapon {
     protected int magicalModifier;
     protected String weaponName;
     //protected String[] weaponProperties;
-
-
+    protected boolean finesse;
+    // Default constructor
     public Weapon() {}
-
-    public Weapon(int damageDieSides, String weaponName) {
+    public Weapon(int damageDieSides, String weaponName, boolean finesse) {
         this.damageDieSides = damageDieSides;
-        numDamageDice = 1;
+        if (weaponName.equalsIgnoreCase("greatsword")) {
+            numDamageDice = 2;
+        } else {
+            numDamageDice = 1;
+        }
         magicalModifier = 0;
         this.weaponName = weaponName;
+        this.finesse = finesse;
+    }
+
+    public Weapon(int damageDieSides, String weaponName, int magicalModifier, boolean finesse) {
+        this.damageDieSides = damageDieSides;
+        if (weaponName.equalsIgnoreCase("greatsword")) {
+            numDamageDice = 2;
+        } else {
+            numDamageDice = 1;
+        }
+        this.weaponName = weaponName;
+        this.magicalModifier = magicalModifier;
+        this.finesse = finesse;
+    }
+    @Override
+    public String toString() {
+        return damageDieSides + ", " +
+                weaponName + ", " +
+                magicalModifier + ", " +
+                finesse;
     }
 
     public int getDamageDieSides() {
@@ -53,6 +76,14 @@ public class Weapon {
         this.weaponProperties = weaponProperties;
     }
     */
+
+    public boolean isFinesse() {
+        return finesse;
+    }
+
+    public void setFinesse(boolean finesse) {
+        this.finesse = finesse;
+    }
 
     public int getNumDamageDice() {
         return numDamageDice;

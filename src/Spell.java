@@ -120,6 +120,7 @@ public class Spell {
         }
     }
 
+    @Override
     public String toString() {
         return spellName + "\n" +
         spellLevel + "\n" +

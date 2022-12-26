@@ -1,4 +1,3 @@
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -32,15 +31,15 @@ public class Party {
             if (characterToCreate.equals(character)) {
                 // Step 1: Race
                 while (character.getCharRace() == null) {
-                    System.out.println("What is your Race?");
-                    String race = scan.nextLine();
+                    System.out.println("\nWhat is your Race?");
+                    String race = scan.nextLine().toLowerCase();
                     if (InputChecker.random(race)) {
                         race = RandCharacterGenerator.randRace();
                         character.setCharRace(race);
                     } else if (InputChecker.options(race)) {
                         RandCharacterGenerator.printOptions("Race",null);
                         System.out.println("What is your Race?");
-                        race = scan.nextLine();
+                        race = scan.nextLine().toLowerCase();
                         if (InputChecker.random(race)) {
                           race = RandCharacterGenerator.randRace();
                         }
@@ -50,18 +49,18 @@ public class Party {
                         race = ClassValidator.capitalizeFirst(race);
                         character.setCharRace(race);
                     }
-                    System.out.println("You are now a " + character.getCharRace());
                 } // end of Race
+                System.out.println("You are now a " + character.getCharRace());
                 // Step 2: Class
                 while (character.getCharClass() == null) {
                     System.out.println("What is your Class?");
-                    String charClass = scan.nextLine();
+                    String charClass = scan.nextLine().toLowerCase();
                     charClass = ClassValidator.capitalizeFirst(charClass);
                     if (InputChecker.random(charClass)) {
                         charClass = RandCharacterGenerator.randCharClass();
                         character.setCharClass(charClass);
                         character.setCharHitDieType();
-                        System.out.println("You are now a " + character.getCharRace() + " " + character.getCharClass());
+
                     } else if (ClassValidator.isValidClass(charClass)) {
                         character.setCharClass(charClass);
                         character.setCharHitDieType();
@@ -73,7 +72,6 @@ public class Party {
                         if (InputChecker.random(charClass)) {
                             charClass = RandCharacterGenerator.randCharClass();
                             character.setCharClass(charClass);
-                            System.out.println("You are now a " + character.getCharRace() + " " + character.getCharClass());
                         } else if (ClassValidator.isValidClass(charClass)) {
                             character.setCharClass(charClass);
                             character.setCharHitDieType();
@@ -84,29 +82,30 @@ public class Party {
                     } else {
                         System.out.println("Sorry, you either entered an unknown Class, or misspelled it.");
                     }
-
                 } // end of Class
+                System.out.println("You are now a " + character.getCharRace() + " " + character.getCharClass());
                 // Step 3: Subclass
                 while (character.getCharSubclass() == null) {
                     System.out.println("What is your Subclass?");
-                    String charSubclass = scan.nextLine();
+                    String charSubclass = scan.nextLine().toLowerCase();
                     charSubclass = ClassValidator.capitalizeFirst(charSubclass);
                     if (InputChecker.random(charSubclass)) {
                         charSubclass = RandCharacterGenerator.randCharSubclass(character.getCharClass());
+                        charSubclass = ClassValidator.capitalizeFirst(charSubclass);
                         character.setCharSubclass(charSubclass);
-                        System.out.println("You are now a " + character.getCharRace() + " " + character.getCharSubclass() + " " + character.getCharClass());
                     } else if (ClassValidator.isValidSubclass(charSubclass, character.getCharClass())) {
+                        charSubclass = ClassValidator.capitalizeFirst(charSubclass);
                         character.setCharSubclass(charSubclass);
                     } else if (InputChecker.options(charSubclass)) {
                         RandCharacterGenerator.printOptions("Subclass",character.getCharClass());
                         System.out.println("What is your Subclass?");
-                        charSubclass = scan.nextLine();
+                        charSubclass = scan.nextLine().toLowerCase();
                         charSubclass = ClassValidator.capitalizeFirst(charSubclass);
                         if (InputChecker.random(charSubclass)) {
                             charSubclass = RandCharacterGenerator.randCharSubclass(character.getCharClass());
                             character.setCharSubclass(charSubclass);
-                            System.out.println("You are now a " + character.getCharRace() + " " + character.getCharSubclass() + " " + character.getCharClass());
                         } else if (ClassValidator.isValidSubclass(charSubclass,character.getCharClass())) {
+                            charSubclass = ClassValidator.capitalizeFirst(charSubclass);
                             character.setCharClass(charSubclass);
                         } else {
                             System.out.println("Sorry, you either entered an unknown Subclass, or misspelled it.");
@@ -115,32 +114,34 @@ public class Party {
                         System.out.println("Sorry, you either entered an unknown Subclass, or misspelled it.");
                     }
                 } // end of Subclass
+                System.out.println("You are now a " + character.getCharRace() + " " + character.getCharSubclass() + " " + character.getCharClass());
                 // Step 4: Background
                 while (character.getCharBackground() == null) {
                     System.out.println("What is your Background?");
-                    String background = scan.nextLine();
+                    String background = scan.nextLine().toLowerCase();
+                    background = ClassValidator.capitalizeFirst(background);
                     background = ClassValidator.capitalizeFirst(background);
                     if (InputChecker.random(background)) {
                         background = RandCharacterGenerator.randBackground();
                         character.setCharBackground(background);
-                        System.out.println("You were a " + character.getCharBackground());
+
                     } else if (InputChecker.options(background)) {
                         RandCharacterGenerator.printOptions("Background",null);
                         System.out.println("What is your Background?");
-                        background = scan.nextLine();
+                        background = scan.nextLine().toLowerCase();
                         if (InputChecker.random(background)) {
                             background = RandCharacterGenerator.randBackground();
                             character.setCharBackground(background);
-                            System.out.println("You were a " + character.getCharBackground());
                         } else {
                             background = ClassValidator.capitalizeFirst(background);
                             character.setCharBackground(background);
                         }
                     } else {
+                        background = ClassValidator.capitalizeFirst(background);
                         character.setCharBackground(background);
                     }
-
                 } // end of Background
+                System.out.println("You were a " + character.getCharBackground());
                 // Step 5: Skills! :)
                 // Not using a while loop here, for no particular reason
                 // If a character gets more proficiencies from their race or something, ou can get more random ones here
@@ -152,7 +153,7 @@ public class Party {
 
                 // Already knows we have 2 bonus from the background
                 character.createSkillArray(numBonus);
-                System.out.print("Here are the skills you gained from your background: \n");
+                System.out.print("\nHere are the skills you gained from your background: ");
                 character.printSkillArray();
                 System.out.print("\n\n");
 
@@ -162,6 +163,7 @@ public class Party {
                     String[] classSkills = RandCharacterGenerator.getClassSkillArray(character.getCharClass());
                     // the following method checks to see if we are a bard (if so, we skip)
                     character.printClassSkillOptions();
+                    // TODO: explain that you need to enter a number rather than a skill name
                     System.out.print("\nFirst choice: ");
                     int choice1 = scan.nextInt();
                     // Adds to our master list within the character object
@@ -214,7 +216,7 @@ public class Party {
                     boolean notUnique;
                     do {
                         System.out.println("\nWhich stat would you like to apply a +2 Racial Modifier to?");
-                        preference = scan.nextLine();
+                        preference = scan.nextLine().toLowerCase();
                         preference = InputChecker.shortToLong(preference);
                     } while (!ClassValidator.isValidStat(preference));
                     character.applyRacialModifier(2, preference);
@@ -222,7 +224,7 @@ public class Party {
                         notUnique = false;
                         String previousPref = preference;
                         System.out.println("\nWhich stat would you like to apply a +1 Racial modifier to?");
-                        preference = scan.nextLine();
+                        preference = scan.nextLine().toLowerCase();
                         preference = InputChecker.shortToLong(preference);
                         if (previousPref.equals(preference)) {
                             notUnique = true;
@@ -233,6 +235,8 @@ public class Party {
                 }
                 // Rolls hit points now that we have sufficiently manipulated the stats
                 character.setCharHitPoints(character.abilityScoreModifier(2));
+                // make and add weapons
+                // makeWeapon(character,scan);
                 // Print out the Character Sheet
                 character.printAll();
                 break;
@@ -259,6 +263,7 @@ public class Party {
             PartyMember p = party.get(i);
             System.out.println((i+1) + ". " + p.getCharName());
         }
+        // TODO: if no characters exist, let them make one from view party screen
     }
 
     public int getPartySize() {
@@ -274,6 +279,8 @@ public class Party {
         try (PrintWriter printer = new PrintWriter(fileToSaveTo)) {
             for (PartyMember p : party) {
                 printer.print(p.toString());
+                p.printWeaponArray(printer);
+                printer.println( "\n------");
             }
         }
     }
@@ -301,16 +308,20 @@ public class Party {
                 String charClass = scan.nextLine();
                 String subclass = scan.nextLine();
                 party.add(new PartyMember(name,background,level,hitDieType,hitPoints,race,charClass,subclass));
-                // it is possible I am a line ahead of where I am supposed to be at this stage, but I will test after skill proficiencies
                 String[] statValues = scan.nextLine().split(",");
                 for (int i = 0; i < 6; ++i) {
                     returnCharacter(name).setStatValue(i, Integer.parseInt(statValues[i]));
                 }
                 String skillProficiencies = scan.nextLine();
                 skillProficiencies = skillProficiencies.substring(1,skillProficiencies.length()-1);
-                String[] skills = skillProficiencies.split(",");
+                String[] skills = skillProficiencies.split(", ");
                 for (String skill : skills) {
                     returnCharacter(name).addSkill(skill);
+                }
+                String[] weaponArray = scan.nextLine().split(", ");
+                // might be easier if the weapons were saved as a two-dimensional array
+                for (int i = 0; i < weaponArray.length; i = i + 4) {
+                    returnCharacter(name).addWeapon(new Weapon(Integer.parseInt(weaponArray[i]), weaponArray[i+1], Integer.parseInt(weaponArray[i+2]), Boolean.getBoolean(weaponArray[i+3])));
                 }
                 scan.nextLine();
             }
@@ -323,7 +334,18 @@ public class Party {
     public void removePartyMember(int index) {party.remove(index);}
 
     public void fullRandom() {
-        String randName = RandCharacterGenerator.randName();
+        boolean notUniqueName;
+        String randName;
+        do {
+            notUniqueName = false;
+            randName = RandCharacterGenerator.randName();
+            for (PartyMember p : party) {
+                if (p.getCharName().equals(randName)) {
+                    notUniqueName = true;
+                    break;
+                }
+            }
+        } while (notUniqueName);
         party.add(PartyMember.characterBuilder(randName));
         for (PartyMember character : party) {
             if (randName.equals(character.getCharName())) {
@@ -333,56 +355,56 @@ public class Party {
                 character.setCharHitDieType();
                 character.setCharBackground(RandCharacterGenerator.randBackground());
                 character.rollStats(rand.nextInt(70,100));
-                int numBonus = 0;
-                if (character.getCharClass().equals("Ranger")) {
-                    numBonus = 1;
-                } else if (character.getCharClass().equals("Rogue")) {
-                    numBonus = 2;
-                }
-                if (character.getCharClass().equals("Bard")) {
-                    character.createSkillArray(3);
-                } else {
-                    character.createSkillArray(0);
-                    String[] skills = RandCharacterGenerator.getClassSkillArray(character.getCharClass());
-                    for (int i = 0; i < skills.length - 1; ++i) {
-                        skills[i] = skills[i +1];
-                    }
-                    int randomIndex = rand.nextInt(RandCharacterGenerator.getClassSkillArray(character.getCharClass()).length);
-                    character.addSkill(RandCharacterGenerator.getClassSkillArray(character.getCharClass())[randomIndex]);
-                    int tempHolder = randomIndex;
-                    int previousIndex;
-                    int otherPreviousIndex;
-                    do {
-                        randomIndex = rand.nextInt(RandCharacterGenerator.getClassSkillArray(character.getCharClass()).length);
-                    } while (randomIndex == tempHolder);
-                    character.addSkill(RandCharacterGenerator.getClassSkillArray(character.getCharClass())[randomIndex]);
-                    // For Rangers and Rogues:
-                    if (numBonus > 0) {
-                        previousIndex = randomIndex;
-                        do {
-                            randomIndex = rand.nextInt(RandCharacterGenerator.getClassSkillArray(character.getCharClass()).length);
-                        } while (randomIndex == previousIndex || randomIndex == tempHolder);
-                        character.addSkill(RandCharacterGenerator.getClassSkillArray(character.getCharClass())[randomIndex]);
-                        // In the case of Rogues:
-                        if (numBonus > 1) {
-                            otherPreviousIndex = randomIndex;
-                            do {
-                                randomIndex = rand.nextInt(RandCharacterGenerator.getClassSkillArray(character.getCharClass()).length);
-                            } while (randomIndex == previousIndex || randomIndex == tempHolder || randomIndex == otherPreviousIndex);
-                            character.addSkill(RandCharacterGenerator.getClassSkillArray(character.getCharClass())[randomIndex]);
-                        }
-                    } // End of Bonus skills for Rogues and Rangers
-                } // End of Skills
                 String randStat = RandCharacterGenerator.randStat();
+                // Write a new method to optimize racial modifiers, perhaps based on ability modifier too, but mostly on class choice
                 character.applyRacialModifier(2,randStat);
                 String secondStat;
                 do {
                     secondStat = RandCharacterGenerator.randStat();
                 } while (randStat.equals(secondStat));
                 character.applyRacialModifier(1,secondStat);
+                character.optimizeStats(character.getCharClass());
                 character.setCharHitPoints(character.abilityScoreModifier(2));
+                // start of skills
+                // TODO: skills are still getting duplicates
+                character.setSkillArray(RandCharacterGenerator.createRandomSkillArray(2,true,character.getCharClass()));
+                // TODO: randomly generate appropriate weapons for a character
+                character.addWeapon(RandCharacterGenerator.simpleWeaponTable[rand.nextInt(RandCharacterGenerator.simpleWeaponTable.length)]);
+                character.addWeapon(RandCharacterGenerator.simpleWeaponTable[rand.nextInt(RandCharacterGenerator.simpleWeaponTable.length)]);
                 character.printAll();
             }
         }
     }
+
+    public void makeWeapon(PartyMember curChar, Scanner scan) {
+        boolean finesse = false;
+        System.out.println("How many weapons does your character wield");
+        int weaponCount = scan.nextInt();
+        scan.nextLine();
+        for (int i = 0; i < weaponCount; ++i) {
+            // TODO: ask for the number of damage dice
+            // TODO: give options for weapons and check for null
+            System.out.println("What is " + curChar.getCharName() + "'s weapon?");
+            String weaponName = scan.nextLine();
+            if (InputChecker.options(weaponName)) {
+                RandCharacterGenerator.printOptions("Weapons",curChar.getCharClass());
+                System.out.println("What is " + curChar.getCharName() + "'s weapon?");
+                weaponName = scan.nextLine();
+            }
+            System.out.println("How many sides do the damage dice of your weapon have?");
+            int weaponDice = scan.nextInt();
+            scan.nextLine();
+            System.out.println("Is a " + weaponName + " a finesse weapon (Does it use Dexterity instead of Strength)?");
+            if (InputChecker.yes(scan.nextLine())) {
+                finesse = true;
+            }
+            curChar.addWeapon(new Weapon(weaponDice, weaponName, finesse));
+        }
+    }
+
+    public void playCharacter(PartyMember curChar) {
+        curChar.printAll();
+
+    }
+
 }

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -286,20 +287,26 @@ public class RandCharacterGenerator {
     };
 
     public static final String[] nameArray = {
+            "Alistyr",
             "Arkus",
             "Auric",
             "Avren",
             "Bassuras",
             "Bennedict",
             "Borick",
+            "Cecil",
+            "Dazageth",
             "Ira",
+            "Khilydh",
             "Kos",
+            "Ledoshre",
             "Logaine",
             "Magnus",
             "Omen",
             "Philip",
             "Proteus",
             "Shalatar",
+            "Umed",
             "Val",
     };
 
@@ -353,6 +360,32 @@ public class RandCharacterGenerator {
             "Illusions",
             "Necromancy",
             "Transmutation",
+    };
+
+    // TODO: complete weapon tables
+    protected static final Weapon[] simpleWeaponTable = {
+            new Weapon(4,"club",false),
+            new Weapon(4,"sling",true),
+            new Weapon(4,"dagger",true),
+            new Weapon(6,"quarterstaff",false),
+            new Weapon(4,"sickle",false),
+            new Weapon(6,"shortbow",true),
+            new Weapon(8,"light crossbow",true),
+    };
+
+    protected static final Weapon[] martialWeaponTable = {
+            new Weapon(6,"shortsword",true),
+            new Weapon(8,"longsword",false),
+            new Weapon(6,"greatsword",false),
+            new Weapon(8,"rapier",true),
+            new Weapon(8,"trident",false),
+            new Weapon(8,"longbow",true),
+            new Weapon(8,"morning-star",false),
+            new Weapon(10,"glaive",false),
+            new Weapon(12,"greataxe",false),
+            new Weapon(10,"pike",false),
+            new Weapon(10,"heavy crossbow",true),
+            new Weapon(6,"hand crossbow",true),
     };
 
     public static void printOptions(String desiredArrayName, String charClass) {
@@ -504,35 +537,63 @@ public class RandCharacterGenerator {
 
     public static String randBackground() {return backgroundArray[rand.nextInt(backgroundArray.length)];}
 
-    public static String[] randSkillArray(int numSkills) {
-        String[] skillList = new String[numSkills];
-        boolean notUnique;
-        int count;
+    public static ArrayList<String> createRandomSkillArray(int numSkillsToGenerate, boolean fullRandom, String charClass) {
+        // TODO: Still generating duplicate skills, at least between class and background.
+        boolean skillsAreNotUnique;
+        ArrayList<String> skills = new ArrayList<>();
+        int[] usedSkills = new int[allProf.length];;
+        int randSkillIndex;
 
-        do {
-            notUnique = false;
-            // This one line saved it all
-            for (int i = 0; i < numSkills; ++i) {
-                skillList[i] = RandCharacterGenerator.allProf[rand.nextInt((allProf.length))];
-            }
-            for (String s : skillList) {
-                count = 0;
-                for (String k : skillList) {
-                    if (s.equals(k)) {
-                        count++;
+        if (fullRandom || charClass.equals("Bard")) {
+            // if the character is all random, we need to generate our own class skills too.
+            String[] classArrayOfSkills = getClassSkillArray(charClass);
+            int numBonusChoicesFromRogueOrRanger = switch (charClass) {
+                case "Rogue" -> 2;
+                case "Ranger", "Bard" -> 1;
+                default -> 0;
+            };
+            // there is a base of 2 skill choices from your class, but some classes get extra
+            for (int i = 0; i < 2 + numBonusChoicesFromRogueOrRanger; ++i) {
+                do {
+                    skillsAreNotUnique = false;
+                    if (charClass.equals("Bard")) {
+                        randSkillIndex = rand.nextInt(classArrayOfSkills.length);
+                    } else {
+                        // The first index of each of these class arrays is useless, because it tells you how many choices you get.
+                        // To fix this, we cut out the first index of the array
+                        randSkillIndex = rand.nextInt(1,classArrayOfSkills.length);
                     }
-                    if (count > 1) {
-                        notUnique = true;
+                    for (int u = 0; u < usedSkills.length; ++u) {
+                        if (usedSkills[u] == 1 && randSkillIndex == u) {
+                            skillsAreNotUnique = true;
+                            break;
+                        } else if (randSkillIndex == u) {
+                            usedSkills[u] = 1;
+                            skills.add(classArrayOfSkills[u]);
+                            break;
+                        }
+                    }
+                } while (skillsAreNotUnique);
+            }
+        }
+        // there is often a base of 2 skills from background, but we manually input this in the Party Member createSkillArray method
+        for (int i = 0; i < numSkillsToGenerate; ++i) {
+            do {
+                skillsAreNotUnique = false;
+                randSkillIndex = rand.nextInt(allProf.length);
+                for (int u = 0; u < usedSkills.length; ++u) {
+                    if (usedSkills[u] == 1 && randSkillIndex == u) {
+                        skillsAreNotUnique = true;
+                        break;
+                    } else if (randSkillIndex == u) {
+                        usedSkills[u] = 1;
+                        skills.add(allProf[u]);
                         break;
                     }
                 }
-                if (notUnique) {
-                    break;
-                }
-            }
-        } while (notUnique);
-
-        return skillList;
+            } while (skillsAreNotUnique);
+        }
+        return skills;
     }
 
     public static String[] getClassSkillArray(String charClass) {
@@ -542,6 +603,9 @@ public class RandCharacterGenerator {
             }
             case "Barbarian" -> {
                 return barbarianProf;
+            }
+            case "Bard" -> {
+                return allProf;
             }
             case "Cleric" -> {
                 return clericProf;

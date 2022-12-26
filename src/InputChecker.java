@@ -16,11 +16,11 @@ public class InputChecker {
     }
 
     public static boolean fullRandom(String userInput) {
-        return userInput.equalsIgnoreCase("full random");
+        return userInput.equalsIgnoreCase("full random") || userInput.equalsIgnoreCase("fullrandom");
     }
 
     public static boolean options(String userInput) {
-        return userInput.equalsIgnoreCase("options");
+        return userInput.equalsIgnoreCase("options") || userInput.equalsIgnoreCase("option");
     }
 
     public static String shortToLong(String userInput) {

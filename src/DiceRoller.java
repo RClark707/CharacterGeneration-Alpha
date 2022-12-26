@@ -52,6 +52,7 @@ public class DiceRoller {
     }
 
     // This is the same as the above, but it sets a minimum total threshold and shows the Total
+    // change to array?
     public static String rollGoodStats(int threshold) {
         String statString;
         int totalScore;
@@ -70,6 +71,10 @@ public class DiceRoller {
 
         statString += "  Total: " + totalScore;
         return statString;
+    }
+
+    public static int computeAbilityModifier(int abilityScore) {
+        return Math.floorDiv(abilityScore - 10,2);
     }
 
 }

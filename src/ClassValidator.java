@@ -182,11 +182,17 @@ public class ClassValidator {
 
     // Probably ought to move the capitalize method to the InputChecker class.
 
-    public static String capitalizeFirst(String input) {
-        if (!(Character.isUpperCase(input.charAt(0)))) {
-            input = input.substring(0,1).toUpperCase() + input.substring(1);
+    public static String capitalizeFirst(String str) {
+        if (str.contains(" ")) {
+            String[] words = str.split(" ");
+            String finalProduct = "";
+            for (String curWord : words) {
+                finalProduct = finalProduct.concat(curWord.substring(0,1).toUpperCase() + curWord.substring(1).toLowerCase() + " ");
+            }
+            return finalProduct.trim();
+        } else {
+            return str.substring(0,1).toUpperCase() + str.substring(1).toLowerCase();
         }
-        return input;
     }
 
     public static boolean isValidClass(String charClass) {
@@ -199,100 +205,98 @@ public class ClassValidator {
     }
 
     public static boolean isValidSubclass(String subclass, String charClass) {
-        subclass = ClassValidator.capitalizeFirst(subclass);
-        charClass = ClassValidator.capitalizeFirst(charClass);
-
-        if (subclass.equals("Random")) {
+        if (subclass.equals("random")) {
             return true;
         } else {
             switch (charClass) {
                 case "Artificer" -> {
                     for (String s : artificerSubclasses) {
-                        if (subclass.equals(s)) {
+                        if (subclass.equalsIgnoreCase(s)) {
                             return true;
                         }
                     }
                 }
                 case "Barbarian" -> {
                     for (String s : barbarianSubclasses) {
-                        if (subclass.equals(s)) {
+                        if (subclass.equalsIgnoreCase(s)) {
                             return true;
                         }
                     }
                 }
                 case "Bard" -> {
                     for (String s : bardSubclasses) {
-                        if (subclass.equals(s)) {
+                        if (subclass.equalsIgnoreCase(s)) {
                             return true;
                         }
                     }
                 }
                 case "Cleric" -> {
                     for (String s : clericSubclasses) {
-                        if (subclass.equals(s)) {
+                        if (subclass.equalsIgnoreCase(s)) {
                             return true;
                         }
                     }
                 }
                 case "Druid" -> {
                     for (String s : druidSubclasses) {
-                        if (subclass.equals(s)) {
+                        if (subclass.equalsIgnoreCase(s)) {
                             return true;
                         }
                     }
                 }
                 case "Fighter" -> {
                     for (String s : fighterSubclasses) {
-                        if (subclass.equals(s)) {
+                        if (subclass.equalsIgnoreCase(s)) {
                             return true;
                         }
                     }
                 }
                 case "Monk" -> {
                     for (String s : monkSubclasses) {
-                        if (subclass.equals(s)) {
+                        if (subclass.equalsIgnoreCase(s)) {
                             return true;
                         }
                     }
                 }
                 case "Paladin" -> {
                     for (String s : paladinSubclasses) {
-                        if (subclass.equals(s)) {
+                        // Somewhere, somehow Oath of Devotion does not equal Oath of Devotion
+                        if (subclass.equalsIgnoreCase(s)) {
                             return true;
                         }
                     }
                 }
                 case "Ranger" -> {
                     for (String s : subclasses8) {
-                        if (subclass.equals(s)) {
+                        if (subclass.equalsIgnoreCase(s)) {
                             return true;
                         }
                     }
                 }
                 case "Rogue" -> {
                     for (String s : rogueSubclasses) {
-                        if (subclass.equals(s)) {
+                        if (subclass.equalsIgnoreCase(s)) {
                             return true;
                         }
                     }
                 }
                 case "Sorcerer" -> {
                     for (String s : sorcererSubclasses) {
-                        if (subclass.equals(s)) {
+                        if (subclass.equalsIgnoreCase(s)) {
                             return true;
                         }
                     }
                 }
                 case "Warlock" -> {
                     for (String s : warlockSubclasses) {
-                        if (subclass.equals(s)) {
+                        if (subclass.equalsIgnoreCase(s)) {
                             return true;
                         }
                     }
                 }
                 case "Wizard" -> {
                     for (String s : wizardSubclasses) {
-                        if (subclass.equals(s)) {
+                        if (subclass.equalsIgnoreCase(s)) {
                             return true;
                         }
                     }
