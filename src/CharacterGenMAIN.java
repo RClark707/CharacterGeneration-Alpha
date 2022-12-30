@@ -359,21 +359,18 @@ public class CharacterGenMAIN {
                     do {
                         viewAnother = false;
                         if (Party.getPartySize() != 0) {
-                            if (Party.getPartySize() != 0) {
-                                System.out.println("\nWhich character would you like to play as?");
-                                Party.printPartyOptions();
-                                System.out.println((Party.getPartySize() + 1) + ". Exit to Main Menu");
-                                option = scan.nextInt();
-                                scan.nextLine();
-                                if (option <= Party.getPartySize()) {
-                                    System.out.println("You are currently playing as: " + Party.getPartyMember(option - 1).getCharName() + "\n\n");
-                                    Party.playCharacter(Party.getPartyMember(option - 1));
-                                    System.out.println("Sorry, this feature is currently in development.");
-                                    viewAnother = true;
-                                }
+                            System.out.println("\nWhich character would you like to play as?");
+                            Party.printPartyOptions();
+                            System.out.println((Party.getPartySize() + 1) + ". Exit to Main Menu");
+                            option = scan.nextInt();
+                            scan.nextLine();
+                            if (option <= Party.getPartySize()) {
+                                System.out.println("You are currently playing as: " + Party.getPartyMember(option - 1).getCharName() + "\n\n");
+                                Party.playCharacter(Party.getPartyMember(option - 1));
+                                viewAnother = true;
                             }
                         } else {
-                            // Should I add these lines to the create Character method
+                            // Should I add these lines to the create Character method?
                             System.out.println("Looks like you have no characters loaded, lets make one!");
                             System.out.println("\nUseful Tips: Enter \"full random\" as a name for a completely random character, or enter \"random\" into any of your character's elements to pick a random option.");
                             System.out.println("\nWhat is your Character's Name?");

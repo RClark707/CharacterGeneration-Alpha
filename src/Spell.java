@@ -78,11 +78,15 @@ public class Spell {
                 //+ effects.concat(" With " + numTargets + " targets.");
                 // If the spell requires an attack roll, or more than one attack roll.
             } else if (isAttackRoll) {
+                int damageTotal = 0;
+                int perAttackDamage;
                 for (int i = 0; i < (numAttacks + higherLevelAttacksIncrease); ++i) {
                     effects = effects.concat((DiceRoller.rollDice(20,1) + attackModifier) + " to hit, damage: ");
+                    perAttackDamage = DiceRoller.rollDice(diceSideNumber,(numDice + higherLevelDamageDice)) + damageModifier;
+                    damageTotal += perAttackDamage;
                     effects = effects.concat(String.valueOf(DiceRoller.rollDice(diceSideNumber,(numDice + higherLevelDamageDice)) + damageModifier));
                     effects = effects.concat(" " + damageType + " damage.\n");
-                    // TODO: total damage for multiple attacks
+                    effects = "Total damage: " + damageTotal + "\n" + effects;
                 }
                 // if the Spell is a saving throw, we'll output half damage for a successful save, in case that applies.
                 // Some spells deal no damage on a successful save, we don't really account for that, just hope that the user knows the difference.
@@ -101,22 +105,44 @@ public class Spell {
         return "Unknown Effects, or you cast the spell at too low of a level";
     }
 
-    // TODO: Method for printing all the attributes of a certain spell. still working on it.
     public void printSpellCard() {
         System.out.println(spellName);
-        System.out.println("Level " + spellLevel + "   " + spellSchool);
+        System.out.printf("Level %-3s %s\n",spellLevel,spellSchool);
         if (dealsDamage) {
-            System.out.println("This spell deals " + numDice + "d" + diceSideNumber + " " + damageType + " to " + numTargets + " target(s).");
+            System.out.print("This spell deals " + numDice + "d" + diceSideNumber + " " + damageType);
+            if (numTargets != -1) {
+                System.out.println(" to " + numTargets + " target(s).");
+            } else {
+                System.out.println(" in an area.");
+            }
         } else {
             System.out.println(spellEffects);
-            System.out.println("You may target " + numTargets + " target(s) with this spell.");
+            System.out.print("You may target ");
+            if (numTargets != -1) {
+                System.out.println(numTargets + " target(s) with this spell.");
+            } else {
+                System.out.println("a group of creatures with this spell.");
+            }
         }
+        System.out.print("This spell ");
         if (higherLevelDamageDice != -1) {
-            System.out.println("This spell rolls an extra " + higherLevelDamageDice + " die/dice for each spell slot level beyond " + spellLevel);
+            System.out.print("rolls an extra " + higherLevelDamageDice);
+            if (higherLevelDamageDice == 1) {
+                System.out.print(" die");
+            } else {
+                System.out.print(" dice");
+            }
+            System.out.println(" for each spell slot level beyond " + spellLevel);
         } else if (higherLevelAttacksIncrease != 0) {
-            System.out.println("This spell makes " + higherLevelAttacksIncrease + " extra attacks for each spell slot level beyond " + spellLevel);
+            System.out.print("makes " + higherLevelAttacksIncrease + " extra ");
+            if (higherLevelAttacksIncrease == 1) {
+                System.out.print("attack");
+            } else {
+                System.out.print("attacks");
+            }
+            System.out.println(" for each spell slot level beyond " + spellLevel);
         } else {
-            System.out.println("This spell appears to not get much stronger at higher levels, or it has non-damaging effects.");
+            System.out.println("doesn't seem to get stronger at higher levels, or it has non-damaging effects.");
         }
     }
 

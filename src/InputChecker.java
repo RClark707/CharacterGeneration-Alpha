@@ -23,6 +23,10 @@ public class InputChecker {
         return userInput.equalsIgnoreCase("options") || userInput.equalsIgnoreCase("option");
     }
 
+    public static boolean advantage(String userInput) {
+        return userInput.equalsIgnoreCase("adv") || userInput.equalsIgnoreCase("advantage");
+    }
+
     public static String shortToLong(String userInput) {
         switch(userInput.toLowerCase()) {
             case "str" -> {

@@ -1,0 +1,112 @@
+Khilydh
+City Watch
+1
+6
+8
+Harengon
+Wizard
+School of Conjuration
+15,15,15,11,16,16
+Religion, Investigation, Insight, Persuasion, 
+6, shortbow, 0, true, 4, club, 0, false, 
+Khilydh: 
+------
+------
+Kos
+Soldier
+1
+6
+9
+Tabaxi
+Wizard
+Order of Scribes
+15,16,17,17,17,15
+Medicine, Insight, Perception, History, 
+4, club, 0, false, 4, dagger, 0, true, 
+Kos: 
+------
+------
+Avren
+Knight
+1
+6
+9
+Fairy
+Wizard
+School of Enchantment
+15,12,16,15,17,16
+Intimidation, Investigation, Arcana, Acrobatics, 
+4, sling, 0, true, 6, quarterstaff, 0, false, 
+Avren: 
+------
+------
+Ledoshre
+Outlander
+1
+12
+14
+Tabaxi
+Barbarian
+Path of the Storm Herald
+19,13,14,15,13,13
+Intimidation, Athletics, Animal Handling, Persuasion, 
+6, hand crossbow, 0, true, 10, heavy crossbow, 0, true, 
+Ledoshre: 
+------
+------
+Val
+Shipwright
+3
+8
+25
+Aasimar
+Monk
+Way of the Kensei
+15,18,16,12,18,18
+Insight, Acrobatics, Survival, Persuasion, 
+8, light crossbow, 0, true, 4, sling, 0, true, 
+Val: 
+------
+------
+Shalatar
+Smuggler
+1
+8
+9
+Halfling
+Monk
+Way of the Sun Soul
+9,17,13,14,9,16
+Athletics, Deception, Stealth, Persuasion, 
+4, sickle, 0, false, 6, shortbow, 0, true, 
+Shalatar: 
+------
+------
+Dazageth
+Outlander
+1
+8
+11
+Hexblood
+Druid
+Circle of Wildfire
+17,15,16,14,19,17
+Sleight of Hand, Religion, Survival, Arcana, 
+4, club, 0, false, 4, sickle, 0, false, 
+Dazageth: 
+------
+------
+Auric
+Faceless
+1
+8
+11
+Hexblood
+Artificer
+Battle Smith
+16,12,17,18,16,17
+Nature, Medicine, Athletics, Sleight of Hand, 
+8, light crossbow, 0, true, 6, shortbow, 0, true, 
+Auric: 
+------
+------

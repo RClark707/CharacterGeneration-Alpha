@@ -90,6 +90,34 @@ public class SpellBook {
             scan.nextLine();
         } while (scan.hasNextLine());
         scan.close();
+        Scanner defaultScanner = new Scanner(new FileInputStream("defaultSpells.txt"));
+        do {
+            if (defaultScanner.hasNextLine()) {
+                String spellName = defaultScanner.nextLine();
+                int spellLevel = Integer.parseInt(defaultScanner.nextLine());
+                int higherLevelDamageDice = Integer.parseInt(defaultScanner.nextLine());
+                int higherLevelAttacksIncrease = Integer.parseInt(defaultScanner.nextLine());
+                int diceSideNumber = Integer.parseInt(defaultScanner.nextLine());
+                int numDice = Integer.parseInt(defaultScanner.nextLine());
+                int numTargets = Integer.parseInt(defaultScanner.nextLine());
+                boolean dealsDamage = Boolean.parseBoolean(defaultScanner.nextLine());
+                String damageType = defaultScanner.nextLine();
+                boolean isSavingThrow = Boolean.parseBoolean(defaultScanner.nextLine());
+                String saveType = defaultScanner.nextLine();
+                boolean isAttackRoll = Boolean.parseBoolean(defaultScanner.nextLine());
+                int numAttacks = Integer.parseInt(defaultScanner.nextLine());
+                int attackModifier = Integer.parseInt(defaultScanner.nextLine());
+                int damageModifier = Integer.parseInt(defaultScanner.nextLine());
+                boolean isAutomatic = Boolean.parseBoolean(defaultScanner.nextLine());
+                String spellEffects = defaultScanner.nextLine();
+                String spellSchool = defaultScanner.nextLine();
+                spellBook.add(new Spell(spellName, spellLevel, higherLevelDamageDice, higherLevelAttacksIncrease, diceSideNumber, numDice, numTargets,
+                        dealsDamage, damageType, isSavingThrow, saveType, isAttackRoll, numAttacks,
+                        attackModifier, damageModifier, isAutomatic, spellEffects, spellSchool));
+            }
+            defaultScanner.nextLine();
+        } while (defaultScanner.hasNextLine());
+        defaultScanner.close();
     }
 
     public void clear() {

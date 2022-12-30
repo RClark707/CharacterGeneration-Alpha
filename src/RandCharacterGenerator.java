@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author rclar
@@ -265,6 +263,29 @@ public class RandCharacterGenerator {
             "Survival",
     };
 
+    public static final Hashtable<String,Integer> proficiencyList = new Hashtable<>(18);
+
+    public static void establishProficiencyList() {
+        proficiencyList.put("Acrobatics",1);
+        proficiencyList.put("Animal Handling",4);
+        proficiencyList.put("Arcana",3);
+        proficiencyList.put("Athletics",0);
+        proficiencyList.put("Deception",5);
+        proficiencyList.put("History",3);
+        proficiencyList.put("Insight",4);
+        proficiencyList.put("Intimidation",5);
+        proficiencyList.put("Investigation",3);
+        proficiencyList.put("Medicine",4);
+        proficiencyList.put("Nature",3);
+        proficiencyList.put("Perception",4);
+        proficiencyList.put("Performance",5);
+        proficiencyList.put("Persuasion",5);
+        proficiencyList.put("Religion",3);
+        proficiencyList.put("Sleight of Hand",1);
+        proficiencyList.put("Stealth",1);
+        proficiencyList.put("Survival",4);
+    }
+
     public static final String[] raceArray = {
             "Aasimar",
             "Dhampir",
@@ -514,6 +535,39 @@ public class RandCharacterGenerator {
         }
     }
 
+    protected static Set<String> returnSavingThrowProficienciesByClass(String charClass) {
+        switch (charClass) {
+            case "Artificer" -> {
+                return new HashSet<>(Arrays.asList("Constitution", "Intelligence"));
+            }
+            case "Barbarian", "Fighter" -> {
+                return new HashSet<>(Arrays.asList("Strength", "Constitution"));
+            }
+            case "Bard" -> {
+                return new HashSet<>(Arrays.asList("Dexterity", "Charisma"));
+            }
+            case "Cleric","Warlock" -> {
+                return new HashSet<>(Arrays.asList("Wisdom", "Charisma"));
+            }
+            case "Druid","Wizard" -> {
+                return new HashSet<>(Arrays.asList("Intelligence", "Wisdom"));
+            }
+            case "Monk","Ranger" -> {
+                return new HashSet<>(Arrays.asList("Strength", "Dexterity"));
+            }
+            case "Rogue" -> {
+                return new HashSet<>(Arrays.asList("Dexterity","Intelligence"));
+            }
+            case "Sorcerer"-> {
+                return new HashSet<>(Arrays.asList("Constitution","Charisma"));
+            }
+            default -> {
+                return Collections.emptySet();
+                // will never get run
+            }
+        }
+    }
+
     public static String randName() {
         return nameArray[rand.nextInt(nameArray.length)];
     }
@@ -568,9 +622,9 @@ public class RandCharacterGenerator {
 
     public static String randBackground() {return backgroundArray[rand.nextInt(backgroundArray.length)];}
 
-    public static ArrayList<String> createRandomSkillArray(int numSkillsToGenerate, boolean fullRandom, String charClass) {
+    public static Set<String> createRandomSkillArray(int numSkillsToGenerate, boolean fullRandom, String charClass) {
         boolean skillsAreNotUnique;
-        ArrayList<String> skills = new ArrayList<>();
+        Set<String> skills =new HashSet<>();
         Hashtable<String, Boolean> usedSkills = new Hashtable<>();
         int randSkillIndex;
         if (fullRandom || charClass.equals("Bard")) {

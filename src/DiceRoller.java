@@ -112,14 +112,42 @@ public class DiceRoller {
 
             if (!criticalMiss) {
                 if (criticalHit) {
-                    System.out.print("CRITICAL HIT! ");
+                    System.out.print("\nCRITICAL HIT! " + attackRoll + " to hit. Damage: " + damage + " damage-type damage!");
                 }
-                System.out.println(attackRoll + " to hit. Damage: " + damage + " damage-type damage!");
+                System.out.println("\n" + attackRoll + " to hit. Damage: " + damage + " damage-type damage!");
             } else {
-                System.out.println("Critical Miss... :(");
+                System.out.println("\nCritical Miss... :(");
             }
         }
     }
 
+    protected static int rollSkillCheck(String skillName,PartyMember partyMember) {
+        int diceRoll = DiceRoller.rollDice(20,1);
+        if (RandCharacterGenerator.proficiencyList.isEmpty()) {
+            RandCharacterGenerator.establishProficiencyList();
+        }
+        if (RandCharacterGenerator.proficiencyList.containsKey(skillName)) {
+            diceRoll += DiceRoller.computeAbilityModifier(partyMember.retrieveStat(RandCharacterGenerator.proficiencyList.get(skillName)));
+        } else {
+            diceRoll += DiceRoller.computeAbilityModifier(partyMember.retrieveStat(partyMember.retrieveStatIndex(InputChecker.shortToLong(skillName))));
+        }
 
+        if (partyMember.proficiencies.contains(skillName)) {
+            diceRoll += DiceRoller.computeProficiencyBonus(partyMember.getCharLevel());
+        }
+        return diceRoll;
+    }
+
+    protected static int rollSavingThrow(String statName,PartyMember partyMember) {
+        int diceRoll = DiceRoller.rollDice(20,1);
+        diceRoll += DiceRoller.computeAbilityModifier(partyMember.retrieveStat(partyMember.retrieveStatIndex(statName)));
+        if (RandCharacterGenerator.returnSavingThrowProficienciesByClass(partyMember.getCharClass()).contains(statName)) {
+            diceRoll += DiceRoller.computeProficiencyBonus(partyMember.getCharLevel());
+        }
+        return diceRoll;
+    }
+
+    public static int computeProficiencyBonus(int charLevel) {
+        return Math.floorDiv(2 + (charLevel - 1), 4);
+    }
 }

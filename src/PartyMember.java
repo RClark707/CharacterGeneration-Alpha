@@ -1,6 +1,5 @@
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class PartyMember {
     private String charName;
@@ -74,9 +73,7 @@ public class PartyMember {
             "Wisdom",
             "Charisma",
     };
-
-    private final ArrayList<String> skillArray = new ArrayList<>();
-    // Constructs a character sheet based on the name attribute
+    protected Set<String> proficiencies = new HashSet<>();
     public PartyMember(String charName) {
         this.charName = charName;
         charLevel = 1;
@@ -172,6 +169,17 @@ public class PartyMember {
         return statArray[index];
     }
 
+    protected int retrieveStatIndex(String statName) {
+        switch (ClassValidator.capitalizeFirst(statName.toLowerCase())) {
+            case "Strength" -> {return 0;}
+            case "Dexterity" -> {return 1;}
+            case "Constitution" -> {return 2;}
+            case "Intelligence" -> {return 3;}
+            case "Wisdom" -> {return 4;}
+            case "Charisma" -> {return 5;}
+        }
+        return 0;
+    }
     // Lets us swap two different stat locations, assuming the input is a name of a stat, not an index
     public void configureStats() {
         int indexFrom = -1;
@@ -265,30 +273,18 @@ public class PartyMember {
         System.out.printf("Wisdom: %d (%+d)\n", statArray[4],DiceRoller.computeAbilityModifier(statArray[4]));
         System.out.printf("Charisma: %d (%+d)\n", statArray[5],DiceRoller.computeAbilityModifier(statArray[5]));
     }
-
-    public void addSkill(String skillName) {
-        skillArray.add(skillName);
-    }
-
-    public void createSkillArray(int numBonusSkills) {
-        // We add two, because the character gets 2 from their background automatically.
+    protected void addProficiency(String skillName) {proficiencies.add(skillName);}
+    protected void buildProficiencies(int numBonusSkills, boolean fullRandom) {
         numBonusSkills += 2;
-        // this line will guarantee Bards get their 3 skills from anywhere.
-        skillArray.addAll(RandCharacterGenerator.createRandomSkillArray(numBonusSkills,false, charClass));
+            proficiencies.addAll(RandCharacterGenerator.createRandomSkillArray(numBonusSkills,fullRandom,charClass));
     }
-    // these two methods are eerily similar, but for now I will keep them separate because they are used for either creating a character
-    // as a user OR for the full random creation
-    public void setSkillArray(ArrayList<String> skills) {
-        skillArray.addAll(skills);
-    }
-
-    public void printSkillArray() {
+    public void printSkillProficiencies() {
         System.out.print("\nSkill Proficiencies: ");
-        for (int i = 0; i < skillArray.size(); ++i) {
-            if (i != skillArray.size() - 1) {
-                System.out.print(skillArray.get(i) + ", ");
-            } else {
-                System.out.print(skillArray.get(i));
+        Iterator<String> iterator = proficiencies.iterator();
+        while (iterator.hasNext()) {
+            System.out.print(iterator.next());
+            if (iterator.hasNext()) {
+                System.out.print(", ");
             }
         }
     }
@@ -315,7 +311,7 @@ public class PartyMember {
         System.out.printf("%-8s %s\n", charRace, charSubclass);
         // this may need to be adjusted to make the subclass and class line up better, but would require more printf practice
         printStatArray();
-        printSkillArray();
+        printSkillProficiencies();
         System.out.print("\n");
         printWeaponOptions();
         System.out.println("\n\n");
@@ -331,22 +327,30 @@ public class PartyMember {
                 charRace + "\n" +
                 charClass + "\n" +
                 charSubclass + "\n" +
-                statArray[0] + "," + statArray[1] + "," +  statArray[2] + "," +  statArray[3] + "," +  statArray[4] + "," +  statArray[5] + "\n" +
-                skillArray + "\n";
+                statArray[0] + "," + statArray[1] + "," +  statArray[2] + "," +  statArray[3] + "," +  statArray[4] + "," +  statArray[5] + "\n";
     }
 
     // might make a separate method for printing the skillArray?
 
+    protected void printProficienciesToFile(PrintWriter printer) {
+        for (String s : proficiencies) {
+            printer.print(s + ", ");
+        }
+        printer.print("\n");
+    }
     public void printWeaponArrayToFile(PrintWriter printer) {
         for (Weapon w : weapons) {
             printer.print(w + ", ");
         }
+        printer.print("\n");
     }
 
     public void printSpellBookToFile(PrintWriter printer) {
+        printer.print(charName + ": ");
         for (Spell s : spells) {
             printer.print(s + ", ");
         }
+        printer.println("\n------");
     }
 
     public void nextLevel() {
@@ -401,5 +405,4 @@ public class PartyMember {
             System.out.println((i+1) + ". " + curSpell.formattedString());
         }
     }
-
 }

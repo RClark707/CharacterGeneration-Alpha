@@ -78,7 +78,6 @@ public class Party {
                         } else {
                             System.out.println("Sorry, you either entered an unknown Class, or misspelled it.");
                         }
-
                     } else {
                         System.out.println("Sorry, you either entered an unknown Class, or misspelled it.");
                     }
@@ -146,15 +145,13 @@ public class Party {
                 // Not using a while loop here, for no particular reason
                 // If a character gets more proficiencies from their race or something, ou can get more random ones here
                 System.out.println("How many additional skills do you have (outside of your class & background)");
+                System.out.println("This is often just zero. (Enter a number)");
                 int numBonus = scan.nextInt();
-                if (character.getCharClass().equals("Bard")) {
-                    numBonus += 3;
-                }
 
                 // Already knows we have 2 bonus from the background
-                character.createSkillArray(numBonus);
+                character.buildProficiencies(numBonus,false);
                 System.out.print("\nHere are the skills you gained from your background: ");
-                character.printSkillArray();
+                character.printSkillProficiencies();
                 System.out.print("\n\n");
 
                 // This grabs the array of extra skills you can pick from based on your class
@@ -163,24 +160,24 @@ public class Party {
                     String[] classSkills = RandCharacterGenerator.getClassSkillArray(character.getCharClass());
                     // the following method checks to see if we are a bard (if so, we skip)
                     character.printClassSkillOptions();
-                    // TODO: explain that you need to enter a number rather than a skill name
-                    System.out.print("\nFirst choice: ");
+                    System.out.print("\nFirst choice (Enter a number): ");
                     int choice1 = scan.nextInt();
                     // Adds to our master list within the character object
+                    // TODO: make a list of their choices and add all at once?
                     assert classSkills != null;
-                    character.addSkill(classSkills[choice1]);
+                    character.addProficiency(classSkills[choice1]);
                     System.out.print("\nSecond choice: ");
                     int choice2 = scan.nextInt();
-                    character.addSkill(classSkills[choice2]);
+                    character.addProficiency(classSkills[choice2]);
                     // For now these are hard coded to be Ranger and Rogue, since they are the only classes that get more than two choices for skill proficiencies
                     if (character.getCharClass().equals("Ranger") || character.getCharClass().equals("Rogue")) {
                         System.out.print("\nThird choice: ");
                         int choice3 = scan.nextInt();
-                        character.addSkill(classSkills[choice3]);
+                        character.addProficiency(classSkills[choice3]);
                         if (character.getCharClass().equals("Rogue")) {
                             System.out.print("\nFourth choice: ");
                             int choice4 = scan.nextInt();
-                            character.addSkill(classSkills[choice4]);
+                            character.addProficiency(classSkills[choice4]);
                         }
                     }
                 }
@@ -263,7 +260,6 @@ public class Party {
             PartyMember p = party.get(i);
             System.out.println((i+1) + ". " + p.getCharName());
         }
-        // TODO: if no characters exist, let them make one from view party screen
     }
 
     public int getPartySize() {
@@ -279,9 +275,11 @@ public class Party {
         try (PrintWriter printer = new PrintWriter(fileToSaveTo)) {
             for (PartyMember p : party) {
                 printer.print(p.toString());
+                p.printProficienciesToFile(printer);
                 // weapons are saved as @weaponDamageDie, @weaponName, @magicalModifier, @finesse
                 p.printWeaponArrayToFile(printer);
-                printer.println( "\n------");
+                p.printSpellBookToFile(printer); // Don't know what is about to happen
+                printer.println("------");
             }
         }
     }
@@ -314,16 +312,17 @@ public class Party {
                     returnCharacter(name).setStatValue(i, Integer.parseInt(statValues[i]));
                 }
                 String skillProficiencies = scan.nextLine();
-                skillProficiencies = skillProficiencies.substring(1,skillProficiencies.length()-1);
                 String[] skills = skillProficiencies.split(", ");
                 for (String skill : skills) {
-                    returnCharacter(name).addSkill(skill);
+                    returnCharacter(name).addProficiency(skill);
                 }
                 String[] weaponArray = scan.nextLine().split(", ");
                 // might be easier if the weapons were saved as a two-dimensional array
                 for (int i = 0; i < weaponArray.length; i = i + 4) {
                     returnCharacter(name).addWeapon(new Weapon(Integer.parseInt(weaponArray[i]), weaponArray[i+1], Integer.parseInt(weaponArray[i+2]), Boolean.getBoolean(weaponArray[i+3])));
                 }
+                // TODO: initialize spells
+                // scan.nextLine();
                 scan.nextLine();
             }
         } while (scan.hasNextLine());
@@ -367,9 +366,7 @@ public class Party {
                 character.optimizeStats(character.getCharClass());
                 character.setCharHitPoints(character.abilityScoreModifier(2));
                 // start of skills
-                // TODO: skills are still getting duplicates
-                character.setSkillArray(RandCharacterGenerator.createRandomSkillArray(2,true,character.getCharClass()));
-                // TODO: randomly generate appropriate weapons for a character
+                character.buildProficiencies(0,true);
                 character.addWeapon( RandCharacterGenerator.getClassWeaponArray(character.getCharClass())[rand.nextInt(RandCharacterGenerator.getClassWeaponArray(character.getCharClass()).length)] );
                 character.addWeapon( RandCharacterGenerator.getClassWeaponArray(character.getCharClass())[rand.nextInt(RandCharacterGenerator.getClassWeaponArray(character.getCharClass()).length)] );
                 character.printAll();
@@ -417,24 +414,75 @@ public class Party {
 
     public void playCharacter(PartyMember curChar) {
         curChar.printAll();
-        System.out.println("What would you like to do?");
-        int numWeapons = curChar.weapons.size();
-        System.out.println("1. Attack with weapons");
-        System.out.println("2. Cast a Spell");
-        System.out.println("3. Leave!");
-        switch (scan.nextInt()) {
-            case 1 -> {
-                curChar.printWeaponOptions();
+        boolean keepPlaying;
+        do {
+            keepPlaying = false;
+            int numMainMenuOptions = 4;
+            int option;
+            System.out.println("\nWhat would you like to do?");
+            System.out.println("1. Attack with Weapons");
+            System.out.println("2. Roll an Ability Check");
+            System.out.println("3. Roll a Saving Throw");
+            if (curChar.spells.size() != 0) {
+                System.out.println("4. Cast a Spell");
+                numMainMenuOptions = 5;
             }
-            case 2 -> {
-                //curChar.printSpellBook();
-                System.out.println("Cope.");
+            // TODO: add a way to exit completely from character screen
+            System.out.println(numMainMenuOptions + ". Pick Another Character");
+            option = Integer.parseInt(scan.nextLine());
+            switch (option) {
+                case 1 -> {
+                    boolean advantage = false;
+                    boolean disadvantage = false;
+                    System.out.println("\nWhich weapon would you like to attack with? (Enter a number)");
+                    curChar.printWeaponOptions();
+                    System.out.println((curChar.weapons.size() + 1) + ". Go back");
+                    option = Integer.parseInt(scan.nextLine());
+                    if (option <= curChar.weapons.size()) {
+                        System.out.println("How many attacks are you making?");
+                        int numAttacks = Integer.parseInt(scan.nextLine());
+                        System.out.println("Do you have advantage or disadvantage on the attack(s)?");
+                        if (InputChecker.yes(scan.nextLine())) {
+                            System.out.println("Which one?");
+                            if (InputChecker.advantage(scan.nextLine())) {
+                                advantage = true;
+                            } else {
+                                disadvantage = true;
+                            }
+                        }
+                        DiceRoller.rollWeaponAttack(curChar,curChar.weapons.get(option - 1),advantage, disadvantage, numAttacks);
+                    }
+                    keepPlaying = true;
+                }
+                case 2 -> {
+                    System.out.println("\nWhat is the name of the skill you are rolling? (Enter a basic stat if there is no name)");
+                    // TODO: check for valid input
+                    System.out.println("You rolled a " + DiceRoller.rollSkillCheck(ClassValidator.capitalizeFirst(scan.nextLine().toLowerCase()),curChar) + " on the check.");
+                    keepPlaying = true;
+                }
+                case 3 -> {
+                    System.out.println("\nWhat is the name of the Saving throw you are rolling? (Enter a basic stat name or abbreviation)");
+                    // TODO: check for valid input
+                    System.out.println("You rolled a " + DiceRoller.rollSavingThrow(ClassValidator.capitalizeFirst(scan.nextLine().toLowerCase()),curChar) + " on the saving throw.");
+                    keepPlaying = true;
+                }
+                case 4 -> {
+
+                    if (numMainMenuOptions == 5) {
+                        System.out.println("\nWhich spell would you like to cast? (Enter a number)");
+                        curChar.printSpellOptions();
+                        System.out.println((curChar.spells.size() + 1) + ". Go back");
+                        option = scan.nextInt();
+                        if (option <= curChar.spells.size()) {
+                            curChar.spells.get(option - 1).printSpellCard();
+                            System.out.println("What level slot are you expending to cast this spell? (Enter a number)");
+                            curChar.spells.get(option - 1).castSpell(Integer.parseInt(scan.nextLine()));
+                        }
+                        keepPlaying = true;
+                    }
+                }
             }
-            default -> {
-                System.out.println("WIP");
-            }
-        }
-        scan.nextLine();
+        } while (keepPlaying);
     }
 
 }
