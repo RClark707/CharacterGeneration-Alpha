@@ -278,8 +278,8 @@ public class Party {
                 p.printProficienciesToFile(printer);
                 // weapons are saved as @weaponDamageDie, @weaponName, @magicalModifier, @finesse
                 p.printWeaponArrayToFile(printer);
-                p.printSpellBookToFile(printer); // Don't know what is about to happen
-                printer.println("------");
+                p.printSpellBookToFile(printer);
+                printer.println("\n------");
             }
         }
     }
@@ -296,6 +296,7 @@ public class Party {
 
     public void initializeParty(String fileToSaveTo) throws FileNotFoundException {
         Scanner scan = new Scanner(new FileInputStream(fileToSaveTo));
+        Scanner defaultScanner = new Scanner(new FileInputStream("SpellFile"));
         do {
             if (scan.hasNextLine()) {
                 String name = scan.nextLine();
@@ -307,26 +308,41 @@ public class Party {
                 String charClass = scan.nextLine();
                 String subclass = scan.nextLine();
                 party.add(new PartyMember(name,background,level,hitDieType,hitPoints,race,charClass,subclass));
+                PartyMember curCharacter = returnCharacter(name);
                 String[] statValues = scan.nextLine().split(",");
                 for (int i = 0; i < 6; ++i) {
-                    returnCharacter(name).setStatValue(i, Integer.parseInt(statValues[i]));
+                    curCharacter.setStatValue(i, Integer.parseInt(statValues[i]));
                 }
                 String skillProficiencies = scan.nextLine();
                 String[] skills = skillProficiencies.split(", ");
                 for (String skill : skills) {
-                    returnCharacter(name).addProficiency(skill);
+                    curCharacter.addProficiency(skill);
                 }
                 String[] weaponArray = scan.nextLine().split(", ");
                 // might be easier if the weapons were saved as a two-dimensional array
                 for (int i = 0; i < weaponArray.length; i = i + 4) {
-                    returnCharacter(name).addWeapon(new Weapon(Integer.parseInt(weaponArray[i]), weaponArray[i+1], Integer.parseInt(weaponArray[i+2]), Boolean.getBoolean(weaponArray[i+3])));
+                    curCharacter.addWeapon(new Weapon(Integer.parseInt(weaponArray[i]), weaponArray[i+1], Integer.parseInt(weaponArray[i+2]), Boolean.getBoolean(weaponArray[i+3])));
                 }
-                // TODO: initialize spells
-                // scan.nextLine();
+                // checks to see if there are spells to be loaded. An "&" will be present in the line if spells were saved to the character
+                String spellLine = scan.nextLine();
+                if (spellLine.contains(" & ")) {
+                    String[] spellArray = spellLine.split(" & ");
+                    for (String s : spellArray) {
+                        String[] curSpell = s.split(", ");
+                        // matches each element of the curSpell array with the part of the constructor required for a spell, then adds the spell to the character's individual spellbook.
+                        if (curSpell.length < 2) {
+                            break;
+                        }
+                        curCharacter.addSpell(new Spell(curSpell[0], Integer.parseInt(curSpell[1]), Integer.parseInt(curSpell[2]), Integer.parseInt(curSpell[3]), Integer.parseInt(curSpell[4]), Integer.parseInt(curSpell[5]),
+                                Integer.parseInt(curSpell[6]), Boolean.parseBoolean(curSpell[7]), curSpell[8], Boolean.parseBoolean(curSpell[9]), curSpell[10], Boolean.parseBoolean(curSpell[11]), Integer.parseInt(curSpell[12]),
+                                Integer.parseInt(curSpell[13]), Integer.parseInt(curSpell[14]), Boolean.parseBoolean(curSpell[15]), curSpell[16], curSpell[17]));
+                    }
+                }
                 scan.nextLine();
             }
         } while (scan.hasNextLine());
         scan.close();
+        defaultScanner.close();
     }
 
     public void clear() {party.clear();}
@@ -369,6 +385,9 @@ public class Party {
                 character.buildProficiencies(0,true);
                 character.addWeapon( RandCharacterGenerator.getClassWeaponArray(character.getCharClass())[rand.nextInt(RandCharacterGenerator.getClassWeaponArray(character.getCharClass()).length)] );
                 character.addWeapon( RandCharacterGenerator.getClassWeaponArray(character.getCharClass())[rand.nextInt(RandCharacterGenerator.getClassWeaponArray(character.getCharClass()).length)] );
+                // add an array of spells to choose from randomly or purposefully
+                character.addSpell( RandCharacterGenerator.zeroLevel[0]);
+                character.addSpell( RandCharacterGenerator.firstLevel[0]);
                 character.printAll();
             }
         }
@@ -388,47 +407,58 @@ public class Party {
                 System.out.println("What is " + curChar.getCharName() + "'s weapon?");
                 weaponName = scan.nextLine();
             }
-            System.out.println("How many sides do the damage dice of your weapon have?");
-            int weaponDice = scan.nextInt();
-            scan.nextLine();
-            System.out.println("Is a " + weaponName + " a finesse weapon (Does it use Dexterity instead of Strength)?");
-            if (InputChecker.yes(scan.nextLine())) {
-                finesse = true;
-            }
-            System.out.println("Is this weapon magical?");
-            if (InputChecker.yes(scan.nextLine())) {
-                System.out.println("Does this weapon give you a:");
-                System.out.println("1. +1 Bonus");
-                System.out.println("2. +2 Bonus");
-                System.out.println("3. +3 Bonus");
-                switch (scan.nextInt()) {
-                    case 2 -> magicalModifier = 2;
-                    case 3 -> magicalModifier = 3;
-                    default -> magicalModifier = 1;
+            boolean preset = false;
+            for (int j = 0; j < RandCharacterGenerator.allWeapons.length; ++j) {
+                if (weaponName.equalsIgnoreCase(RandCharacterGenerator.allWeapons[j].weaponName)) {
+                    curChar.addWeapon(RandCharacterGenerator.allWeapons[j]);
+                    preset = true;
+                    break;
                 }
-                scan.nextLine();
             }
-            curChar.addWeapon(new Weapon(weaponDice, weaponName, magicalModifier, finesse));
+            if (!preset) {
+                System.out.println("How many sides do the damage dice of your weapon have?");
+                int weaponDice = scan.nextInt();
+                scan.nextLine();
+                System.out.println("Is a " + weaponName + " a finesse weapon (Does it use Dexterity instead of Strength)?");
+                if (InputChecker.yes(scan.nextLine())) {
+                    finesse = true;
+                }
+                System.out.println("Is this weapon magical?");
+                if (InputChecker.yes(scan.nextLine())) {
+                    System.out.println("Does this weapon give you a:");
+                    System.out.println("1. +1 Bonus");
+                    System.out.println("2. +2 Bonus");
+                    System.out.println("3. +3 Bonus");
+                    switch (scan.nextInt()) {
+                        case 2 -> magicalModifier = 2;
+                        case 3 -> magicalModifier = 3;
+                        default -> magicalModifier = 1;
+                    }
+                    scan.nextLine();
+                }
+                curChar.addWeapon(new Weapon(weaponDice, weaponName, magicalModifier, finesse));
+            }
         }
     }
 
-    public void playCharacter(PartyMember curChar) {
+    public boolean playCharacter(PartyMember curChar) {
         curChar.printAll();
         boolean keepPlaying;
+        boolean newCharacter = false;
         do {
             keepPlaying = false;
-            int numMainMenuOptions = 4;
+            int numMainMenuOptions = 5;
             int option;
             System.out.println("\nWhat would you like to do?");
             System.out.println("1. Attack with Weapons");
             System.out.println("2. Roll an Ability Check");
             System.out.println("3. Roll a Saving Throw");
-            if (curChar.spells.size() != 0) {
+            if (curChar.spellBook.size() != 0) {
                 System.out.println("4. Cast a Spell");
-                numMainMenuOptions = 5;
+                numMainMenuOptions = 6;
             }
-            // TODO: add a way to exit completely from character screen
-            System.out.println(numMainMenuOptions + ". Pick Another Character");
+            System.out.println((numMainMenuOptions - 1) + ". Pick Another Character");
+            System.out.println(numMainMenuOptions + ". Exit to Main Menu");
             option = Integer.parseInt(scan.nextLine());
             switch (option) {
                 case 1 -> {
@@ -456,33 +486,60 @@ public class Party {
                 }
                 case 2 -> {
                     System.out.println("\nWhat is the name of the skill you are rolling? (Enter a basic stat if there is no name)");
-                    // TODO: check for valid input
-                    System.out.println("You rolled a " + DiceRoller.rollSkillCheck(ClassValidator.capitalizeFirst(scan.nextLine().toLowerCase()),curChar) + " on the check.");
+                    String skillName = ClassValidator.capitalizeFirst(scan.nextLine().toLowerCase());
+                    if (ClassValidator.isValidSkill(skillName)) {
+                        System.out.println("You rolled a " + DiceRoller.rollSkillCheck(skillName, curChar) + " on the check.");
+                    } else {
+                        System.out.println("Sorry, that skill is invalid.");
+                    }
                     keepPlaying = true;
                 }
                 case 3 -> {
                     System.out.println("\nWhat is the name of the Saving throw you are rolling? (Enter a basic stat name or abbreviation)");
-                    // TODO: check for valid input
-                    System.out.println("You rolled a " + DiceRoller.rollSavingThrow(ClassValidator.capitalizeFirst(scan.nextLine().toLowerCase()),curChar) + " on the saving throw.");
+                    String statName = ClassValidator.capitalizeFirst(scan.nextLine().toLowerCase());
+                    if (ClassValidator.isValidStat(statName)) {
+                        System.out.println("You rolled a " + DiceRoller.rollSavingThrow(statName,curChar) + " on the saving throw.");
+                    } else {
+                        System.out.println("Sorry, that stat is invalid.");
+                    }
                     keepPlaying = true;
                 }
-                case 4 -> {
-
-                    if (numMainMenuOptions == 5) {
-                        System.out.println("\nWhich spell would you like to cast? (Enter a number)");
-                        curChar.printSpellOptions();
-                        System.out.println((curChar.spells.size() + 1) + ". Go back");
-                        option = scan.nextInt();
-                        if (option <= curChar.spells.size()) {
-                            curChar.spells.get(option - 1).printSpellCard();
-                            System.out.println("What level slot are you expending to cast this spell? (Enter a number)");
-                            curChar.spells.get(option - 1).castSpell(Integer.parseInt(scan.nextLine()));
+                case 4,5,6 -> {
+                    if (numMainMenuOptions == 6) {
+                        if (option == 4) {
+                            // takes input until a valid spell is selected
+                            // We only do this for a select few options, but one day maybe I will check for valid input for every response.
+                            boolean isValidOption = true;
+                            while (isValidOption) {
+                                System.out.println("\nWhich spell would you like to cast? (Enter a number)");
+                                curChar.printSpellOptions();
+                                System.out.println((curChar.spellBook.size() + 1) + ". Go back");
+                                option = Integer.parseInt(scan.nextLine());
+                                int spellBookSize = curChar.spellBook.size();
+                                if (option <= spellBookSize) {
+                                    System.out.print("\n");
+                                    curChar.spellBook.get(option - 1).printSpellCard();
+                                    System.out.println("\nWhat level slot are you expending to cast this spell? (Enter a number)");
+                                    System.out.println(curChar.spellBook.get(option - 1).castSpell(Integer.parseInt(scan.nextLine())));
+                                } else {
+                                    isValidOption= false;
+                                    // this is a misleading term, but the go back option is treated as an invalid spell option, so it is set to false, and we quit.
+                                    if (option > spellBookSize + 1) {
+                                        System.out.println("\nSorry, that option doesn't exit.\n");
+                                    }
+                                }
+                            }
+                            keepPlaying = true;
+                        } else if (option == 5) {
+                            newCharacter = true;
                         }
-                        keepPlaying = true;
+                    } else if (option == 4) {
+                        newCharacter = true;
                     }
                 }
             }
         } while (keepPlaying);
+        return newCharacter;
     }
 
 }

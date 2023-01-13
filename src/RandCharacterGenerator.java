@@ -242,7 +242,7 @@ public class RandCharacterGenerator {
             "two", "Arcana", "History", "Insight", "Investigation", "Medicine", "Religion"
     };
 
-    public static final String[] allProf = {
+    protected static final String[] allProf = {
             "Acrobatics",
             "Animal Handling",
             "Arcana",
@@ -394,7 +394,7 @@ public class RandCharacterGenerator {
             new Weapon(6,"shortbow",true),
             new Weapon(8,"light crossbow",true),
     };
-
+    // not useful, because no class only has access to martial weapons.
     protected static final Weapon[] martialWeaponTable = {
             new Weapon(6,"shortsword",true),
             new Weapon(8,"longsword",false),
@@ -430,6 +430,14 @@ public class RandCharacterGenerator {
             new Weapon(10,"pike",false),
             new Weapon(10,"heavy crossbow",true),
             new Weapon(6,"hand crossbow",true),
+    };
+
+    protected static final Spell[] zeroLevel = {
+            new Spell("Sacred Flame",0,0,0,8,1,1,true,"Radiant",true,"Dexterity",false,0,0,0,false,"a creature is enveloped in radiant fire","Evocation")
+    };
+
+    protected static final Spell[] firstLevel = {
+        new Spell("Inflict Wounds",1,1,0,10,3,1,true,"Necrotic",false,null,true,1,0,0,false,"Attack a target with deathly energy","Necromancy")
     };
 
     public static void printOptions(String desiredArrayName, String charClass) {
@@ -480,7 +488,8 @@ public class RandCharacterGenerator {
             case "Weapons" -> {
                 System.out.print("\n");
                 System.out.println("Here are examples of valid Weapons (but you can enter whatever you want):");
-                for (Weapon w : martialWeaponTable) {
+                // checks to see what weapon array to show to the user.
+                for (Weapon w : getClassWeaponArray(charClass)) {
                     System.out.println(w.weaponName);
                 }
                 System.out.print("\n");

@@ -65,8 +65,9 @@ public class Spell {
     }
 
     public String castSpell(int spellLevel) {
-    // This method is used to cast a given spell, normally, it will be used by calling the returnSpell method with an input from the user as to the spell's name,
-    // and then that spell object will determine the "effects" that get run
+        // TODO: total damage does not match damage dealt
+        // This method is used to cast a given spell, normally, it will be used by calling the returnSpell method with an input from the user as to the spell's name,
+        // and then that spell object will determine the "effects" that get run
         int difference = spellLevel - this.spellLevel;
         // Make sure the spell was actually cast at a valid level, or higher
         if (difference >= 0) {
@@ -84,10 +85,10 @@ public class Spell {
                     effects = effects.concat((DiceRoller.rollDice(20,1) + attackModifier) + " to hit, damage: ");
                     perAttackDamage = DiceRoller.rollDice(diceSideNumber,(numDice + higherLevelDamageDice)) + damageModifier;
                     damageTotal += perAttackDamage;
-                    effects = effects.concat(String.valueOf(DiceRoller.rollDice(diceSideNumber,(numDice + higherLevelDamageDice)) + damageModifier));
+                    effects = effects.concat(String.valueOf(perAttackDamage));
                     effects = effects.concat(" " + damageType + " damage.\n");
-                    effects = "Total damage: " + damageTotal + "\n" + effects;
                 }
+                effects = "Total damage: " + damageTotal + "\n" + effects;
                 // if the Spell is a saving throw, we'll output half damage for a successful save, in case that applies.
                 // Some spells deal no damage on a successful save, we don't really account for that, just hope that the user knows the difference.
             } else if (isSavingThrow) {
@@ -107,9 +108,17 @@ public class Spell {
 
     public void printSpellCard() {
         System.out.println(spellName);
-        System.out.printf("Level %-3s %s\n",spellLevel,spellSchool);
+        System.out.printf("Level %-3s %s\n",spellLevel,ClassValidator.capitalizeFirst(spellSchool));
+        if (isSavingThrow) {
+            System.out.printf("This spell can be resisted with a %s saving throw.\n",saveType);
+            if (dealsDamage) {
+                System.out.println("This usually means that the spell deals half damage to creatures that succeed the save, and full damage to those that fail.");
+            } else {
+                System.out.println("This usually means that the spell does not take effect on your target(s).");
+            }
+        }
         if (dealsDamage) {
-            System.out.print("This spell deals " + numDice + "d" + diceSideNumber + " " + damageType);
+            System.out.print("This spell deals " + numDice + "d" + diceSideNumber + " " + damageType + " damage");
             if (numTargets != -1) {
                 System.out.println(" to " + numTargets + " target(s).");
             } else {
@@ -132,7 +141,7 @@ public class Spell {
             } else {
                 System.out.print(" dice");
             }
-            System.out.println(" for each spell slot level beyond " + spellLevel);
+            System.out.println(" for each spell slot level beyond " + spellLevel + ".");
         } else if (higherLevelAttacksIncrease != 0) {
             System.out.print("makes " + higherLevelAttacksIncrease + " extra ");
             if (higherLevelAttacksIncrease == 1) {
@@ -140,7 +149,7 @@ public class Spell {
             } else {
                 System.out.print("attacks");
             }
-            System.out.println(" for each spell slot level beyond " + spellLevel);
+            System.out.println(" for each spell slot level beyond " + spellLevel + ".");
         } else {
             System.out.println("doesn't seem to get stronger at higher levels, or it has non-damaging effects.");
         }
@@ -148,24 +157,24 @@ public class Spell {
 
     @Override
     public String toString() {
-        return spellName + "\n" +
-        spellLevel + "\n" +
-        higherLevelDamageDice + "\n" +
-        higherLevelAttacksIncrease + "\n" +
-        diceSideNumber + "\n" +
-        numDice + "\n" +
-        numTargets + "\n" +
-        dealsDamage + "\n" +
-        damageType + "\n" +
-        isSavingThrow + "\n" +
-        saveType + "\n" +
-        isAttackRoll + "\n" +
-        numAttacks + "\n" +
-        attackModifier + "\n" +
-        damageModifier + "\n" +
-        isAutomatic + "\n" +
-        spellEffects + "\n" +
-        spellSchool + "\n" + "------";
+        return spellName + ", " +
+        spellLevel + ", " +
+        higherLevelDamageDice + ", " +
+        higherLevelAttacksIncrease + ", " +
+        diceSideNumber + ", " +
+        numDice + ", " +
+        numTargets + ", " +
+        dealsDamage + ", " +
+        damageType + ", " +
+        isSavingThrow + ", " +
+        saveType + ", " +
+        isAttackRoll + ", " +
+        numAttacks + ", " +
+        attackModifier + ", " +
+        damageModifier + ", " +
+        isAutomatic + ", " +
+        spellEffects + ", " +
+        spellSchool;
     }
 
     public String formattedString() {

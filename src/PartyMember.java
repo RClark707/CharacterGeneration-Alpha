@@ -14,7 +14,7 @@ public class PartyMember {
     // This array might be final, but we change it with each object, so I doubt it
 
     protected final ArrayList<Weapon> weapons = new ArrayList<>();
-    protected final ArrayList<Spell> spells = new ArrayList<>();
+    protected final ArrayList<Spell> spellBook = new ArrayList<>();
 
     Scanner scan = new Scanner(System.in);
     private static final String[] classArray = {
@@ -287,6 +287,7 @@ public class PartyMember {
                 System.out.print(", ");
             }
         }
+        System.out.print("\n");
     }
 
     public void printClassSkillOptions() {
@@ -312,9 +313,11 @@ public class PartyMember {
         // this may need to be adjusted to make the subclass and class line up better, but would require more printf practice
         printStatArray();
         printSkillProficiencies();
-        System.out.print("\n");
+        System.out.print("Weapons:\n");
         printWeaponOptions();
-        System.out.println("\n\n");
+        System.out.print("\nSpells:\n");
+        printSpellOptions();
+        System.out.print("\n");
     }
 
     @Override
@@ -346,11 +349,11 @@ public class PartyMember {
     }
 
     public void printSpellBookToFile(PrintWriter printer) {
-        printer.print(charName + ": ");
-        for (Spell s : spells) {
-            printer.print(s + ", ");
+        if (!spellBook.isEmpty()) {
+            for (Spell s : spellBook) {
+                printer.print(s + " & ");
+            }
         }
-        printer.println("\n------");
     }
 
     public void nextLevel() {
@@ -387,10 +390,8 @@ public class PartyMember {
     }
 
     // we use this method in the Party class, so I made it protected/package private
-    protected void addWeapon(Weapon weapon) {
-        weapons.add(weapon);
-    }
-    protected void addSpell(Spell spell) {spells.add(spell);}
+    protected void addWeapon(Weapon weapon) {weapons.add(weapon);}
+    protected void addSpell(Spell spell) {this.spellBook.add(spell);}
 
     protected void printWeaponOptions() {
         for (int i = 0; i < weapons.size(); ++i) {
@@ -400,8 +401,8 @@ public class PartyMember {
     }
 
     protected void printSpellOptions() {
-        for (int i = 0; i < spells.size(); ++i) {
-            Spell curSpell = spells.get(i);
+        for (int i = 0; i < spellBook.size(); ++i) {
+            Spell curSpell = spellBook.get(i);
             System.out.println((i+1) + ". " + curSpell.formattedString());
         }
     }

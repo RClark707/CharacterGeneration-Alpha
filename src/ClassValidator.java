@@ -313,12 +313,23 @@ public class ClassValidator {
 
     public static boolean isValidStat(String statName) {
         // checks to see if the inputted stat was the short form
-        if (!(Character.isUpperCase(statName.charAt(0)))) {
-            statName = statName.substring(0, 1).toUpperCase() + statName.substring(1);
-        }
+        statName = InputChecker.shortToLong(statName);
         for (String s : statNames) {
-            if (statName.equals(s)) {
+            if (statName.equalsIgnoreCase(s)) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isValidSkill(String skillName) {
+        if (isValidStat(InputChecker.shortToLong(skillName))) {
+            return true;
+        } else {
+            for (String s : RandCharacterGenerator.allProf) {
+                if (s.equalsIgnoreCase(skillName)) {
+                    return true;
+                }
             }
         }
         return false;

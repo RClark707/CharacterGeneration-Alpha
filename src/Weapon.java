@@ -7,7 +7,7 @@ public class Weapon {
     protected String weaponName;
     protected ArrayList<String> weaponProperties;
     protected boolean finesse;
-    public Weapon() {}
+    // TODO: add a damage type
     public Weapon(int damageDieSides, String weaponName, boolean finesse) {
         this.damageDieSides = damageDieSides;
         if (weaponName.equalsIgnoreCase("greatsword")) {

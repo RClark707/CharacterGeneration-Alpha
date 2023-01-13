@@ -133,7 +133,7 @@ public class CharacterGenMAIN {
                             if (InputChecker.yes(scan.nextLine())) {
                                 Party.clear();
                                 Party.saveParty(fileToSaveTo);
-                                //viewAnother = true;
+                                System.out.println("Party cleared.");
                             } else {
                                 viewAnother = true;
                             }
@@ -270,52 +270,54 @@ public class CharacterGenMAIN {
                     break;
                 // Spell Casting
                 case 7:
+
+                    // This variable is used to track the user's input for what spell to interact with
+                    String spellName;
+                    // this variable is used similarly to doMore, but it's just a boolean instead of a string that tracks user input
+                    boolean castSpells = false;
                     do {
-                        // This variable is used to track the user's input for what spell to interact with
-                        String spellName;
-                        // this variable is used similarly to doMore, but it's just a boolean instead of a string that tracks user input
-                        do {
-                            // Asking if we should add some spells, if no we skip the next part and go straight to printing the spell book
-                            System.out.println("\nType the name of a Spell to add to your Spell Book (Enter no to stop).");
-                            spellName = scan.nextLine();
-                            if (!InputChecker.no(spellName)) {
-                                spellName = ClassValidator.capitalizeFirst(spellName);
-                                Grimoire.addSpell(spellName);
-                            }
-                        } while (!InputChecker.no(spellName));
-                        // Now, we print out the contents of the spell book (Everything that the user just entered)
-                        do {
-                            // repeatMenu = false;
-                            viewAnother = false;
-                            System.out.println("\nYour Spell Book contains the following spells:");
-                            System.out.println(Grimoire.printSpellBook());
-
-                            // Configuring a spell means to modify the internal attributes such that you can
-                            // actually cast the spell using the spell.castSpell method, called by the returnSpell.castSpell most often
-                            System.out.println("\nWhich spell do you want to configure?");
-                            // could write a method for this in the SpellBook class like I did with the Party class
-                            for (int i = 0; i < Grimoire.getSpellBookSize(); ++i) {
-                                System.out.println((i+1)+ ". " + Grimoire.getSpell(i).getSpellName());
-                            }
-                            System.out.println((Grimoire.getSpellBookSize()+1) + ". Save and move on to casting");
-                            System.out.println((Grimoire.getSpellBookSize()+2) + ". Clear spell book");
-                            // TODO: add a way to view then straight up exit
-                            option = scan.nextInt();
-                            scan.nextLine();
-
-                            if (option <= Grimoire.getSpellBookSize()) {
-                                Spell curSpell = Grimoire.getSpell(option-1);
-                                Grimoire.configureSpellEffects(curSpell);
-                                System.out.println("\n\n");
-                                curSpell.printSpellCard();
-                                viewAnother = true;
-                            } else if (option == Grimoire.getSpellBookSize() + 1) {
-                                Grimoire.saveSpells(spellFile);
-                            } else {
-                                Grimoire.clear();
-                                Grimoire.saveSpells(spellFile);
-                            }
-                        } while (viewAnother);
+                        // Asking if we should add some spells, if no we skip the next part and go straight to printing the spell book
+                        System.out.println("\nType the name of a Spell to add to your Spell Book (Enter no to stop).");
+                        spellName = scan.nextLine();
+                        if (!InputChecker.no(spellName)) {
+                            spellName = ClassValidator.capitalizeFirst(spellName);
+                            Grimoire.addSpell(spellName);
+                        }
+                    } while (!InputChecker.no(spellName));
+                    // Now, we print out the contents of the spell book (Everything that the user just entered)
+                    do {
+                        // repeatMenu = false;
+                        viewAnother = false;
+                        System.out.println("\nYour Spell Book contains the following spells:");
+                        System.out.println(Grimoire.printSpellBook());
+                        // Configuring a spell means to modify the internal attributes such that you can
+                        // actually cast the spell using the spell.castSpell method, called by the returnSpell.castSpell most often
+                        System.out.println("\nWhich spell do you want to configure?");
+                        // could write a method for this in the SpellBook class like I did with the Party class
+                        for (int i = 0; i < Grimoire.getSpellBookSize(); ++i) {
+                            System.out.println((i+1)+ ". " + Grimoire.getSpell(i).getSpellName());
+                        }
+                        System.out.println((Grimoire.getSpellBookSize()+1) + ". Save and move on to casting");
+                        System.out.println((Grimoire.getSpellBookSize()+2) + ". Clear spell book");
+                        System.out.println((Grimoire.getSpellBookSize()+3) + ". Exit to Main Menu");
+                        option = Integer.parseInt(scan.nextLine());
+                        if (option <= Grimoire.getSpellBookSize()) {
+                            Spell curSpell = Grimoire.getSpell(option-1);
+                            Grimoire.configureSpellEffects(curSpell);
+                            System.out.println("\n\n");
+                            curSpell.printSpellCard();
+                            viewAnother = true;
+                            castSpells = true;
+                        } else if (option == Grimoire.getSpellBookSize() + 1) {
+                            Grimoire.saveSpells(spellFile);
+                            castSpells = true;
+                        } else if (option == Grimoire.getSpellBookSize() + 2) {
+                            Grimoire.clear();
+                            Grimoire.saveSpells(spellFile);
+                            System.out.println("Spellbook cleared.");
+                        }
+                    } while (viewAnother);
+                    if (castSpells) {
                         do {
                             System.out.println("\nWould you like to cast a spell? Alternatively, you can enter the name of a spell to view its spell card.");
                             doMore = scan.nextLine();
@@ -328,9 +330,8 @@ public class CharacterGenMAIN {
                                     System.out.println("\nYou are casting " + spellName);
                                 }
                                 System.out.println("\nWhat level are you casting this spell at?");
-                                int castingLevel = scan.nextInt();
+                                int castingLevel = Integer.parseInt(scan.nextLine());
                                 String level;
-                                scan.nextLine();
                                 switch (castingLevel) {
                                     case 1 -> level = castingLevel + "st";
                                     case 2 -> level = castingLevel + "nd";
@@ -338,21 +339,17 @@ public class CharacterGenMAIN {
                                     default -> level = castingLevel + "th";
                                     // Keep in mind that we will never see a casting level greater than 9
                                 }
-                                System.out.println("You are casting " + spellName + " at " + level + " level.");
-                                System.out.println("Prepare to be amazed.");
-                                System.out.println("\n" + Grimoire.returnSpell(spellName).castSpell(castingLevel));
-                            } else if (Grimoire.returnSpell(doMore) != null){
+                                    System.out.println("You are casting " + spellName + " at " + level + " level.");
+                                    System.out.println("Prepare to be amazed.");
+                                    System.out.println("\n" + Grimoire.returnSpell(spellName).castSpell(castingLevel));
+                            } else if (Grimoire.returnSpell(doMore) != null) {
                                 System.out.println("\n");
                                 Grimoire.returnSpell(doMore).printSpellCard();
                                 System.out.println("Would you like to go back to spell casting?");
                                 doMore = scan.nextLine();
                             }
                         } while (InputChecker.yes(doMore));
-
-                        System.out.println("\nEnter Y to read your book some more, or N to go back.");
-                        doMore = scan.nextLine();
-
-                    } while (InputChecker.yes(doMore));
+                    }
                     break;
                 // Character Gameplay
                 case 8:
@@ -366,8 +363,7 @@ public class CharacterGenMAIN {
                             scan.nextLine();
                             if (option <= Party.getPartySize()) {
                                 System.out.println("You are currently playing as: " + Party.getPartyMember(option - 1).getCharName() + "\n\n");
-                                Party.playCharacter(Party.getPartyMember(option - 1));
-                                viewAnother = true;
+                                viewAnother = Party.playCharacter(Party.getPartyMember(option - 1));
                             }
                         } else {
                             // Should I add these lines to the create Character method?

@@ -16,6 +16,7 @@ public class SpellBook {
     public void addSpell(String spellName) {
         spellBook.add(Spell.spellBuilder(spellName));
     }
+    protected void addSpell(Spell spell) {spellBook.add(spell);}
     // Based on a String for a spell name, we can return the correct spell from the spellBook array, most often the Grimoire array.
     public Spell returnSpell(String spellName) {
         //spellName = spellName.replaceAll("\\s", "");
@@ -46,7 +47,7 @@ public class SpellBook {
         // alternatively can use the FileOutputStream in conjunction with the print writer
         try (PrintWriter printer = new PrintWriter(spellFile)) {
             for (Spell s : spellBook) {
-                printer.print(s.toString() + "\n");
+                printer.print(s.toString() + " + ");
             }
         }
     }
@@ -64,60 +65,15 @@ public class SpellBook {
     public void initializeSpellBook(String spellFile) throws FileNotFoundException {
         Scanner scan = new Scanner(new FileInputStream(spellFile));
         do {
-            if (scan.hasNextLine()) {
-               String spellName = scan.nextLine();
-               int spellLevel = Integer.parseInt(scan.nextLine());
-               int higherLevelDamageDice = Integer.parseInt(scan.nextLine());
-               int higherLevelAttacksIncrease = Integer.parseInt(scan.nextLine());
-               int diceSideNumber = Integer.parseInt(scan.nextLine());
-               int numDice = Integer.parseInt(scan.nextLine());
-               int numTargets = Integer.parseInt(scan.nextLine());
-               boolean dealsDamage = Boolean.parseBoolean(scan.nextLine());
-               String damageType = scan.nextLine();
-               boolean isSavingThrow = Boolean.parseBoolean(scan.nextLine());
-               String saveType = scan.nextLine();
-               boolean isAttackRoll = Boolean.parseBoolean(scan.nextLine());
-               int numAttacks = Integer.parseInt(scan.nextLine());
-               int attackModifier = Integer.parseInt(scan.nextLine());
-               int damageModifier = Integer.parseInt(scan.nextLine());
-               boolean isAutomatic = Boolean.parseBoolean(scan.nextLine());
-               String spellEffects = scan.nextLine();
-               String spellSchool = scan.nextLine();
-               spellBook.add(new Spell(spellName, spellLevel, higherLevelDamageDice, higherLevelAttacksIncrease, diceSideNumber, numDice, numTargets,
-                       dealsDamage, damageType, isSavingThrow, saveType, isAttackRoll, numAttacks,
-                       attackModifier, damageModifier, isAutomatic, spellEffects, spellSchool));
+            for (String s : scan.nextLine().split(" + ")) {
+                String[] curSpell = s.split(", ");
+                // matches each element of the curSpell array with the part of the constructor required for a spell, then adds the spell to the spellbook.
+                addSpell(new Spell(curSpell[0], Integer.parseInt(curSpell[1]), Integer.parseInt(curSpell[2]), Integer.parseInt(curSpell[3]), Integer.parseInt(curSpell[4]), Integer.parseInt(curSpell[5]),
+                        Integer.parseInt(curSpell[6]), Boolean.parseBoolean(curSpell[7]), curSpell[8], Boolean.parseBoolean(curSpell[9]), curSpell[10], Boolean.parseBoolean(curSpell[11]), Integer.parseInt(curSpell[12]),
+                        Integer.parseInt(curSpell[13]), Integer.parseInt(curSpell[14]), Boolean.parseBoolean(curSpell[15]), curSpell[16], curSpell[17]));
             }
-            scan.nextLine();
         } while (scan.hasNextLine());
         scan.close();
-        Scanner defaultScanner = new Scanner(new FileInputStream("defaultSpells.txt"));
-        do {
-            if (defaultScanner.hasNextLine()) {
-                String spellName = defaultScanner.nextLine();
-                int spellLevel = Integer.parseInt(defaultScanner.nextLine());
-                int higherLevelDamageDice = Integer.parseInt(defaultScanner.nextLine());
-                int higherLevelAttacksIncrease = Integer.parseInt(defaultScanner.nextLine());
-                int diceSideNumber = Integer.parseInt(defaultScanner.nextLine());
-                int numDice = Integer.parseInt(defaultScanner.nextLine());
-                int numTargets = Integer.parseInt(defaultScanner.nextLine());
-                boolean dealsDamage = Boolean.parseBoolean(defaultScanner.nextLine());
-                String damageType = defaultScanner.nextLine();
-                boolean isSavingThrow = Boolean.parseBoolean(defaultScanner.nextLine());
-                String saveType = defaultScanner.nextLine();
-                boolean isAttackRoll = Boolean.parseBoolean(defaultScanner.nextLine());
-                int numAttacks = Integer.parseInt(defaultScanner.nextLine());
-                int attackModifier = Integer.parseInt(defaultScanner.nextLine());
-                int damageModifier = Integer.parseInt(defaultScanner.nextLine());
-                boolean isAutomatic = Boolean.parseBoolean(defaultScanner.nextLine());
-                String spellEffects = defaultScanner.nextLine();
-                String spellSchool = defaultScanner.nextLine();
-                spellBook.add(new Spell(spellName, spellLevel, higherLevelDamageDice, higherLevelAttacksIncrease, diceSideNumber, numDice, numTargets,
-                        dealsDamage, damageType, isSavingThrow, saveType, isAttackRoll, numAttacks,
-                        attackModifier, damageModifier, isAutomatic, spellEffects, spellSchool));
-            }
-            defaultScanner.nextLine();
-        } while (defaultScanner.hasNextLine());
-        defaultScanner.close();
     }
 
     public void clear() {
